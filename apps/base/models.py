@@ -18,3 +18,7 @@ class IDModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class BaseModel(CreateModifyModel, IDModel):
+    pass
