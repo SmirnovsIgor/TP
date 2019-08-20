@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env('SECRET_KEY', 'y(dyi*da=4@c)#dwy3h2ku=12jnh(p=mdv52dr_iajkr%&sysj', str)
+SECRET_KEY = 'y(dyi*da=4@c)#dwy3h2ku=12jnh(p=mdv52dr_iajkr%&sysj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_env('DEBUG', True, bool)
@@ -78,12 +78,12 @@ WSGI_APPLICATION = 'TicketProer.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': get_env('DB_ENGINE', 'django.db.backends.postgresql', str),
-        'NAME': get_env('DB_NAME', 'django_db', str),
-        'USER': get_env('DB_USER', 'admin', str),
-        'PASSWORD': get_env('DB_PASSWORD', 'admin', str),
-        'HOST': get_env('DB_HOST', '127.0.0.1', str),
-        'PORT': get_env('DB_POST', '5432', str)
+        'ENGINE': get_env('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': get_env('DB_NAME', 'django_db'),
+        'USER': get_env('DB_USER', 'admin'),
+        'PASSWORD': get_env('DB_PASSWORD', 'admin'),
+        'HOST': get_env('DB_HOST', '127.0.0.1'),
+        'PORT': get_env('DB_POST', '5432')
     }
 }
 
@@ -112,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = get_env('Time_ZONE', 'UTC', str)
+TIME_ZONE = get_env('Time_ZONE', 'UTC')
 
 USE_I18N = True
 
@@ -124,4 +124,4 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = get_env('STATIC_URL', '/static/', str)
+STATIC_URL = get_env('STATIC_URL', '/static/')
