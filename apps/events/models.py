@@ -55,3 +55,10 @@ class EventModel(custmodels.BaseModel):
     status = models.CharField(max_length=1,
                               choices=STATUS_TYPES,
                               default=SOON)
+
+    def save(self, *args, **kwargs):
+        user = User.objects.get(id=self.organizer_id)
+        if user.objects.get(organization__id) is not None:
+            organization = user.objects.get(organization__id)
+            self.organizer = GenericForeignKey(organization)
+        super().save(self, *args, **kwargs)
