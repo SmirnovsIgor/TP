@@ -1,11 +1,10 @@
 import os
 
 from django.db import models
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 from apps.base import models as custmodels
-
-# Create your models here.
 
 
 def get_image_path(instance: object, filename: str):
@@ -23,15 +22,21 @@ class EventModel(custmodels.BaseModel):
     name = models.CharField(max_length=64)
     description = models.TextField()
     poster = models.ImageField(upload_to=get_image_path,
-                               null=True,
-                               blank=True)
-    organizer = models.ForeignKey('User',
-                                  on_delete=models.CASCADE)
-    place = models.ForeignKey('Place',
-                              null=True,
-                              on_delete=models.CASCADE)
-    address = models.ForeignKey('Address',
-                                on_delete=models.CASCADE)
+                               blank=True,
+                               null=True)
+    organizer_type = models.ForeignKey(ContentType,
+                                       on_delete=models.CASCADE)
+    organizer_id = models.UUIDField()
+    organizer = GenericForeignKey('content_type', 'organizer_id')
+    location_type = models.ForeignKey(ContentType,
+                                      on_delete=models.CASCADE)
+    location_id = models.UUIDField()
+    location = GenericForeignKey('location_type', 'location_id')
+    # place = models.ForeignKey('Place',
+    #                           on_delete=models.CASCADE,
+    #                           null=True)
+    # address = models.ForeignKey('Address',
+    #                             on_delete=models.CASCADE)
     date = models.DateTimeField()
     duration = models.DurationField()
     age_rate = models.PositiveSmallIntegerField()
@@ -39,7 +44,6 @@ class EventModel(custmodels.BaseModel):
     max_members = models.PositiveIntegerField()
     ratings = models.DecimalField(max_digits=2,
                                   decimal_places=1)
-
     SOON = "SOON"
     SUCCEED = "SUCCEED"
     REJECTED = "REJECTED"
