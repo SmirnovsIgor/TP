@@ -25,19 +25,17 @@ class EventModel(custmodels.BaseModel):
     poster = models.ImageField(upload_to=get_image_path,
                                null=True,
                                blank=True)
-    # organizer = models.ForeignKey('Organizer',
-    #                               null=True,
-    #                               on_delete=models.CASCADE)
-    # user = models.ForeignKey('User',
-    #                          on_delete=models.CASCADE)
+    organizer = models.ForeignKey('User',
+                                  on_delete=models.CASCADE)
     place = models.ForeignKey('Place',
                               null=True,
                               on_delete=models.CASCADE)
     address = models.ForeignKey('Address',
                                 on_delete=models.CASCADE)
     date = models.DateTimeField()
+    duration = models.DurationField()
     age_rate = models.PositiveSmallIntegerField()
-    is_approves = models.BooleanField()
+    is_approved = models.BooleanField()
     max_members = models.PositiveIntegerField()
     ratings = models.DecimalField(max_digits=2,
                                   decimal_places=1)
