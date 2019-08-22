@@ -1,15 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 from apps.base import models as custmodels
 from apps.users.models import User, Organization
+from apps.locations.models import Place, Address
 
 from tools.image_funcs import get_posters_path
 
 
-class EventModel(custmodels.BaseModel):
+class Event(custmodels.BaseModel):
     """
     Event Model inherited from BaseModel.
     Fields id, created, updated were inherited
@@ -53,9 +53,18 @@ class EventModel(custmodels.BaseModel):
                               choices=STATUS_TYPES,
                               default=SOON)
 
+    def __str__(self):
+        return self.name
+
     def save(self, *args, **kwargs):
-        user = User.objects.get(id=self.organizer_id)
-        if user.organization__id is not None:
-            organization = user.organization__id
-            self.organizer = GenericForeignKey(organization)
-        super().save(self, *args, **kwargs)
+        is_user = True
+        try:
+            user = User.objects.get(id=self.organizer_id)
+        except User.DoesNotExist:
+            is_user = False
+        finally:
+            if is_user:
+                if user.organization__id is not None:
+                    organization = user.organization__id
+                    self.organizer = GenericForeignKey(organization)
+            super().save(self, *args, **kwargs)
