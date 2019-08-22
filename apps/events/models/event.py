@@ -57,9 +57,10 @@ class Event(custmodels.BaseModel):
         return self.name
 
     def save(self, *args, **kwargs):
-        is_user = True
+        is_user = False
         try:
             user = User.objects.get(id=self.organizer_id)
+            is_user = True
         except User.DoesNotExist:
             is_user = False
         finally:
