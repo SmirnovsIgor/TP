@@ -1,1 +1,1 @@
-from apps.events.models import EventModel
+# from apps.events.models import EventModel

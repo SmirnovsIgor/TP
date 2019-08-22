@@ -1,17 +1,12 @@
-import os
-
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 from apps.base import models as custmodels
+from apps.users.models import User, Organization
 
-
-def get_image_path(instance: object, filename: str):
-    """
-    Gets path for event's poster '/static/posters/{event_id}/{filename}
-    """
-    return os.path.join('posters', instance.id, filename)
+from tools.image_funcs import get_posters_path
 
 
 class EventModel(custmodels.BaseModel):
@@ -21,7 +16,7 @@ class EventModel(custmodels.BaseModel):
     """
     name = models.CharField(max_length=64)
     description = models.TextField()
-    poster = models.ImageField(upload_to=get_image_path,
+    poster = models.ImageField(upload_to=get_posters_path,
                                blank=True,
                                null=True)
     organizer_type = models.ForeignKey(ContentType,
@@ -32,11 +27,13 @@ class EventModel(custmodels.BaseModel):
                                       on_delete=models.CASCADE)
     location_id = models.UUIDField()
     location = GenericForeignKey('location_type', 'location_id')
+    # ------------------------- mess? ---------------------------
     # place = models.ForeignKey('Place',
     #                           on_delete=models.CASCADE,
     #                           null=True)
     # address = models.ForeignKey('Address',
     #                             on_delete=models.CASCADE)
+    # ------------------------------------------------------------
     date = models.DateTimeField()
     duration = models.DurationField()
     age_rate = models.PositiveSmallIntegerField()
@@ -58,7 +55,7 @@ class EventModel(custmodels.BaseModel):
 
     def save(self, *args, **kwargs):
         user = User.objects.get(id=self.organizer_id)
-        if user.objects.get(organization__id) is not None:
-            organization = user.objects.get(organization__id)
+        if user.organization__id is not None:
+            organization = user.organization__id
             self.organizer = GenericForeignKey(organization)
         super().save(self, *args, **kwargs)
