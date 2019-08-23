@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.base.models import BaseModel
+from apps.base.models.base_model import BaseModel
 
 
 class Address(BaseModel):

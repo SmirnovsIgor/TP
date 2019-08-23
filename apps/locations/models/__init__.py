@@ -1,1 +1,3 @@
-from apps.locations.models import Place, Address
+from apps.locations.models.address import Address
+from apps.locations.models.place import Place
+

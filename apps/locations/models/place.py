@@ -1,14 +1,16 @@
 from django.db import models
 
-from apps.base.models import BaseModel
-from apps.locations.models import Address
+from apps.base.models.base_model import BaseModel
+from apps.locations.models.address import Address
 
 
 class Place(BaseModel):
-    ACTIVE = 'ACTIVE'
+    WORKING = 'WORKING'
+    TEMPORARILY_CLOSED = 'TEMPORARILY_CLOSED'
     CLOSED = 'CLOSED'
     STATUS_CHOICES = [
-        (ACTIVE, 'Working'),
+        (TEMPORARILY_CLOSED, 'Temporarily closed'),
+        (WORKING, 'Working'),
         (CLOSED, 'Closed'),
     ]
     name = models.CharField(max_length=75, blank=False, null=False)
@@ -17,4 +19,3 @@ class Place(BaseModel):
     description = models.CharField(max_length=200, blank=True, null=True)
     status = models.CharField(max_length=6, choices=STATUS_CHOICES, blank=False, null=False)
 
-    # Required method to set place closed instead of deleting it

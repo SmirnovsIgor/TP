@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 
 
-class IDModel(models.Model):
+class UUIDAbstractModel(models.Model):
     id = models.UUIDField(primary_key=True,
                           default=uuid.uuid4,
                           editable=False)
