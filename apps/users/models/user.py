@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from apps.base.models import BaseModel
-from apps.users.models import Organization
 
 
 class User(AbstractUser, BaseModel):
