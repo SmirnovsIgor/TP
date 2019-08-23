@@ -2,45 +2,32 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-from apps.base import models as custmodels
+from apps.base.models import BaseModel
 from apps.users.models import User, Organization
 from apps.locations.models import Place, Address
 
 from tools.image_funcs import get_posters_path
 
 
-class Event(custmodels.BaseModel):
+class Event(BaseModel):
     """
     Event Model inherited from BaseModel.
     Fields id, created, updated were inherited
     """
     name = models.CharField(max_length=64)
     description = models.TextField()
-    poster = models.ImageField(upload_to=get_posters_path,
-                               blank=True,
-                               null=True)
-    organizer_type = models.ForeignKey(ContentType,
-                                       on_delete=models.CASCADE)
+    poster = models.ImageField(upload_to=get_posters_path, blank=True, null=True)
+    organizer_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     organizer_id = models.UUIDField()
     organizer = GenericForeignKey('content_type', 'organizer_id')
-    location_type = models.ForeignKey(ContentType,
-                                      on_delete=models.CASCADE)
-    location_id = models.UUIDField()
-    location = GenericForeignKey('location_type', 'location_id')
-    # ------------------------- mess? ---------------------------
-    # place = models.ForeignKey('Place',
-    #                           on_delete=models.CASCADE,
-    #                           null=True)
-    # address = models.ForeignKey('Address',
-    #                             on_delete=models.CASCADE)
-    # ------------------------------------------------------------
+    place = models.ForeignKey('Place', on_delete=models.CASCADE, null=True)
+    address = models.ForeignKey('Address', on_delete=models.CASCADE, null=False, blank=False)
     date = models.DateTimeField()
     duration = models.DurationField()
     age_rate = models.PositiveSmallIntegerField()
     is_approved = models.BooleanField()
     max_members = models.PositiveIntegerField()
-    ratings = models.DecimalField(max_digits=2,
-                                  decimal_places=1)
+    ratings = models.DecimalField(max_digits=2, decimal_places=1)
     SOON = "SOON"
     SUCCEED = "SUCCEED"
     REJECTED = "REJECTED"
@@ -49,23 +36,12 @@ class Event(custmodels.BaseModel):
         (SUCCEED, "succeed"),
         (REJECTED, 'rejected'),
     )
-    status = models.CharField(max_length=1,
-                              choices=STATUS_TYPES,
-                              default=SOON)
+    status = models.CharField(max_length=1, choices=STATUS_TYPES, default=SOON)
 
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
-        is_user = False
-        try:
-            user = User.objects.get(id=self.organizer_id)
-            is_user = True
-        except User.DoesNotExist:
-            is_user = False
-        finally:
-            if is_user:
-                if user.organization__id is not None:
-                    organization = user.organization__id
-                    self.organizer = GenericForeignKey(organization)
-            super().save(self, *args, **kwargs)
+        if not Event.objects.get(organizer_id=self.organizer_id).exists():
+            self.organizer = self.organizer.membership.organization if self.organizer.membership else self.organizer
+        super().save(self, *args, **kwargs)
