@@ -1,7 +1,8 @@
 from django.db import models
+from apps.base.models import BaseModel
 from apps.users.models import Organization, User
 
 
-class MembersList(models.Model):
-    member_id = models.OneToOneField(User.id, primary_key=True)
-    organization_id = models.OneToOneField(Organization.id)
+class MembersList(BaseModel):
+    member = models.OneToOneField(User, related_name='membership', unique=True)
+    organization = models.ForeignKey(Organization, blank=False, null=False)
