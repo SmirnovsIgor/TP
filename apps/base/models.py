@@ -23,4 +23,3 @@ class IDModel(models.Model):
 class BaseModel(CreateModifyModel, IDModel):
     class Meta:
         abstract = True
-
