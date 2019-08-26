@@ -36,7 +36,7 @@ class Event(BaseModel):
         (SUCCEED, "succeed"),
         (REJECTED, 'rejected'),
     )
-    status = models.CharField(max_length=1, choices=STATUS_TYPES, default=SOON)
+    status = models.CharField(max_length=16, choices=STATUS_TYPES, default=SOON)
 
     def __str__(self):
         return self.name
