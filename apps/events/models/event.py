@@ -22,7 +22,7 @@ class Event(BaseAbstractModel):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, null=True, blank=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, null=False, blank=False)
     date = models.DateTimeField()
-    duration = models.DurationField()
+    duration = models.DurationField(default=False)
     age_rate = models.PositiveSmallIntegerField()
     is_approved = models.BooleanField()
     max_members = models.PositiveIntegerField()
