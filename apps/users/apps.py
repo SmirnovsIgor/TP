@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class AuthConfig(AppConfig):
-    name = 'apps.authorization'
+    name = 'apps.users'
