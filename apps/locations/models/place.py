@@ -1,10 +1,11 @@
 from django.db import models
 
-from apps.base.models.base_model import BaseModel
+from tools.image_funcs import get_place_photo_path
+from apps.base.models.base import BaseAbstractModel
 from apps.locations.models.address import Address
 
 
-class Place(BaseModel):
+class Place(BaseAbstractModel):
     WORKING = 'WORKING'
     TEMPORARILY_CLOSED = 'TEMPORARILY_CLOSED'
     CLOSED = 'CLOSED'
@@ -15,7 +16,6 @@ class Place(BaseModel):
     ]
     name = models.CharField(max_length=75, blank=False, null=False)
     address = models.OneToOneField(Address, on_delete=models.PROTECT)
-    photo = models.ImageField(blank=True, null=True)
+    photo = models.ImageField(upload_to=get_place_photo_path, blank=True, null=True)
     description = models.CharField(max_length=200, blank=True, null=True)
     status = models.CharField(max_length=6, choices=STATUS_CHOICES, blank=False, null=False)
-
