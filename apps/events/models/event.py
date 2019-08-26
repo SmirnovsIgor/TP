@@ -2,14 +2,13 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-from apps.base.models import BaseModel
-from apps.users.models import User, Organization
+from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
 
 from tools.image_funcs import get_posters_path
 
 
-class Event(BaseModel):
+class Event(BaseAbstractModel):
     """
     Event Model inherited from BaseModel.
     Fields id, created, updated were inherited
