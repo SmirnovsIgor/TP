@@ -18,7 +18,7 @@ class Event(BaseAbstractModel):
     poster = models.ImageField(upload_to=get_posters_path, blank=True, null=True)
     organizer_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     organizer_id = models.UUIDField()
-    organizer = GenericForeignKey('content_type', 'organizer_id')
+    organizer = GenericForeignKey('organizer_type', 'organizer_id')
     place = models.ForeignKey(Place, on_delete=models.CASCADE, null=True, blank=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, null=False, blank=False)
     date = models.DateTimeField()
