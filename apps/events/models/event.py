@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
 
-from tools.image_funcs import get_posters_path
+from tools.image_funcs import get_image_path
 
 
 class Event(BaseAbstractModel):
@@ -19,7 +19,7 @@ class Event(BaseAbstractModel):
     )
     name = models.CharField(max_length=64, blank=False, null=False)
     description = models.TextField(blank=False, null=False)
-    poster = models.ImageField(upload_to=get_posters_path, blank=True, null=True)
+    poster = models.ImageField(upload_to=get_image_path('poster'), blank=True, null=True)
     organizer_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     organizer_id = models.UUIDField()
     organizer = GenericForeignKey('organizer_type', 'organizer_id')
