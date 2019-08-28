@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.locations',
     'apps.events',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
