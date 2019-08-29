@@ -27,7 +27,7 @@ SECRET_KEY = get_env('SECRET_KEY', 'abccd')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_env('DEBUG', True, bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -90,10 +90,10 @@ WSGI_APPLICATION = 'TicketProer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': get_env('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': get_env('DB_NAME', 'django_db'),
-        'USER': get_env('DB_USER', 'admin'),
+        'NAME': get_env('DB_NAME', 'postgres'),
+        'USER': get_env('DB_USER', 'postgres'),
         'PASSWORD': get_env('DB_PASSWORD', 'admin'),
-        'HOST': get_env('DB_HOST', '127.0.0.1'),
+        'HOST': get_env('DB_HOST', 'db'),
         'PORT': get_env('DB_POST', '5432')
     }
 }
@@ -136,4 +136,4 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = get_env('STATIC_URL', '/static/')
+STATIC_URL = '/static/'
