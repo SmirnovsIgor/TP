@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from apps.locations.models import Place, Address
+
+
+admin.site.register(Place)
+admin.site.register(Address)
