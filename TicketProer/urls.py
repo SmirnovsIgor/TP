@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from apps.users.views import UserPage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/user/<str:id>', UserPage.as_view())
 ]
