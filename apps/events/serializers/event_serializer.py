@@ -29,7 +29,7 @@ class EventSerializer(serializers.Serializer):
     name = serializers.CharField(required=True, max_length=64, allow_blank=False, allow_null=False)
     description = serializers.CharField(required=True, allow_blank=False, allow_null=False)
     poster = serializers.ImageField(required=False, allow_empty_file=True)
-    organizer = OrganizerObjectRelatedField(read_only=True)
+    organizer = serializers.SerializerMethodField()
     place = PlaceSerializer()
     address = AddressSerializer()
     date = serializers.DateTimeField(required=True, allow_null=False)
@@ -37,3 +37,6 @@ class EventSerializer(serializers.Serializer):
     age_rate = serializers.IntegerField(required=True, min_value=0, allow_null=False)
     max_members = serializers.IntegerField(required=True, min_value=0, allow_null=False)
     status = serializers.ChoiceField(choices=Event.STATUS_TYPES)
+
+    def get_organizer(self, obj=None):
+        holder = obj.organizer
