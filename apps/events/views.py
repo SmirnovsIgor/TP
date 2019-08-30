@@ -31,7 +31,7 @@ class EventDetail(APIView):
         except Event.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        event = self.get_object(pk)
+    def get(self, request, id, format=None):
+        event = self.get_object(id)
         serializer = EventSerializer(event)
         return Response(serializer.data)
