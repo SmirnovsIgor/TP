@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
+from apps.users.models import MembersList
 
 from tools.image_funcs import get_image_path
 
@@ -37,8 +38,14 @@ class Event(BaseAbstractModel):
 
     def save(self, *args, **kwargs):
         if self._state.adding:
-            self.organizer = self.organizer.membership.organization if self.organizer.membership else self.organizer
-        super().save(self, *args, **kwargs)
+            try:
+                has_membership = self.organizer.membership
+            except MembersList.DoesNotExist:
+                pass
+            else:
+                self.organizer = self.organizer.membership.organization if self.organizer.membership else self.organizer
+            finally:
+                super().save(self, *args, **kwargs)
 
     # TODO
     # @property
