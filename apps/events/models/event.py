@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
-from apps.users.models import MembersList
+from apps.users.models import MembersList, User, Organization
 
 from tools.image_funcs import get_image_path
 
@@ -18,6 +18,11 @@ class Event(BaseAbstractModel):
         (SUCCEED, "succeed"),
         (REJECTED, 'rejected'),
     )
+
+    # limit = models.Q(app_label='users', model='User') | \
+    #     models.Q(app_label='users', model='Organization')
+    # add limit_choices_to=limit, in organizer_type field
+
     name = models.CharField(max_length=64, blank=False, null=False)
     description = models.TextField(blank=False, null=False)
     poster = models.ImageField(upload_to=get_image_path, blank=True, null=True)

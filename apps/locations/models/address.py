@@ -11,3 +11,7 @@ class Address(BaseAbstractModel):
     floor = models.PositiveSmallIntegerField(blank=True, null=True)
     apartments = models.CharField(max_length=10, blank=True, null=True)
     description = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        data = [str(item) for item in (self.country, self.city, self.street, self.house, self.floor, self.apartments) if item]
+        return '-'.join(data)

@@ -19,3 +19,6 @@ class Place(BaseAbstractModel):
     photo = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     description = models.CharField(max_length=200, blank=True, null=True)
     status = models.CharField(max_length=18, choices=STATUS_CHOICES, blank=False, null=False)
+
+    def __str__(self):
+        return self.name
