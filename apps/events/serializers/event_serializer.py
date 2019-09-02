@@ -1,35 +1,33 @@
 from rest_framework import serializers
 
 from apps.users.models import Organization, User
+from apps.locations.models import Place
 from apps.events.models import Event
 
-from apps.locations.serializers.place_serializer import PlaceSerializer
 from apps.locations.serializers.address_serializer import AddressSerializer
 from apps.users.serializers.user_serializer import UserSerializer
 from apps.users.serializers.organization_serializer import OrganizationSerializer
 
 
-# class OrganizerObjectRelatedField(serializers.RelatedField):
-#     """
-#     A custom field to use the 'organizer' generic relationship
-#     """
-#     def to_representation(self, value):
-#         if isinstance(value, Organization):
-#             serializer = OrganizationSerializer(value)
-#         elif isinstance(value, User):
-#             serializer = UserSerializer(value)
-#         else:
-#             raise Exception('Unexpected type of tagged object')
-#
-#         return serializer.data
+class ShortPlaceSerializer(serializers.ModelSerializer):
+    """
+    Place serializer without address info
+    """
+    class Meta:
+        model = Place
+        exclude = ['address']
+
 
 class EventSerializer(serializers.ModelSerializer):
+    """
+    Serializer of Event model
+    """
     id = serializers.UUIDField(read_only=True)
     name = serializers.CharField(required=True, max_length=64, allow_blank=False, allow_null=False)
     description = serializers.CharField(required=True, allow_blank=False, allow_null=False)
     poster = serializers.ImageField(required=False, allow_empty_file=True)
     organizer = serializers.SerializerMethodField()
-    place = PlaceSerializer()
+    place = ShortPlaceSerializer()
     address = AddressSerializer()
     date = serializers.DateTimeField(required=True, allow_null=False)
     duration = serializers.DurationField(required=True, min_value=None, max_value=None, allow_null=False)

@@ -9,3 +9,6 @@ class Organization(BaseAbstractModel):
     profile_image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name

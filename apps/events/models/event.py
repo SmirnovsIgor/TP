@@ -1,10 +1,11 @@
 from django.db import models
+from django.core.exceptions import FieldDoesNotExist
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
-from apps.users.models import MembersList, User, Organization
+from apps.users.models import MembersList
 
 from tools.image_funcs import get_image_path
 
@@ -19,10 +20,6 @@ class Event(BaseAbstractModel):
         (REJECTED, 'rejected'),
     )
 
-    # limit = models.Q(app_label='users', model='User') | \
-    #     models.Q(app_label='users', model='Organization')
-    # add limit_choices_to=limit, in organizer_type field
-
     name = models.CharField(max_length=64, blank=False, null=False)
     description = models.TextField(blank=False, null=False)
     poster = models.ImageField(upload_to=get_image_path, blank=True, null=True)
@@ -35,6 +32,8 @@ class Event(BaseAbstractModel):
     duration = models.DurationField(blank=False, null=False)
     age_rate = models.PositiveSmallIntegerField(default=18, blank=False, null=False)
     is_approved = models.BooleanField(default=False)
+    is_hot = models.BooleanField(default=False)
+    is_top = models.BooleanField(default=False)
     max_members = models.PositiveIntegerField(blank=False, null=False)
     status = models.CharField(max_length=16, choices=STATUS_TYPES, default=SOON)
 
@@ -42,15 +41,26 @@ class Event(BaseAbstractModel):
         return self.name
 
     def save(self, *args, **kwargs):
+        try:
+            has_place = self.address.place
+        except Place.DoesNotExist:
+            pass
+        else:
+            self.place = has_place
         if self._state.adding:
             try:
-                has_membership = self.organizer.membership
-            except MembersList.DoesNotExist:
-                pass
-            else:
-                self.organizer = self.organizer.membership.organization if self.organizer.membership else self.organizer
-            finally:
+                self.organizer.__class__._meta.get_field('membership')
+            except FieldDoesNotExist:
                 super().save(self, *args, **kwargs)
+            else:
+                try:
+                    has_membership = self.organizer.membership
+                except MembersList.DoesNotExist:
+                    pass
+                else:
+                    self.organizer = self.organizer.membership.organization if self.organizer.membership else self.organizer
+                finally:
+                    super().save(self, *args, **kwargs)
 
     # TODO
     # @property
