@@ -1,11 +1,10 @@
 from django.db import models
-from django.core.exceptions import FieldDoesNotExist
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
-from apps.users.models import MembersList
+from apps.users.models import MembersList, User, Organization
 
 from tools.image_funcs import get_image_path
 
@@ -17,7 +16,7 @@ class Event(BaseAbstractModel):
     STATUS_TYPES = (
         (SOON, "soon"),
         (SUCCEED, "succeed"),
-        (REJECTED, 'rejected'),
+        (REJECTED, "rejected"),
     )
 
     name = models.CharField(max_length=64, blank=False, null=False)
@@ -48,9 +47,7 @@ class Event(BaseAbstractModel):
         else:
             self.place = has_place
         if self._state.adding:
-            try:
-                self.organizer.__class__._meta.get_field('membership')
-            except FieldDoesNotExist:
+            if isinstance(self.organizer, Organization):
                 super().save(self, *args, **kwargs)
             else:
                 try:

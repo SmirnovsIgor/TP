@@ -2,7 +2,8 @@ import uuid
 
 from datetime import datetime
 from django.http import Http404
-from rest_framework import generics
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import permission_classes
@@ -70,3 +71,11 @@ class EventDetail(APIView):
         event = self.get_object(id)
         serializer = EventSerializer(event)
         return Response(serializer.data)
+
+
+class EventViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for listing and retrieving events
+    """
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
