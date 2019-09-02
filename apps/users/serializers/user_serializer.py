@@ -10,3 +10,6 @@ class UserSerializer(serializers.Serializer):
     username = serializers.CharField(required=True, allow_null=False, allow_blank=False, max_length=150)
     is_staff = serializers.BooleanField(default=False, allow_null=False)
     is_active = serializers.BooleanField(default=True, allow_null=False)
+
+    def update(self, instance, validated_data):
+        UserSerializer.save(validated_data)
