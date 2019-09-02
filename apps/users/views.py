@@ -13,7 +13,7 @@ class UserPage(APIView):
     def get(self, request, id):
         user = request.user
         if user.is_staff or user.id == id:
-            serialized_data = UserSerializer(user)
+            serialized_data = UserSerializer(User.objects.get(id=id))
             return Response(serialized_data.data, status=200)
         else:
             return Response(status=403)
