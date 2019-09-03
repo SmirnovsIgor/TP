@@ -1,8 +1,8 @@
 from django.urls import path
+from rest_auth.views import UserDetailsView
 
-
-from apps.users.views import PersonalData
 
 urlpatterns = [
-    path('user/personal-data/', PersonalData.as_view()),
+    path('user/personal-data/', UserDetailsView.as_view()),
 ]
+
