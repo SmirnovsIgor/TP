@@ -17,5 +17,5 @@ class UserDataForStaffView(APIView):
             serializer = UserForStaffSerializer(user)
             return Response(serializer.data, status=HTTP_200_OK)
         except User.DoesNotExist:
-            raise NotFound
+            raise NotFound("User does not exist")
 
