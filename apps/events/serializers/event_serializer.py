@@ -6,8 +6,8 @@ from apps.events.models import Event
 
 from apps.locations.serializers.place_serializer import PlaceSerializer
 from apps.locations.serializers.address_serializer import AddressSerializer
-from apps.users.serializers.user_serializer import UserSerializer
-from apps.users.serializers.organization_serializer import OrganizationSerializer
+from apps.users.serializers import UserSerializer
+from apps.users.serializers import OrganizationSerializer
 
 
 class EventSerializer(serializers.Serializer):
