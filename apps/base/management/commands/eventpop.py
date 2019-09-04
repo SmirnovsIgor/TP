@@ -8,17 +8,18 @@ from apps.events.models import Event
 class Command(BaseCommand):
     help = 'Populate the event entity'
 
-    def add_arguments(self, parser):
-        parser.add_argument('event_ids', nargs='+', type=str)
+    # def add_arguments(self, parser):
+    #     parser.add_argument('event_ids', nargs='+', type=str)
 
     def handle(self, *args, **options):
-        for event_id in options['event_ids']:
-            try:
-                event = Event.objects.get(pk=event_id)
-            except Event.DoesNotExist:
-                raise CommandError('Poll "%s" does not exist' % event_id)
-
-            event.opened = False
-            event.save()
-
-            self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % event_id))
+        self.stdout.write('All is OK!')
+        # for event_id in options['event_ids']:
+        #     try:
+        #         event = Event.objects.get(pk=event_id)
+        #     except Event.DoesNotExist:
+        #         raise CommandError('Poll "%s" does not exist' % event_id)
+        #
+        #     event.opened = False
+        #     event.save()
+        #
+        #     self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % event_id))
