@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['profile_image', 'email', 'first_name', 'last_name', 'username', 'date_of_birth']
 
 
-class UserSerializerForStaff(UserSerializer):
+class UserForStaffSerializer(UserSerializer):
 
     class Meta:
         model = User
@@ -25,3 +25,4 @@ class OrganizationSerializer(serializers.Serializer):
     description = serializers.CharField(allow_blank=True, allow_null=True)
     approved = serializers.BooleanField(default=False)
     date_of_birth = serializers.DateField('date of birth', allow_null=True)
+
