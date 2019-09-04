@@ -14,8 +14,9 @@ class UserDataForStaffView(APIView):
     def get(self, request, uuid):
         try:
             user = User.objects.get(id=uuid)
-            serializer = UserForStaffSerializer(user)
-            return Response(serializer.data, status=HTTP_200_OK)
         except User.DoesNotExist:
             raise NotFound("User does not exist")
+        serializer = UserForStaffSerializer(user)
+        return Response(serializer.data, status=HTTP_200_OK)
+
 
