@@ -1,9 +1,4 @@
-from django.http import JsonResponse, HttpResponse
-#from django.core import serializers
-
 from rest_framework.permissions import IsAdminUser
-from rest_framework.utils.json import dumps
-#from rest_framework import serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
@@ -21,7 +16,7 @@ class UserDataForStaffView(APIView):
             return Response({'status': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 
         serializer = UserSerializerForStaff(user)
-        return Response(serializer.data)
+        return Response(serializer.data, status=HTTP_200_OK)
 
 
 
