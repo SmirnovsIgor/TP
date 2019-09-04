@@ -1,21 +1,11 @@
 from rest_framework import serializers
 
 from apps.users.models import Organization, User
-from apps.locations.models import Place
 from apps.events.models import Event
 
-from apps.locations.serializers.address_serializer import AddressSerializer
+from apps.locations.serializers import AddressSerializer, ShortPlaceSerializer
 from apps.users.serializers.user_serializer import UserSerializer
 from apps.users.serializers.organization_serializer import OrganizationSerializer
-
-
-class ShortPlaceSerializer(serializers.ModelSerializer):
-    """
-    Place serializer without address info
-    """
-    class Meta:
-        model = Place
-        exclude = ['address']
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -37,7 +27,6 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        # exclude = ('is_approved',)
         fields = '__all__'
 
     def get_organizer(self, obj=None):
