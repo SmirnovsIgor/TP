@@ -17,12 +17,3 @@ class UserDataForStaffView(APIView):
 
         serializer = UserSerializerForStaff(user)
         return Response(serializer.data, status=HTTP_200_OK)
-
-
-
-
-
-
-
-
-
