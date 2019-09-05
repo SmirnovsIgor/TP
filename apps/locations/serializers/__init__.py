@@ -1,3 +1,2 @@
-from apps.locations.serializers.address_serializer import AddressSerializer
-from apps.locations.serializers.place_serializer import PlaceSerializer
-from apps.locations.serializers.place_serializer import ShortPlaceSerializer
+from .address_serializer import AddressSerializer
+from .place_serializer import PlaceSerializer, ShortPlaceSerializer

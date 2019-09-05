@@ -40,24 +40,8 @@ class Event(BaseAbstractModel):
         return self.name
 
     def save(self, *args, **kwargs):
-        try:
-            has_place = self.address.place
-        except Place.DoesNotExist:
-            pass
-        else:
-            self.place = has_place
-        if self._state.adding:
-            if isinstance(self.organizer, Organization):
-                super().save(self, *args, **kwargs)
-            else:
-                try:
-                    has_membership = self.organizer.membership
-                except MembersList.DoesNotExist:
-                    pass
-                else:
-                    self.organizer = self.organizer.membership.organization if self.organizer.membership else self.organizer
-                finally:
-                    super().save(self, *args, **kwargs)
+        self.organizer = self.organizer.membership.organization if self.organizer.membership else self.organizer
+        super().save(self, *args, **kwargs)
 
     # TODO
     # @property
