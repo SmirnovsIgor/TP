@@ -24,5 +24,4 @@ class OrganizationSerializer(serializers.Serializer):
     profile_image = serializers.ImageField(allow_empty_file=True, allow_null=True)
     description = serializers.CharField(allow_blank=True, allow_null=True)
     approved = serializers.BooleanField(default=False)
-    date_of_birth = serializers.DateField('date of birth', allow_null=True)
 
