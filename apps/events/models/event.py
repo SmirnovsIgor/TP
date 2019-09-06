@@ -57,7 +57,7 @@ class Event(BaseAbstractModel):
                 else:
                     self.organizer = self.organizer.membership.organization if self.organizer.membership else self.organizer
                 finally:
-                    super().save(self, *args, **kwargs)
+                    super().save(*args, **kwargs)
 
     # TODO
     # @property
