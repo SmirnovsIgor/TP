@@ -3,9 +3,9 @@ from rest_framework import serializers
 from apps.users.models import Organization, User
 from apps.events.models import Event
 
-from apps.locations.serializers import AddressSerializer, ShortPlaceSerializer
-from apps.users.serializers.user_serializer import UserSerializer
-from apps.users.serializers.organization_serializer import OrganizationSerializer
+from apps.locations.serializers.place_serializer import ShortPlaceSerializer
+from apps.locations.serializers.address_serializer import AddressSerializer
+from apps.users.serializers import UserSerializer, OrganizationSerializer
 
 
 class EventSerializer(serializers.ModelSerializer):
