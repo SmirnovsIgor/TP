@@ -8,11 +8,13 @@ from apps.events.models import Event
 
 class Populate:
 
+    DEFAULT_NUMBER = 20
+    NONE_COEF = 0.25
     faker = Faker()
 
     def __init__(self, *args, **kwargs):
         keys = ('user', 'company', 'address', 'place', 'event')
-        vals = tuple([args[i] for i in range(len(args)) if i < len(keys)] + [10]*(5-len(args)))
+        vals = tuple([args[i] for i in range(len(args)) if i < len(keys)] + [self.DEFAULT_NUMBER]*(5-len(args)))
         data = dict(zip(keys, vals))
         if kwargs:
             for key in keys:
@@ -26,18 +28,22 @@ class Populate:
     def populate_user(self):
         for _ in range(self.user_number):
             data = dict()
-            data['username'] = ''.join(self.faker.name().split()).lower()
+            data['username'] = self.faker.user_name()
             data['email'] = self.faker.email()
-            data['date_of_birth'] = self.faker.date()
-            data['first_name'], data['last_name'] = tuple(self.faker.name().split())
+            data['date_of_birth'] = self.faker.date_of_birth()
+            data['first_name'], data['last_name'] = self.faker.first_name(), self.faker.last_name()
             User.objects.create(**data)
 
     def populate_company(self):
+        if self.company_number >= self.user_number:
+            self.company_number = self.user_number
+        null_objects = int(self.user_number * self.NONE_COEF)
+        self.company_number -= null_objects
         for _ in range(self.company_number):
             data, data_m = {}, {}
             data['name'] = self.faker.company()
             data['email'] = self.faker.email()
-            data['description'] = self.faker.text()
+            data['description'] = self.faker.text(max_nb_chars=200, ext_word_list=None)
             data_m['organization'] = Organization.objects.get_or_create(**data)[0]
             data_m['member'] = User.objects.filter(membership__isnull=True).order_by('-created')[0]
             MembersList.objects.get_or_create(**data_m)
@@ -47,14 +53,20 @@ class Populate:
             data = {}
             data['country'] = self.faker.country()[:30]
             data['city'] = self.faker.city()[:30]
+            data['street'] = self.faker.street_name()[:30]
+            data['house'] = self.faker.building_number()[:10]
+            data['floor'] = self.faker.pyint(min_value=1, max_value=50, step=1)
+            data['apartments'] = self.faker.pyint(min_value=1, max_value=1000, step=1)
             Address.objects.create(**data)
 
     def populate_place(self):
-        addresses = Address.objects.order_by('-created')[:self.address_number]
+        null_objects = int(self.address_number * self.NONE_COEF)
+        self.place_number -= null_objects
+        addresses = Address.objects.order_by('-created')[:self.place_number]
         for i in range(self.place_number):
             data = {}
-            data['name'] = ''.join(self.faker.name().split())[:75]
-            data['address'] = addresses[i] if i <= self.address_number-1 else None
+            data['name'] = self.faker.company()[:75]
+            data['address'] = addresses[i]
             data['status'] = 'Working'
             Place.objects.create(**data)
 
@@ -65,14 +77,23 @@ class Populate:
         model_type = ContentType.objects.get_for_model(User)
         for i in range(self.event_number):
             data = {}
-            data['name'] = ''.join(self.faker.name().split())[:64]
-            data['description'] = self.faker.text()
+            data['name'] = self.faker.catch_phrase()[:64]
+            data['description'] = self.faker.text(max_nb_chars=200, ext_word_list=None)
             data['organizer_type'] = model_type
             data['organizer_id'] = users[i].id
-            data['place'] = places[i] if i <= self.place_number-1 else None
+            data['place'] = places[i] if i < len(places) else None
             data['address'] = addresses[i]
-            data['date'] = self.faker.date_time()
+            data['date'] = self.faker.past_datetime(start_date="-30d")
             data['duration'] = self.faker.time()
-            data['age_rate'] = self.faker.random_number(digits=2)
-            data['max_members'] = self.faker.random_number(digits=3)
+            data['age_rate'] = self.faker.pyint(min_value=0, max_value=50, step=1)
+            data['max_members'] = self.faker.pyint(min_value=10, max_value=10000, step=1)
             Event.objects.create(**data)
+
+
+if __name__ == '__main__':
+    p = Populate(20, 20, 20, 20, 20)
+    p.populate_user()
+    p.populate_company()
+    p.populate_address()
+    p.populate_place()
+    p.populate_event()
