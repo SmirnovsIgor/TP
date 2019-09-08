@@ -1,9 +1,5 @@
-import uuid
-
 from django_filters import rest_framework as filters
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework import status
 
 from apps.events.models import Event
 from apps.events.serializers import EventSerializer
@@ -28,6 +24,7 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     # filter_backends = [filters.DjangoFilterBackend]
     # the problem is how to combine filterset_class and filterset_fields
+    # filter_backends = [filters.DjangoFilterBackend]
     # filterset_class = EventFilter
     filterset_fields = ['place', 'address', 'organizer_id', 'is_hot', 'is_top']
     ordering_fields = ['created']
@@ -48,3 +45,4 @@ class EventViewSet(viewsets.ModelViewSet):
     #     if ordered in ['desc', 'asc']:
     #         self.queryset = self.queryset.order_by('created') if ordered == 'asc' else self.queryset.order_by('-created')
     #     return self.queryset
+

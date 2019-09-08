@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.contenttypes.models import ContentType
 
 from apps.users.models import Organization, User
 from apps.events.models import Event
@@ -16,7 +17,7 @@ class EventSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=True, max_length=64, allow_blank=False, allow_null=False)
     description = serializers.CharField(required=True, allow_blank=False, allow_null=False)
     poster = serializers.ImageField(required=False, allow_empty_file=True)
-    organizer = serializers.SerializerMethodField()
+    organizer = serializers.SerializerMethodField(read_only=True)
     place = ShortPlaceSerializer()
     address = AddressSerializer()
     date = serializers.DateTimeField(required=True, allow_null=False)
@@ -30,11 +31,13 @@ class EventSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_organizer(self, obj=None):
-        holder = obj.organizer
-        if isinstance(holder, Organization):
-            serializer = OrganizationSerializer(holder)
-        elif isinstance(holder, User):
-            serializer = UserSerializer(holder)
-        else:
-            raise Exception('Unexpected type of organizer')
-        return serializer.data
+        """
+        Method to fill out the organizer field in serializer
+        """
+        organizer_type_mapping = {
+            ContentType.objects.get_for_model(User): UserSerializer,
+            ContentType.objects.get_for_model(Organization): OrganizationSerializer
+        }
+        serializer_class = organizer_type_mapping.get(obj.organizer_type)
+        return serializer_class(obj.organizer).data
+
