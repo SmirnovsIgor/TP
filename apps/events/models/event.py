@@ -41,11 +41,9 @@ class Event(BaseAbstractModel):
 
     def save(self, *args, **kwargs):
         try:
-            has_place = self.address.place
-        except Place.DoesNotExist:
+            self.organizer = self.organizer.membership.organization
+        except self.organizer._meta.model.membership.RelatedObjectDoesNotExist:
             pass
-        else:
-            self.place = has_place
         if self._state.adding:
             if isinstance(self.organizer, Organization):
                 super().save(self, *args, **kwargs)
