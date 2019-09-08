@@ -46,10 +46,10 @@ class Event(BaseAbstractModel):
             pass
         if self._state.adding:
             if isinstance(self.organizer, Organization):
-                super().save(self, *args, **kwargs)
+                super().save(*args, **kwargs)
             else:
                 try:
-                    has_membership = self.organizer.membership
+                    self.organizer.membership
                 except MembersList.DoesNotExist:
                     pass
                 else:

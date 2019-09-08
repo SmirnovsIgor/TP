@@ -29,24 +29,27 @@ class Populate:
         for _ in range(self.user_number):
             data = dict()
             data['username'] = self.faker.user_name()
+            data['password'] = self.faker.password()
             data['email'] = self.faker.email()
             data['date_of_birth'] = self.faker.date_of_birth()
             data['first_name'], data['last_name'] = self.faker.first_name(), self.faker.last_name()
             User.objects.create(**data)
 
     def populate_company(self):
+        users = User.objects.order_by('-created')
         if self.company_number >= self.user_number:
             self.company_number = self.user_number
         null_objects = int(self.user_number * self.NONE_COEF)
         self.company_number -= null_objects
-        for _ in range(self.company_number):
+        for i in range(self.company_number):
             data, data_m = {}, {}
             data['name'] = self.faker.company()
             data['email'] = self.faker.email()
+            data['approved'] = self.faker.boolean(chance_of_getting_true=60)
             data['description'] = self.faker.text(max_nb_chars=200, ext_word_list=None)
-            data_m['organization'] = Organization.objects.get_or_create(**data)[0]
-            data_m['member'] = User.objects.filter(membership__isnull=True).order_by('-created')[0]
-            MembersList.objects.get_or_create(**data_m)
+            data_m['organization'] = Organization.objects.create(**data)
+            data_m['member'] = users[i]
+            MembersList.objects.create(**data_m)
 
     def populate_address(self):
         for _ in range(self.address_number):
@@ -63,11 +66,13 @@ class Populate:
         null_objects = int(self.address_number * self.NONE_COEF)
         self.place_number -= null_objects
         addresses = Address.objects.order_by('-created')[:self.place_number]
+        status = [Place.STATUS_TEMPORARILY_CLOSED, Place.STATUS_WORKING, Place.STATUS_CLOSED]
         for i in range(self.place_number):
             data = {}
             data['name'] = self.faker.company()[:75]
             data['address'] = addresses[i]
-            data['status'] = 'Working'
+            data['description'] = self.faker.text(max_nb_chars=200, ext_word_list=None)
+            data['status'] = status[i % len(status)]
             Place.objects.create(**data)
 
     def populate_event(self):
@@ -87,6 +92,8 @@ class Populate:
             data['duration'] = self.faker.time()
             data['age_rate'] = self.faker.pyint(min_value=0, max_value=50, step=1)
             data['max_members'] = self.faker.pyint(min_value=10, max_value=10000, step=1)
+            data['is_top'] = self.faker.boolean(chance_of_getting_true=50)
+            data['is_hot'] = self.faker.boolean(chance_of_getting_true=50)
             Event.objects.create(**data)
 
 
