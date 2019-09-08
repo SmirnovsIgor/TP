@@ -36,5 +36,5 @@ class EventSerializer(serializers.ModelSerializer):
         elif isinstance(holder, User):
             serializer = UserSerializer(holder)
         else:
-            raise Exception('Unexpected type of tagged object')
+            raise Exception('Unexpected type of organizer')
         return serializer.data
