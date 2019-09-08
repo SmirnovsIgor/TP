@@ -24,7 +24,7 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     # filter_backends = [filters.DjangoFilterBackend]
     # the problem is how to combine filterset_class and filterset_fields
-    # filter_backends = [filters.DjangoFilterBackend]
+    # filter_backends = [filters.DjangoFilterBackend, filters.OrderingFilter]
     # filterset_class = EventFilter
     filterset_fields = ['place', 'address', 'organizer_id', 'is_hot', 'is_top']
     ordering_fields = ['created']
