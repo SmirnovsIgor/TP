@@ -1,21 +1,5 @@
 from rest_framework import serializers
 
-from apps.users.models import User
-
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ['profile_image', 'email', 'first_name', 'last_name', 'username', 'date_of_birth']
-
-
-class UserForStaffSerializer(UserSerializer):
-
-    class Meta:
-        model = User
-        fields = ['id', 'is_staff', 'is_active', 'email', 'first_name', 'last_name', 'date_of_birth']
-
 
 class OrganizationSerializer(serializers.Serializer):
     id = serializers.UUIDField(read_only=True)

@@ -15,7 +15,7 @@ class Place(BaseAbstractModel):
         (STATUS_CLOSED, 'Closed'),
     ]
     name = models.CharField(max_length=75, blank=False, null=False)
-    address = models.OneToOneField(Address, on_delete=models.PROTECT)
+    address = models.OneToOneField(Address, related_name='place', on_delete=models.PROTECT)
     photo = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     description = models.CharField(max_length=200, blank=True, null=True)
     status = models.CharField(max_length=18, choices=STATUS_CHOICES, blank=False, null=False)

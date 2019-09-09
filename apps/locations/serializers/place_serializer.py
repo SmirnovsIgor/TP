@@ -11,3 +11,12 @@ class PlaceSerializer(serializers.Serializer):
     photo = serializers.ImageField(required=False, allow_empty_file=True, allow_null=True)
     description = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
     status = serializers.ChoiceField(choices=Place.STATUS_CHOICES)
+
+
+class ShortPlaceSerializer(serializers.ModelSerializer):
+    """
+    Place serializer without address info
+    """
+    class Meta:
+        model = Place
+        exclude = ['address']
