@@ -95,12 +95,3 @@ class Populate:
             data['is_top'] = self.faker.boolean(chance_of_getting_true=50)
             data['is_hot'] = self.faker.boolean(chance_of_getting_true=50)
             Event.objects.create(**data)
-
-
-if __name__ == '__main__':
-    p = Populate(20, 20, 20, 20, 20)
-    p.populate_user()
-    p.populate_company()
-    p.populate_address()
-    p.populate_place()
-    p.populate_event()
