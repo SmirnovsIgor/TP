@@ -6,14 +6,17 @@ from apps.events.serializers import EventSerializer
 
 
 class EventFilter(filters.FilterSet):
+    place = filters.UUIDFilter(field_name="place_id")
+    address = filters.UUIDFilter(field_name="address_id")
+    organizer = filters.UUIDFilter(field_name="organizer_id")
+    date__gte = filters.DateTimeFilter(field_name="date", lookup_expr="gte")
+    date__lte = filters.DateTimeFilter(field_name="date", lookup_expr="lte")
+    is_top = filters.BooleanFilter(field_name="is_top")
+    is_hot = filters.BooleanFilter(field_name="is_hot")
 
     class Meta:
         model = Event
-        fields = {
-            "date": ["gte", "lte"],
-            "is_hot": ["exact"],
-            "is_top": ["exact"],
-        }
+        fields = ["place", "address", "organizer", "date__lte", "date__gte", "is_top", "is_hot"]
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -22,27 +25,6 @@ class EventViewSet(viewsets.ModelViewSet):
     """
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    # filter_backends = [filters.DjangoFilterBackend]
-    # the problem is how to combine filterset_class and filterset_fields
-    # filter_backends = [filters.DjangoFilterBackend, filters.OrderingFilter]
-    # filterset_class = EventFilter
-    filterset_fields = ['place', 'address', 'organizer_id', 'is_hot', 'is_top']
-    ordering_fields = ['created']
-
-    # def get_queryset(self):
-    #     super().get_queryset()
-    #     place = self.request.query_params.get('place', None)
-    #     ordered = self.request.query_params.get('ordered', None)
-    #     if place is not None:
-    #         if place == 'null':
-    #             self.queryset = self.queryset.filter(place__isnull=True)
-    #         else:
-    #             try:
-    #                 uuid.UUID(place)
-    #             except ValueError:
-    #                 return Response(status=status.HTTP_400_BAD_REQUEST)
-    #             self.queryset = self.queryset.filter(place=place)
-    #     if ordered in ['desc', 'asc']:
-    #         self.queryset = self.queryset.order_by('created') if ordered == 'asc' else self.queryset.order_by('-created')
-    #     return self.queryset
-
+    filter_backends = [filters.OrderingFilter, filters.DjangoFilterBackend]
+    filter_class = EventFilter
+    ordering = ("created",)
