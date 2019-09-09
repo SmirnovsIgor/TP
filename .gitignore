@@ -89,3 +89,4 @@ local_settings.py
 .idea/
 venv
 db.sqlite3
+./pytest_cache

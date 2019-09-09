@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LogoutView, LoginView
 from apps.events import views as event_views
-
+from apps.users.urls import userpatterns
 
 app_name = "api"
 
@@ -18,6 +18,7 @@ router.register(r'events', event_views.EventViewSet, basename='event')
 
 urlpatterns = [
     path(r'auth/', include(authpatterns)),
+    path(r'user/', include(userpatterns))
 ]
 
 urlpatterns += router.urls
