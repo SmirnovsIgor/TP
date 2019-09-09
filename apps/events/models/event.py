@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
+from apps.users.models import MembersList, User, Organization
 
 from tools.image_funcs import get_image_path
 
@@ -15,8 +16,9 @@ class Event(BaseAbstractModel):
     STATUS_TYPES = (
         (SOON, "soon"),
         (SUCCEED, "succeed"),
-        (REJECTED, 'rejected'),
+        (REJECTED, "rejected"),
     )
+
     name = models.CharField(max_length=64, blank=False, null=False)
     description = models.TextField(blank=False, null=False)
     poster = models.ImageField(upload_to=get_image_path, blank=True, null=True)
@@ -29,6 +31,8 @@ class Event(BaseAbstractModel):
     duration = models.DurationField(blank=False, null=False)
     age_rate = models.PositiveSmallIntegerField(default=18, blank=False, null=False)
     is_approved = models.BooleanField(default=False)
+    is_hot = models.BooleanField(default=False)
+    is_top = models.BooleanField(default=False)
     max_members = models.PositiveIntegerField(blank=False, null=False)
     status = models.CharField(max_length=16, choices=STATUS_TYPES, default=SOON)
 
@@ -36,8 +40,10 @@ class Event(BaseAbstractModel):
         return self.name
 
     def save(self, *args, **kwargs):
-        if self._state.adding:
-            self.organizer = self.organizer.membership.organization if self.organizer.membership else self.organizer
+        try:
+            self.organizer = self.organizer.membership.organization
+        except self.organizer._meta.model.membership.RelatedObjectDoesNotExist:
+            pass
         super().save(self, *args, **kwargs)
 
     # TODO

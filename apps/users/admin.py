@@ -1,5 +1,19 @@
 from django.contrib import admin
-from .models import User, Organization
+from .models import User, Organization, MembersList
 
-admin.site.register(User)
-admin.site.register(Organization)
+
+class MembershipInLine(admin.StackedInline):
+    model = MembersList
+
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    inlines = [MembershipInLine]
+
+
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    inlines = [MembershipInLine]
+
+
+admin.site.register(MembersList)
