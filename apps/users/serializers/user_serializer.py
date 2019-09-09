@@ -1,7 +1,6 @@
 from apps.users.models import User
 
 from rest_framework import serializers
-from rest_framework.authtoken.models import Token
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,7 +17,6 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
-        # Token.objects.create(user=user)
         user.save()
         return user
 
@@ -32,9 +30,3 @@ class UserSerializer(serializers.ModelSerializer):
             self.instance = self.create(user_ser.validated_data)
         return self.instance
 
-
-class UserForStaffSerializer(UserSerializer):
-
-    class Meta:
-        model = User
-        fields = ['id', 'is_staff', 'is_active', 'email', 'first_name', 'last_name', 'date_of_birth']
