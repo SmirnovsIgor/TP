@@ -25,7 +25,7 @@ class AddressFactory(factory.django.DjangoModelFactory):
 class PlaceFactory(factory.django.DjangoModelFactory):
     """Place factory"""
     name = factory.LazyAttribute(lambda x: faker.company()[:75])
-    address = factory.SubFactory(AddressFactory)
+    address = factory.Iterator(Address.objects.all())
     description = factory.LazyAttribute(lambda x: faker.text(max_nb_chars=200, ext_word_list=None))
     status = factory.LazyAttribute(lambda x: Place.STATUS_WORKING)
 
