@@ -1,4 +1,5 @@
 import factory
+import factory.fuzzy
 
 from faker import Factory as FakeFactory
 
@@ -27,7 +28,7 @@ class PlaceFactory(factory.django.DjangoModelFactory):
     name = factory.LazyAttribute(lambda x: faker.company()[:75])
     address = factory.Iterator(Address.objects.all())
     description = factory.LazyAttribute(lambda x: faker.text(max_nb_chars=200, ext_word_list=None))
-    status = factory.LazyAttribute(lambda x: Place.STATUS_WORKING)
+    status = factory.fuzzy.FuzzyChoice(Place.STATUS_CHOICES, getter=lambda c: c[0])
 
     class Meta:
         model = Place

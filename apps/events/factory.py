@@ -1,9 +1,10 @@
 import factory
+import factory.fuzzy
 
 from faker import Factory as FakeFactory
 from django.contrib.contenttypes.models import ContentType
 
-from apps.users.models import User, Organization
+from apps.users.models import User
 from apps.locations.models import Address
 from apps.events.models import Event
 
@@ -19,13 +20,14 @@ class EventAbstractFactory(factory.django.DjangoModelFactory):
     organizer_type = factory.LazyAttribute(
         lambda o: ContentType.objects.get_for_model(o.organizer)
     )
-    address = factory.Iterator(Address.objects.all())
+    address = factory.Iterator(Address.objects.all().order_by('?'))
     date = factory.LazyAttribute(lambda x: faker.past_datetime(start_date="-30d"))
     duration = factory.LazyAttribute(lambda x: faker.time())
     age_rate = factory.LazyAttribute(lambda x: faker.pyint(min_value=0, max_value=50, step=1))
     max_members = factory.LazyAttribute(lambda x: faker.pyint(min_value=10, max_value=10000, step=1))
     is_top = factory.LazyAttribute(lambda x: faker.boolean(chance_of_getting_true=50))
     is_hot = factory.LazyAttribute(lambda x: faker.boolean(chance_of_getting_true=50))
+    status = factory.fuzzy.FuzzyChoice(Event.STATUS_TYPES, getter=lambda c: c[0])
 
     class Meta:
         exclude = ['organizer']
@@ -34,14 +36,6 @@ class EventAbstractFactory(factory.django.DjangoModelFactory):
 
 class EventFactory(EventAbstractFactory):
     organizer = factory.Iterator(User.objects.all())
-
-    class Meta:
-        model = Event
-
-
-# no sense using this factory if event save method will be like now
-class EventOrganizationFactory(EventAbstractFactory):
-    organizer = factory.Iterator(Organization.objects.all())
 
     class Meta:
         model = Event
