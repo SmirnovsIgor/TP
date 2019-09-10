@@ -40,10 +40,18 @@ class Event(BaseAbstractModel):
         return self.name
 
     def save(self, *args, **kwargs):
+        # check if address instance has connection with place instance
+        try:
+            self.place = self.address.place
+        except self.address._meta.model.place.RelatedObjectDoesNotExist:
+            pass
+        # check if user has connection with organization
         try:
             self.organizer = self.organizer.membership.organization
         except self.organizer._meta.model.membership.RelatedObjectDoesNotExist:
             pass
+        # check if organizer is Organization
+        # for Event creation from Admin page
         if self._state.adding:
             if isinstance(self.organizer, Organization):
                 super().save(*args, **kwargs)
