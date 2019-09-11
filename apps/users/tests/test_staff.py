@@ -1,20 +1,5 @@
 import pytest
 
-from apps.users.tests.factories.users import UserFactory
-from pytest_factoryboy import register
-from rest_auth.models import TokenModel
-# from apps.users.tests.test_user import token
-
-token_model = TokenModel
-register(UserFactory, 'staff')
-register(UserFactory, 'user')
-
-
-@pytest.fixture
-def token(staff):
-    token, _ = token_model.objects.get_or_create(user=staff)
-    return token
-
 
 @pytest.mark.django_db
 class TestStaff:
