@@ -4,7 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 
 from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
-from apps.users.models import MembersList
 
 from tools.image_funcs import get_image_path
 
