@@ -39,22 +39,6 @@ class Event(BaseAbstractModel):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        if self._state.adding:
-            # check if address instance has connection with place instance
-            try:
-                self.place = self.address.place
-            except self.address._meta.model.place.RelatedObjectDoesNotExist:
-                pass
-            # check if organizer is User and is a member of Organization
-            try:
-                self.organizer.membership
-            except MembersList.DoesNotExist:
-                pass
-            else:
-                self.organizer = self.organizer.membership.organization
-            finally:
-                super().save(*args, **kwargs)
 
     # TODO
     # @property

@@ -13,12 +13,12 @@ class Command(BaseCommand):
     help = 'Populate DB'
 
     def add_arguments(self, parser):
-        parser.add_argument('big_number', nargs='?', type=int, help='maximum is 100 objects')
-        parser.add_argument('small_number', nargs='?', type=int, help='maximum is 100 objects')
+        parser.add_argument('great_count', nargs='?', type=int, help='maximum is 100 objects')
+        parser.add_argument('less_count', nargs='?', type=int, help='maximum is 100 objects')
 
     def handle(self, *args, **options):
-        big_batch_number = DEFAULT_BIG_NUMBER if not options['big_number'] else options['big_number']
-        small_batch_number = DEFAULT_SMALL_NUMBER if not options['small_number'] else options['small_number']
+        big_batch_number = DEFAULT_BIG_NUMBER if not options['great_count'] else options['great_count']
+        small_batch_number = DEFAULT_SMALL_NUMBER if not options['less_count'] else options['less_count']
 
         UserFactory.create_batch(size=big_batch_number)
         OrganizationFactory.create_batch(size=small_batch_number)
