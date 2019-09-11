@@ -3,27 +3,27 @@ import pytest
 from apps.users.tests.factories.users import UserFactory
 from pytest_factoryboy import register
 from rest_auth.models import TokenModel
+# from apps.users.tests.test_user import token
 
 token_model = TokenModel
+register(UserFactory, 'staff')
 register(UserFactory, 'user')
 
 
 @pytest.fixture
-def token(user):
-    token, _ = token_model.objects.get_or_create(user=user)
+def token(staff):
+    token, _ = token_model.objects.get_or_create(user=staff)
     return token
 
 
 @pytest.mark.django_db
-class TestUsers:
-    def test_self_details(self, client, user, token):
-        """test user self details
-
-        check basic structure
-        """
-        response = client.get('/api/user/me/', **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
-        assert response.status_code == 200
+class TestStaff:
+    def test_user_details_for_staff(self, client, staff, user, token):
+        staff.is_staff = True
+        staff.save()
+        response = client.get(f'/api/user/{user.id}/', **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         response_dict = response.json()
+        assert response.status_code == 200
         assert response_dict.get('username')
         assert response_dict.get('email')
         assert response_dict.get('id')
