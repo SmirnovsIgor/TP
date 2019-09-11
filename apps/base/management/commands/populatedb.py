@@ -5,7 +5,7 @@ from apps.locations.factory import AddressFactory, PlaceFactory
 from apps.events.factory import EventFactory
 
 
-DEFAULT_NUMBER = 30
+DEFAULT_NUMBER = 100
 COEF = 75
 
 
