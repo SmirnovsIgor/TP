@@ -7,8 +7,7 @@ from apps.locations.serializers import PlaceSerializer
 
 class PlaceViewSet(ListModelMixin,
                    RetrieveModelMixin,
-                   viewsets.GenericViewSet,
-                   ):
+                   viewsets.GenericViewSet):
     """
     A ViewSet for listing and retrieving Places
     """
