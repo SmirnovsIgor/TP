@@ -21,7 +21,7 @@ class EventAbstractFactory(factory.django.DjangoModelFactory):
         lambda o: ContentType.objects.get_for_model(o.organizer)
     )
     address = factory.Iterator(Address.objects.all().order_by('?'))
-    date = factory.LazyAttribute(lambda x: faker.past_datetime(start_date="-30d"))
+    date = factory.LazyAttribute(lambda x: faker.past_datetime(start_date='-30d'))
     duration = factory.LazyAttribute(lambda x: faker.time())
     age_rate = factory.LazyAttribute(lambda x: faker.pyint(min_value=0, max_value=50, step=1))
     max_members = factory.LazyAttribute(lambda x: faker.pyint(min_value=10, max_value=10000, step=1))
@@ -39,3 +39,4 @@ class EventFactory(EventAbstractFactory):
 
     class Meta:
         model = Event
+        abstract = False
