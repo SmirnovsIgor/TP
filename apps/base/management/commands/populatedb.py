@@ -1,27 +1,25 @@
 from django.core.management.base import BaseCommand
 
-from apps.users.factory import UserFactory, OrganizationFactory, MembersListFactory
-from apps.locations.factory import AddressFactory, PlaceFactory
-from apps.events.factory import EventFactory
+from apps.users.factories import UserFactory, OrganizationFactory, MembersListFactory
+from apps.locations.factories import AddressFactory, PlaceFactory
+from apps.events.factories import EventFactory
 
 
-DEFAULT_NUMBER = 100
-COEF = 75
+DEFAULT_BIG_NUMBER = 100
+DEFAULT_SMALL_NUMBER = 75
 
 
 class Command(BaseCommand):
     help = 'Populate DB'
 
     def add_arguments(self, parser):
-        parser.add_argument('number', nargs='?', type=int)
-        parser.add_argument('percent', nargs='?', type=int)
+        parser.add_argument('big_number', nargs='?', type=int, help='maximum is 100 objects')
+        parser.add_argument('small_number', nargs='?', type=int, help='maximum is 100 objects')
 
     def handle(self, *args, **options):
-        big_batch_number = DEFAULT_NUMBER if not options['number'] else options['number']
-        coef = COEF if not options['percent'] else options['percent']
-        small_batch_number = int(big_batch_number * coef / 100)
+        big_batch_number = DEFAULT_BIG_NUMBER if not options['big_number'] else options['big_number']
+        small_batch_number = DEFAULT_SMALL_NUMBER if not options['small_number'] else options['small_number']
 
-        # ----------- with iterator --------------
         UserFactory.create_batch(size=big_batch_number)
         OrganizationFactory.create_batch(size=small_batch_number)
         MembersListFactory.create_batch(size=small_batch_number)
