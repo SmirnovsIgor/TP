@@ -3,15 +3,25 @@ from rest_framework import filters as rest_filters
 from rest_framework import viewsets
 
 from apps.events.models import Event
+
 from apps.events.serializers import EventSerializer
 
 
-class EventFilter(filters.FilterSet):
+class PlaceFilter(filters.FilterSet):
     place = filters.UUIDFilter(field_name="place_id")
+
+
+class AddressFilter(filters.FilterSet):
     address = filters.UUIDFilter(field_name="address_id")
-    organizer = filters.UUIDFilter(field_name="organizer_id")
+
+
+class DateFilter(filters.FilterSet):
     date__gte = filters.DateTimeFilter(field_name="date", lookup_expr="gte")
     date__lte = filters.DateTimeFilter(field_name="date", lookup_expr="lte")
+
+
+class EventFilter(PlaceFilter, AddressFilter, DateFilter):
+    organizer = filters.UUIDFilter(field_name="organizer_id")
     is_top = filters.BooleanFilter(field_name="is_top")
     is_hot = filters.BooleanFilter(field_name="is_hot")
 
