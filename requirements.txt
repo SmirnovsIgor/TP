@@ -16,4 +16,5 @@ text-unidecode==1.2
 django-rest-auth==0.9.5
 pytest==5.1.2
 django-allauth==0.40.0
+pytest-factoryboy==2.0.3
 
