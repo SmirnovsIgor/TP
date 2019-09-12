@@ -4,6 +4,7 @@ import factory.fuzzy
 from faker import Factory as FakeFactory
 from django.contrib.contenttypes.models import ContentType
 
+from apps.users.models import Organization
 from apps.events.models import Event
 
 from apps.users.factories import UserFactory, OrganizationFactory
@@ -21,7 +22,6 @@ class EventAbstractFactory(factory.django.DjangoModelFactory):
     organizer_type = factory.LazyAttribute(
         lambda o: ContentType.objects.get_for_model(o.organizer)
     )
-    address = factory.SubFactory(AddressFactory)
     date = factory.Faker('past_datetime', start_date='-30d')
     duration = factory.Faker('time')
     age_rate = factory.Faker('pyint', min_value=0, max_value=50, step=1)
@@ -37,6 +37,7 @@ class EventAbstractFactory(factory.django.DjangoModelFactory):
 
 class EventUserWithoutPlaceFactory(EventAbstractFactory):
     organizer = factory.SubFactory(UserFactory)
+    address = factory.SubFactory(AddressFactory)
 
     class Meta:
         model = Event
@@ -46,6 +47,7 @@ class EventUserWithoutPlaceFactory(EventAbstractFactory):
 class EventUserWithPlaceFactory(EventAbstractFactory):
     organizer = factory.SubFactory(UserFactory)
     place = factory.SubFactory(PlaceFactory)
+    address = factory.SelfAttribute('place.address')
 
     class Meta:
         model = Event
@@ -54,6 +56,10 @@ class EventUserWithPlaceFactory(EventAbstractFactory):
 
 class EventOrganizerWithoutPlaceFactory(EventAbstractFactory):
     organizer = factory.SubFactory(OrganizationFactory)
+    organizer_type = factory.LazyAttribute(
+        lambda x: ContentType.objects.get_for_model(Organization)
+    )
+    address = factory.SubFactory(AddressFactory)
 
     class Meta:
         model = Event
@@ -62,7 +68,12 @@ class EventOrganizerWithoutPlaceFactory(EventAbstractFactory):
 
 class EventOrganizerWithPlaceFactory(EventAbstractFactory):
     organizer = factory.SubFactory(OrganizationFactory)
+    organizer_type = factory.LazyAttribute(
+        lambda x: ContentType.objects.get_for_model(Organization)
+    )
+
     place = factory.SubFactory(PlaceFactory)
+    address = factory.SelfAttribute('place.address')
 
     class Meta:
         model = Event

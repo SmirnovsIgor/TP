@@ -11,26 +11,32 @@ from apps.events.factories import (
 
 
 DEFAULT_BIG_NUMBER = 100
-DEFAULT_SMALL_NUMBER = 75
+DEFAULT_SMALL_NUMBER = 60
 
 
 class Command(BaseCommand):
     help = 'Populate DB'
 
     def add_arguments(self, parser):
-        parser.add_argument('great_count', nargs='?', type=int, help='maximum is 100 objects')
-        parser.add_argument('less_count', nargs='?', type=int, help='maximum is 80 objects')
+        parser.add_argument('great_count', nargs='?', type=int, help='maximum is 100 objects for User, Address, Event')
+        parser.add_argument('less_count', nargs='?', type=int, help='maximum is 80 objects for Organizer, Memberslist, Place')
 
     def handle(self, *args, **options):
-        big_batch_number = DEFAULT_BIG_NUMBER if not options['great_count'] else options['great_count']
-        small_batch_number = DEFAULT_SMALL_NUMBER if not options['less_count'] else options['less_count']
+        big = DEFAULT_BIG_NUMBER if not options['great_count'] else options['great_count']
+        small = DEFAULT_SMALL_NUMBER if not options['less_count'] else options['less_count']
+        a = int((big-small)/2)
+        b = (big-small) - a
+        c = int(small/2)
+        d = small - c
+        numbers = {
+            "EventUserAddrPlace": a,
+            "EventUserAddr": b,
+            "EventOrgAddrPlace": c,
+            "EventOrgAddr": d,
+        }
 
-        UserFactory.create_batch(size=small_batch_number)
-        OrganizationFactory.create_batch(size=small_batch_number)
-        AddressFactory.create_batch(size=small_batch_number)
-        PlaceFactory.create_batch(size=small_batch_number)
-        EventUserWithPlaceFactory.create_batch(size=small_batch_number)
-        EventUserWithoutPlaceFactory.create_batch(size=small_batch_number)
-        EventOrganizerWithPlaceFactory.create_batch(size=small_batch_number)
-        EventOrganizerWithoutPlaceFactory.create_batch(size=small_batch_number)
-        self.stdout.write(self.style.SUCCESS('DB was successfully populated'))
+        EventUserWithoutPlaceFactory.create_batch(size=numbers["EventUserAddrPlace"])
+        EventUserWithPlaceFactory.create_batch(size=numbers["EventUserAddr"])
+        EventOrganizerWithoutPlaceFactory.create_batch(size=numbers["EventOrgAddrPlace"])
+        EventOrganizerWithPlaceFactory.create_batch(size=numbers["EventOrgAddr"])
+        self.stdout.write(self.style.SUCCESS("DB was successfully populated"))
