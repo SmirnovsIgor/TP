@@ -22,7 +22,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         abstract = False
 
 
-class OrganizationPureFactory(factory.django.DjangoModelFactory):
+class OrganizationFactory(factory.django.DjangoModelFactory):
     """Organization factory"""
     name = factory.Faker('company')
     email = factory.Faker('email')
@@ -34,10 +34,10 @@ class OrganizationPureFactory(factory.django.DjangoModelFactory):
         abstract = False
 
 
-class OrganizationFactory(factory.django.DjangoModelFactory):
+class MemberListFactory(factory.django.DjangoModelFactory):
     """Organization and user connection"""
     member = factory.SubFactory(UserFactory)
-    organization = factory.SubFactory(OrganizationPureFactory)
+    organization = factory.SubFactory(OrganizationFactory)
 
     class Meta:
         model = MembersList

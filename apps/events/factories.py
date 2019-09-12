@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from apps.users.models import Organization
 from apps.events.models import Event
 
-from apps.users.factories import UserFactory, OrganizationFactory
+from apps.users.factories import UserFactory, MemberListFactory
 from apps.locations.factories import AddressFactory, PlaceFactory
 
 
@@ -55,7 +55,7 @@ class EventUserWithPlaceFactory(EventAbstractFactory):
 
 
 class EventOrganizerWithoutPlaceFactory(EventAbstractFactory):
-    organizer = factory.SubFactory(OrganizationFactory)
+    organizer = factory.SubFactory(MemberListFactory)
     organizer_type = factory.LazyAttribute(
         lambda x: ContentType.objects.get_for_model(Organization)
     )
@@ -67,7 +67,7 @@ class EventOrganizerWithoutPlaceFactory(EventAbstractFactory):
 
 
 class EventOrganizerWithPlaceFactory(EventAbstractFactory):
-    organizer = factory.SubFactory(OrganizationFactory)
+    organizer = factory.SubFactory(MemberListFactory)
     organizer_type = factory.LazyAttribute(
         lambda x: ContentType.objects.get_for_model(Organization)
     )
