@@ -24,13 +24,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         big = DEFAULT_BIG_NUMBER if not options['great_count'] else options['great_count']
         small = DEFAULT_SMALL_NUMBER if not options['less_count'] else options['less_count']
-        event_user_addr_place = (big-small)//2
+        event_user_addr_place = small//2
         event_user_addr = (big-small) - event_user_addr_place
         event_org_addr_place = small//2
         event_org_addr = small - event_org_addr_place
 
-        EventUserWithoutPlaceFactory.create_batch(size=event_user_addr_place)
-        EventUserWithPlaceFactory.create_batch(size=event_user_addr)
-        EventOrganizerWithoutPlaceFactory.create_batch(size=event_org_addr_place)
-        EventOrganizerWithPlaceFactory.create_batch(size=event_org_addr)
+        EventUserWithPlaceFactory.create_batch(size=event_user_addr_place)
+        EventUserWithoutPlaceFactory.create_batch(size=event_user_addr)
+        EventOrganizerWithPlaceFactory.create_batch(size=event_org_addr_place)
+        EventOrganizerWithoutPlaceFactory.create_batch(size=event_org_addr)
         self.stdout.write(self.style.SUCCESS("DB was successfully populated"))
