@@ -6,5 +6,16 @@ from apps.users.models import User
 
 
 class Subscription(BaseAbstractModel):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscription')
-    event_id = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='subscription')
+    class Meta:
+        unique_together = ['user_id', 'event_id']
+
+    STATUS_ACTIVE = 'ACTIVE'
+    STATUS_REJECTED = 'REJECTED'
+    STATUS_UNPAID = 'UNPAID'
+    STATUS_CHOICES = [
+        (STATUS_ACTIVE, 'Active'),
+        (STATUS_REJECTED, 'Rejected'),
+        (STATUS_UNPAID, 'Unpaid'),
+    ]
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
+    event_id = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='subscribers')
