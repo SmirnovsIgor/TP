@@ -6,18 +6,7 @@ from apps.events.models import Event
 
 from apps.events.serializers import EventSerializer
 
-
-class PlaceFilter(filters.FilterSet):
-    place = filters.UUIDFilter(field_name="place_id")
-
-
-class AddressFilter(filters.FilterSet):
-    address = filters.UUIDFilter(field_name="address_id")
-
-
-class DateFilter(filters.FilterSet):
-    date__gte = filters.DateTimeFilter(field_name="date", lookup_expr="gte")
-    date__lte = filters.DateTimeFilter(field_name="date", lookup_expr="lte")
+from apps.base.filters import AddressFilter, PlaceFilter, DateFilter
 
 
 class EventFilter(PlaceFilter, AddressFilter, DateFilter):
