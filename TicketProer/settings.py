@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.locations',
     'apps.events',
+    'apps.subscriptions',
 ]
 
 REST_FRAMEWORK = {
