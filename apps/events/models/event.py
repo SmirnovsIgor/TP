@@ -38,7 +38,6 @@ class Event(BaseAbstractModel):
     def __str__(self):
         return self.name
 
-
     # TODO
     # @property
     # def rating(self):
