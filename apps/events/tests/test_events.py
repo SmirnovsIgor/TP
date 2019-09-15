@@ -5,8 +5,8 @@ import pytest
 @pytest.mark.django_db
 class TestEvents:
     # @pytest.mark.parametrize()
-    def test_detail(self, client, ev_us_ad):
-        res = client.get(f'/api/events/{ev_us_ad.id}')
+    def test_detail(self, client, event):
+        res = client.get(f'/api/events/{event.id}')
         assert res.status_code == 200
         event_dict = res.json()
         assert event_dict.get('name')
@@ -27,7 +27,7 @@ class TestEvents:
         assert event_dict.get('status')
 
     @pytest.mark.parametrize('event_qty', [0, 1, 10, 100])
-    def test_list(self, client, events_user_address, event_qty):
+    def test_list(self, client, eventsOrg1, event_qty):
         res = client.get(f'/api/events/')
         assert res.status_code == 200
         assert isinstance(res.json(), list)

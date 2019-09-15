@@ -9,10 +9,10 @@ from apps.events.factories import (
 )
 
 
-register(EventUserWithoutPlaceFactory, 'ev_us_ad')
-register(EventUserWithPlaceFactory, 'ev_us_ad_pl')
-register(EventOrganizerWithoutPlaceFactory, 'ev_or_ad')
-register(EventOrganizerWithPlaceFactory, 'ev_or_ad_pl')
+register(EventUserWithoutPlaceFactory, 'event')
+register(EventUserWithPlaceFactory, 'event2')
+register(EventOrganizerWithoutPlaceFactory, 'event3')
+register(EventOrganizerWithPlaceFactory, 'event4')
 
 
 @pytest.fixture
@@ -21,20 +21,20 @@ def event_qty():
 
 
 @pytest.fixture
-def events_user_address(event_qty):
+def eventsUser1(event_qty):
     return EventUserWithoutPlaceFactory.create_batch(size=event_qty)
 
 
 @pytest.fixture
-def events_user_address_place(event_qty):
+def eventsUser2(event_qty):
     return EventUserWithPlaceFactory.create_batch(size=event_qty)
 
 
 @pytest.fixture
-def events_org_address(event_qty):
+def eventsOrg1(event_qty):
     return EventOrganizerWithoutPlaceFactory.create_batch(size=event_qty)
 
 
 @pytest.fixture
-def events_org_address_place(event_qty):
+def eventsOrg2(event_qty):
     return EventOrganizerWithoutPlaceFactory.create_batch(size=event_qty)
