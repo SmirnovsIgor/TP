@@ -40,4 +40,3 @@ class EventSerializer(serializers.ModelSerializer):
         }
         serializer_class = organizer_type_mapping.get(obj.organizer_type)
         return serializer_class(obj.organizer).data
-
