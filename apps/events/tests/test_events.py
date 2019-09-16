@@ -171,7 +171,7 @@ class TestEvents:
         assert event_dict.get('is_top') == event_created_by_organization_with_place.is_top
         assert event_dict.get('max_members') == event_created_by_organization_with_place.max_members
         assert event_dict.get('status') == event_created_by_organization_with_place.status
-'''
+
     def test_detail_negative(self, client):
         """Negative test checks access to uncreated event by random uuid"""
         res = client.get(f'/api/events/{faker.Faker().uuid4()}/')
@@ -208,4 +208,3 @@ class TestEvents:
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
-'''
