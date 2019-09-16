@@ -6,15 +6,15 @@ import iso8601
 
 @pytest.mark.django_db
 class TestStaff:
-    """test user details for staff
+    """Test user details for staff
 
     * check for valid data
-    *check for staff/usual users
+    * check for staff/usual users
     """
     def test_user_details_for_staff_true(self, client, request_user, user, token):
         request_user.is_staff = True
         request_user.save()
-        response = client.get(f'/api/user/{user.id}/', **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        response = client.get(f'/api/user/{user.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         response_dict = response.json()
         assert response.status_code == 200
         assert response_dict.get('username') == user.username
@@ -31,5 +31,5 @@ class TestStaff:
         assert response_dict.get('profile_image') is None
 
     def test_user_details_for_staff_false(self, client, request_user, user, token):
-        response = client.get(f'/api/user/{user.id}/', **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        response = client.get(f'/api/user/{user.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert response.status_code == 403

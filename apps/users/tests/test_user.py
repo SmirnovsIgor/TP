@@ -5,13 +5,13 @@ from datetime import datetime
 
 @pytest.mark.django_db
 class TestUsers:
-    """test user self details
+    """Test user self details
 
     * check for valid data
     * check for authorized/not authorized users
     """
     def test_self_details_authorized_true(self, client, request_user, token):
-        response = client.get('/api/user/me/', **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        response = client.get('/api/user/me/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert response.status_code == 200
         response_dict = response.json()
         assert response_dict.get('username') == request_user.username
