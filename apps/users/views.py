@@ -8,8 +8,8 @@ from apps.users.serializers import UserSerializer
 from tools.action_based_permission import ActionBasedPermission
 
 
-class UserDataForStaffView(RetrieveModelMixin,
-                           viewsets.GenericViewSet):
+class UserDataForStaffViewSet(RetrieveModelMixin,
+                              viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (ActionBasedPermission,)

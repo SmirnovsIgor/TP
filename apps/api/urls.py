@@ -18,7 +18,7 @@ authpatterns = [
 router = DefaultRouter()
 router.register(r'events', event_views.EventViewSet, basename='events')
 router.register(r'places', location_views.PlaceViewSet, basename='places')
-router.register(r'users', user_views.UserDataForStaffView, basename='users')
+router.register(r'users', user_views.UserDataForStaffViewSet, basename='users')
 
 urlpatterns = [
     path(r'auth/', include(authpatterns)),
