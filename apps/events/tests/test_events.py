@@ -4,6 +4,7 @@ import datetime
 import pytest
 
 from django.contrib.contenttypes.models import ContentType
+from rest_framework import status
 
 from apps.users.models import User, Organization
 from apps.events.models import Event
@@ -19,7 +20,7 @@ class TestEvents:
     def test_detail_event_by_user_without_place(self, client, event_u):
         """Test event created by user without place"""
         res = client.get(f'/api/events/{event_u.id}/')
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         event_dict = res.json()
         assert isinstance(event_dict.get('name'), str)
         assert isinstance(event_dict.get('description'), str)
@@ -44,7 +45,7 @@ class TestEvents:
     def test_detail_event_by_user_with_place(self, client, event_u_p):
         """Test event created by user with place"""
         res = client.get(f'/api/events/{event_u_p.id}/')
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         event_dict = res.json()
         assert isinstance(event_dict.get('name'), str)
         assert isinstance(event_dict.get('description'), str)
@@ -68,7 +69,7 @@ class TestEvents:
     def test_detail_event_by_org_without_place(self, client, event_o):
         """Test event created by organization without place"""
         res = client.get(f'/api/events/{event_o.id}/')
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         event_dict = res.json()
         assert isinstance(event_dict.get('name'), str)
         assert isinstance(event_dict.get('description'), str)
@@ -92,7 +93,7 @@ class TestEvents:
     def test_detail_event_by_org_with_place(self, client, event_o_p):
         """Test event created by organization with place"""
         res = client.get(f'/api/events/{event_o_p.id}/')
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         event_dict = res.json()
         assert isinstance(event_dict.get('name'), str)
         assert isinstance(event_dict.get('description'), str)
@@ -116,13 +117,13 @@ class TestEvents:
     def test_detail_negative(self, client):
         """Negative test checks access to uncreated event by random uuid"""
         res = client.get(f'/api/events/{faker.Faker().uuid4()}/')
-        assert res.status_code == 404
+        assert res.status_code == status.HTTP_404_NOT_FOUND
 
     @pytest.mark.parametrize('event_qty', [0, 1, 10, 100])
     def test_list_user_without_place(self, client, events_user_without_place, event_qty):
         """Collection of events created by user with place"""
         res = client.get(f'/api/events/')
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
 
@@ -130,7 +131,7 @@ class TestEvents:
     def test_list_user_with_place(self, client, events_user_with_pace, event_qty):
         """Collection of events created by user without place"""
         res = client.get(f'/api/events/')
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
 
@@ -138,7 +139,7 @@ class TestEvents:
     def test_list_org_without_place(self, client, events_org_without_place, event_qty):
         """Collection of events created by organization without place"""
         res = client.get(f'/api/events/')
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
 
@@ -146,6 +147,6 @@ class TestEvents:
     def test_list_org_with_place(self, client, events_org_with_place, event_qty):
         """Collection of events created by organization with place"""
         res = client.get(f'/api/events/')
-        assert res.status_code == 200
+        assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
