@@ -9,22 +9,22 @@ from apps.events.factories import (
 
 
 @pytest.fixture
-def event_u():
+def event_created_by_user_without_place():
     return EventUserWithoutPlaceFactory()
 
 
 @pytest.fixture
-def event_u_p():
+def event_created_by_user_with_place():
     return EventUserWithPlaceFactory()
 
 
 @pytest.fixture
-def event_o():
+def event_created_by_organization_without_place():
     return EventOrganizerWithoutPlaceFactory()
 
 
 @pytest.fixture
-def event_o_p():
+def event_created_by_organization_with_place():
     return EventOrganizerWithPlaceFactory()
 
 
