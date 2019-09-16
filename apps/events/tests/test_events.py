@@ -38,7 +38,7 @@ class TestEvents:
         assert address.get('street') == event_created_by_user_without_place.address.street
         assert address.get('house') == event_created_by_user_without_place.address.house
         assert address.get('floor') == event_created_by_user_without_place.address.floor
-        assert address.get('apartments') == str(event_created_by_user_without_place.address.apartments)
+        assert address.get('apartments') == event_created_by_user_without_place.address.apartments
         assert address.get('description') == event_created_by_user_without_place.address.description
 
         assert datetime.datetime.strptime(event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC) == event_created_by_user_without_place.date
@@ -81,7 +81,7 @@ class TestEvents:
         assert address.get('street') == event_created_by_user_with_place.address.street
         assert address.get('house') == event_created_by_user_with_place.address.house
         assert address.get('floor') == event_created_by_user_with_place.address.floor
-        assert address.get('apartments') == str(event_created_by_user_with_place.address.apartments)
+        assert address.get('apartments') == event_created_by_user_with_place.address.apartments
         assert address.get('description') == event_created_by_user_with_place.address.description
 
         assert datetime.datetime.strptime(event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.date
