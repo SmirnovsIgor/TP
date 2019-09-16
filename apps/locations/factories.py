@@ -16,8 +16,8 @@ class AddressFactory(factory.django.DjangoModelFactory):
     city = factory.LazyAttribute(lambda x: faker.city()[:30])
     street = factory.LazyAttribute(lambda x: faker.street_name()[:30])
     house = factory.LazyAttribute(lambda x: faker.building_number()[:10])
-    floor = random.randint(1, 50)
-    apartments = random.randint(1, 1000)
+    floor = factory.LazyAttribute(lambda x: random.randint(1, 50))
+    apartments = factory.LazyAttribute(lambda x: random.randint(1, 1000))
 
     class Meta:
         model = Address
