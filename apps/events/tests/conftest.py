@@ -29,11 +29,6 @@ def event_o_p():
 
 
 @pytest.fixture
-def event_u():
-    return EventUserWithoutPlaceFactory()
-
-
-@pytest.fixture
 def event_qty():
     return 1
 
