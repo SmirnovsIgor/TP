@@ -10,7 +10,6 @@ class TestPlaces:
         place_dict = res.json()
         assert place_dict.get('name')
         assert place_dict.get('address')
-        assert place_dict.get('photo')
         assert place_dict.get('description')
         assert place_dict.get('status')
 
