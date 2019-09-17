@@ -10,8 +10,8 @@ class PlaceSerializer(serializers.Serializer):
     address = AddressSerializer()
     photo = serializers.ImageField(required=False, allow_empty_file=True, allow_null=True)
     description = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
-    status = serializers.ChoiceField(choices=Place.STATUS_CHOICES)
-
+    status = serializers.ChoiceField(choices=Place.STATUS_CHOICES, default=Place.STATUS_WORKING)
+# TODO with ModelSerializer
 
 class ShortPlaceSerializer(serializers.ModelSerializer):
     class Meta:

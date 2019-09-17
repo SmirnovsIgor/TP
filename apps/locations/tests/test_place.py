@@ -1,6 +1,5 @@
 import pytest
 import faker
-
 from rest_framework import status
 
 

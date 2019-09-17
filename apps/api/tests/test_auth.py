@@ -1,9 +1,8 @@
 import pytest
-
 from rest_framework import status
+from rest_auth.models import TokenModel
 
 from apps.users.models import User
-from rest_auth.models import TokenModel
 
 
 @pytest.mark.django_db
@@ -17,7 +16,7 @@ class TestAuth:
         assert user.first_name == user_dict['first_name']
         assert user.last_name == user_dict['last_name']
 
-    def test_is_staff_registration(self, client, user_dict):
+    def test_registration_with_is_staff(self, client, user_dict):
         user_dict['is_staff'] = True
         res = client.post('/api/auth/registration/', data=user_dict)
         assert res.status_code == status.HTTP_201_CREATED

@@ -1,4 +1,5 @@
 import pytest
+from pytest_factoryboy import register
 
 from apps.events.factories import (
     EventUserWithoutPlaceFactory,
@@ -6,11 +7,16 @@ from apps.events.factories import (
     EventOrganizerWithoutPlaceFactory,
     EventOrganizerWithPlaceFactory
 )
+from apps.locations.factories import AddressFactory
+from apps.users.factories import UserFactory
+
+register(UserFactory, 'user')
+register(AddressFactory, 'address')
+register(EventUserWithoutPlaceFactory, 'event_created_by_user_without_place')
 
 
-@pytest.fixture
-def event_created_by_user_without_place():
-    return EventUserWithoutPlaceFactory()
+# TODO:
+#  Add factories
 
 
 @pytest.fixture

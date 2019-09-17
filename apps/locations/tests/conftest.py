@@ -1,12 +1,11 @@
 import pytest
 from pytest_factoryboy import register
 
-from apps.locations.factories import PlaceFactory
+from apps.locations.factories import PlaceFactory, AddressFactory
 
 
-@pytest.fixture
-def place():
-    return PlaceFactory()
+register(PlaceFactory, 'place')
+register(AddressFactory, 'address')
 
 
 @pytest.fixture

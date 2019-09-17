@@ -1,9 +1,8 @@
-import faker
-import uuid
 import datetime
+
+import faker
 import pytz
 import pytest
-
 from rest_framework import status
 
 
@@ -14,7 +13,6 @@ class TestEvents:
     because we do not generate it
     """
     def test_detail_event_by_user_without_place(self, client, event_created_by_user_without_place):
-        """Test event created by user without place"""
         res = client.get(f'/api/events/{event_created_by_user_without_place.id}/')
         assert res.status_code == status.HTTP_200_OK
         event_dict = res.json()
@@ -52,7 +50,6 @@ class TestEvents:
         assert event_dict.get('status') == event_created_by_user_without_place.status
 
     def test_detail_event_by_user_with_place(self, client, event_created_by_user_with_place):
-        """Test event created by user with place"""
         res = client.get(f'/api/events/{event_created_by_user_with_place.id}/')
         assert res.status_code == status.HTTP_200_OK
         event_dict = res.json()
@@ -138,7 +135,6 @@ class TestEvents:
         assert event_dict.get('status') == event_created_by_organization_without_place.status
 
     def test_detail_event_by_organization_with_place(self, client, event_created_by_organization_with_place):
-        """Test event created by user with place"""
         res = client.get(f'/api/events/{event_created_by_organization_with_place.id}/')
         assert res.status_code == status.HTTP_200_OK
         event_dict = res.json()
@@ -200,7 +196,6 @@ class TestEvents:
 
     @pytest.mark.parametrize('event_qty', [0, 1, 10, 100])
     def test_list_user_with_place(self, client, events_user_with_pace, event_qty):
-        """Collection of events created by user without place"""
         res = client.get(f'/api/events/')
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
@@ -208,7 +203,6 @@ class TestEvents:
 
     @pytest.mark.parametrize('event_qty', [0, 1, 10, 100])
     def test_list_org_without_place(self, client, events_org_without_place, event_qty):
-        """Collection of events created by organization without place"""
         res = client.get(f'/api/events/')
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
@@ -216,7 +210,6 @@ class TestEvents:
 
     @pytest.mark.parametrize('event_qty', [0, 1, 10, 100])
     def test_list_org_with_place(self, client, events_org_with_place, event_qty):
-        """Collection of events created by organization with place"""
         res = client.get(f'/api/events/')
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)

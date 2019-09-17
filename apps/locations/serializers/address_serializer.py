@@ -10,3 +10,5 @@ class AddressSerializer(serializers.Serializer):
     floor = serializers.IntegerField(min_value=0, allow_null=True)
     apartments = serializers.CharField(max_length=10, allow_blank=True, allow_null=True)
     descriptions = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
+
+# TODO with ModelSerializer

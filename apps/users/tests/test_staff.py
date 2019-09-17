@@ -15,7 +15,7 @@ class TestStaff:
     def test_user_details_for_staff_true(self, client, request_user, user, token):
         request_user.is_staff = True
         request_user.save()
-        response = client.get(f'/api/user/{user.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        response = client.get(f'/api/users/{user.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         response_dict = response.json()
         assert response.status_code == HTTP_200_OK
         assert response_dict.get('username') == user.username
@@ -32,5 +32,5 @@ class TestStaff:
         assert response_dict.get('profile_image') == user.profile_image
 
     def test_user_details_for_staff_false(self, client, request_user, user, token):
-        response = client.get(f'/api/user/{user.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        response = client.get(f'/api/users/{user.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert response.status_code == HTTP_403_FORBIDDEN

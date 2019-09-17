@@ -13,7 +13,7 @@ class TestUsers:
     * check for authorized/not authorized users
     """
     def test_self_details_authorized_true(self, client, request_user, token):
-        response = client.get('/api/user/me/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        response = client.get('/api/users/me/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert response.status_code == HTTP_200_OK
         response_dict = response.json()
         assert response_dict.get('username') == request_user.username
@@ -30,6 +30,6 @@ class TestUsers:
         assert response_dict.get('profile_image') == request_user.profile_image
 
     def test_self_details_authorized_false(self, client):
-        response = client.get('/api/user/me/')
+        response = client.get('/api/users/me/')
         assert response.status_code == HTTP_401_UNAUTHORIZED
 
