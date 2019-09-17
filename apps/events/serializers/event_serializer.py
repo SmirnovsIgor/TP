@@ -18,6 +18,7 @@ class EventSerializer(serializers.ModelSerializer):
     description = serializers.CharField(required=True, allow_blank=False, allow_null=False)
     poster = serializers.ImageField(required=False, allow_empty_file=True)
     organizer = serializers.SerializerMethodField(read_only=True)
+    organizer_type = serializers.SerializerMethodField(read_only=True)
     place = ShortPlaceSerializer()
     address = AddressSerializer()
     date = serializers.DateTimeField(required=True, allow_null=False)
@@ -40,3 +41,10 @@ class EventSerializer(serializers.ModelSerializer):
         }
         serializer_class = organizer_type_mapping.get(obj.organizer_type)
         return serializer_class(obj.organizer).data
+
+    def get_organizer_type(self, obj=None):
+        """
+        Method to fill out the organizer type in serializer
+        It converts model's number into models name
+        """
+        return obj.organizer.__class__.__name__
