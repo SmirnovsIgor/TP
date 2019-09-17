@@ -25,7 +25,7 @@ class TestStaff:
         assert response_dict.get('first_name') == user.first_name
         assert response_dict.get('last_name') == user.last_name
         assert datetime.strptime(response_dict.get('date_of_birth'), '%Y-%m-%d').date() == user.date_of_birth
-        assert response_dict.get('password') is None
+        assert 'password' not in response_dict
         assert response_dict.get('is_staff') == user.is_staff
         assert response_dict.get('is_active') == user.is_active
         assert response_dict.get('profile_image') == user.profile_image
