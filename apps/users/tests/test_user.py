@@ -23,9 +23,9 @@ class TestUsers:
         assert response_dict.get('last_name') == request_user.last_name
         assert datetime.strptime(response_dict.get('date_of_birth'), '%Y-%m-%d').date() == request_user.date_of_birth
         assert response_dict.get('password') is None
-        assert response_dict.get('is_staff') is False
-        assert response_dict.get('is_active') is True
-        assert response_dict.get('profile_image') is None
+        assert response_dict.get('is_staff') == request_user.is_staff
+        assert response_dict.get('is_active') == request_user.is_active
+        assert response_dict.get('profile_image') == request_user.profile_image
 
     def test_self_details_authorized_false(self, client):
         response = client.get('/api/user/me/')
