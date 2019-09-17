@@ -12,7 +12,6 @@ class TestEvents:
     """
     poster in Event is always None,
     because we do not generate it
-
     """
     def test_detail_event_by_user_without_place(self, client, event_created_by_user_without_place):
         """Test event created by user without place"""
@@ -22,8 +21,8 @@ class TestEvents:
         assert event_dict.get('name') == event_created_by_user_without_place.name
         assert event_dict.get('description') == event_created_by_user_without_place.description
         assert event_dict.get('poster') == event_created_by_user_without_place.poster
-        assert event_dict.get('organizer_type') == event_created_by_user_without_place.organizer_type.id
-        assert uuid.UUID(event_dict.get('organizer_id')) == event_created_by_user_without_place.organizer_id
+        assert event_dict.get('organizer_id') == str(event_created_by_user_without_place.organizer_id)
+        assert event_dict.get('organizer_type') == str(event_created_by_user_without_place.organizer_type).title()
 
         organizer = event_dict.get('organizer')
         assert organizer
@@ -32,7 +31,7 @@ class TestEvents:
 
         address = event_dict.get('address')
         assert address
-        assert uuid.UUID(address.get('id')) == event_created_by_user_without_place.address.id
+        assert address.get('id') == str(event_created_by_user_without_place.address.id)
         assert address.get('country') == event_created_by_user_without_place.address.country
         assert address.get('city') == event_created_by_user_without_place.address.city
         assert address.get('street') == event_created_by_user_without_place.address.street
@@ -58,8 +57,8 @@ class TestEvents:
         assert event_dict.get('name') == event_created_by_user_with_place.name
         assert event_dict.get('description') == event_created_by_user_with_place.description
         assert event_dict.get('poster') == event_created_by_user_with_place.poster
-        assert event_dict.get('organizer_type') == event_created_by_user_with_place.organizer_type.id
-        assert uuid.UUID(event_dict.get('organizer_id')) == event_created_by_user_with_place.organizer_id
+        assert event_dict.get('organizer_id') == str(event_created_by_user_with_place.organizer_id)
+        assert event_dict.get('organizer_type') == str(event_created_by_user_with_place.organizer_type).title()
 
         organizer = event_dict.get('organizer')
         assert organizer
@@ -68,14 +67,15 @@ class TestEvents:
 
         place = event_dict.get('place')
         assert place
-        assert uuid.UUID(place.get('id')) == event_created_by_user_with_place.place.id
+        assert place.get('id') == str(event_created_by_user_with_place.place.id)
         assert place.get('name') == event_created_by_user_with_place.place.name
         assert place.get('description') == event_created_by_user_with_place.place.description
+        assert datetime.datetime.strptime(place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.place.created
         assert place.get('status') == event_created_by_user_with_place.place.status
 
         address = event_dict.get('address')
         assert address
-        assert uuid.UUID(address.get('id')) == event_created_by_user_with_place.address.id
+        assert address.get('id') == str(event_created_by_user_with_place.address.id)
         assert address.get('country') == event_created_by_user_with_place.address.country
         assert address.get('city') == event_created_by_user_with_place.address.city
         assert address.get('street') == event_created_by_user_with_place.address.street
@@ -101,8 +101,8 @@ class TestEvents:
         assert event_dict.get('name') == event_created_by_organization_without_place.name
         assert event_dict.get('description') == event_created_by_organization_without_place.description
         assert event_dict.get('poster') == event_created_by_organization_without_place.poster
-        assert event_dict.get('organizer_type') == event_created_by_organization_without_place.organizer_type.id
-        assert uuid.UUID(event_dict.get('organizer_id')) == event_created_by_organization_without_place.organizer_id
+        assert event_dict.get('organizer_id') == str(event_created_by_organization_without_place.organizer_id)
+        assert event_dict.get('organizer_type') == str(event_created_by_organization_without_place.organizer_type).title()
 
         organizer = event_dict.get('organizer')
         assert organizer
@@ -111,7 +111,7 @@ class TestEvents:
 
         address = event_dict.get('address')
         assert address
-        assert uuid.UUID(address.get('id')) == event_created_by_organization_without_place.address.id
+        assert address.get('id') == str(event_created_by_organization_without_place.address.id)
         assert address.get('country') == event_created_by_organization_without_place.address.country
         assert address.get('city') == event_created_by_organization_without_place.address.city
         assert address.get('street') == event_created_by_organization_without_place.address.street
@@ -137,8 +137,8 @@ class TestEvents:
         assert event_dict.get('name') == event_created_by_organization_with_place.name
         assert event_dict.get('description') == event_created_by_organization_with_place.description
         assert event_dict.get('poster') == event_created_by_organization_with_place.poster
-        assert event_dict.get('organizer_type') == event_created_by_organization_with_place.organizer_type.id
-        assert uuid.UUID(event_dict.get('organizer_id')) == event_created_by_organization_with_place.organizer_id
+        assert event_dict.get('organizer_id') == str(event_created_by_organization_with_place.organizer_id)
+        assert event_dict.get('organizer_type') == str(event_created_by_organization_with_place.organizer_type).title()
 
         organizer = event_dict.get('organizer')
         assert organizer
@@ -147,14 +147,15 @@ class TestEvents:
 
         place = event_dict.get('place')
         assert place
-        assert uuid.UUID(place.get('id')) == event_created_by_organization_with_place.place.id
+        assert place.get('id') == str(event_created_by_organization_with_place.place.id)
         assert place.get('name') == event_created_by_organization_with_place.place.name
         assert place.get('description') == event_created_by_organization_with_place.place.description
+        assert datetime.datetime.strptime(place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.place.created
         assert place.get('status') == event_created_by_organization_with_place.place.status
 
         address = event_dict.get('address')
         assert address
-        assert uuid.UUID(address.get('id')) == event_created_by_organization_with_place.address.id
+        assert address.get('id') == str(event_created_by_organization_with_place.address.id)
         assert address.get('country') == event_created_by_organization_with_place.address.country
         assert address.get('city') == event_created_by_organization_with_place.address.city
         assert address.get('street') == event_created_by_organization_with_place.address.street
