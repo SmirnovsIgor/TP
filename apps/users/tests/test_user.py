@@ -2,6 +2,8 @@ import pytest
 import iso8601
 from datetime import datetime
 
+from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED
+
 
 @pytest.mark.django_db
 class TestUsers:
@@ -12,7 +14,7 @@ class TestUsers:
     """
     def test_self_details_authorized_true(self, client, request_user, token):
         response = client.get('/api/user/me/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
-        assert response.status_code == 200
+        assert response.status_code == HTTP_200_OK
         response_dict = response.json()
         assert response_dict.get('username') == request_user.username
         assert response_dict.get('email') == request_user.email
@@ -29,5 +31,5 @@ class TestUsers:
 
     def test_self_details_authorized_false(self, client):
         response = client.get('/api/user/me/')
-        assert response.status_code == 401
+        assert response.status_code == HTTP_401_UNAUTHORIZED
 
