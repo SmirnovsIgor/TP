@@ -47,8 +47,4 @@ class EventSerializer(serializers.ModelSerializer):
         Method to fill out the organizer type in serializer
         It converts model's number into models name
         """
-        organizer_type_mapping = {
-            ContentType.objects.get_for_model(User): User.__name__,
-            ContentType.objects.get_for_model(Organization): Organization.__name__
-        }
-        return organizer_type_mapping.get(obj.organizer_type)
+        return obj.organizer.__class__.__name__

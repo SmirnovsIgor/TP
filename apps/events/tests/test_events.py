@@ -40,7 +40,9 @@ class TestEvents:
         assert address.get('apartments') == event_created_by_user_without_place.address.apartments
         assert address.get('description') == event_created_by_user_without_place.address.description
 
-        assert datetime.datetime.strptime(event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC) == event_created_by_user_without_place.date
+        assert datetime.datetime.strptime(
+                    event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
+               ).replace(tzinfo=pytz.UTC) == event_created_by_user_without_place.date
         assert event_dict.get('duration') == event_created_by_user_without_place.duration
         assert event_dict.get('age_rate') == event_created_by_user_without_place.age_rate
         assert event_dict.get('is_approved') == event_created_by_user_without_place.is_approved
@@ -70,7 +72,9 @@ class TestEvents:
         assert place.get('id') == str(event_created_by_user_with_place.place.id)
         assert place.get('name') == event_created_by_user_with_place.place.name
         assert place.get('description') == event_created_by_user_with_place.place.description
-        assert datetime.datetime.strptime(place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.place.created
+        assert datetime.datetime.strptime(
+                    place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+               ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.place.created
         assert place.get('status') == event_created_by_user_with_place.place.status
 
         address = event_dict.get('address')
@@ -84,7 +88,9 @@ class TestEvents:
         assert address.get('apartments') == event_created_by_user_with_place.address.apartments
         assert address.get('description') == event_created_by_user_with_place.address.description
 
-        assert datetime.datetime.strptime(event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.date
+        assert datetime.datetime.strptime(
+                    event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
+               ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.date
         assert event_dict.get('duration') == event_created_by_user_with_place.duration
         assert event_dict.get('age_rate') == event_created_by_user_with_place.age_rate
         assert event_dict.get('is_approved') == event_created_by_user_with_place.is_approved
@@ -120,7 +126,9 @@ class TestEvents:
         assert address.get('apartments') == event_created_by_organization_without_place.address.apartments
         assert address.get('description') == event_created_by_organization_without_place.address.description
 
-        assert datetime.datetime.strptime(event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC) == event_created_by_organization_without_place.date
+        assert datetime.datetime.strptime(
+                    event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
+               ).replace(tzinfo=pytz.UTC) == event_created_by_organization_without_place.date
         assert event_dict.get('duration') == event_created_by_organization_without_place.duration
         assert event_dict.get('age_rate') == event_created_by_organization_without_place.age_rate
         assert event_dict.get('is_approved') == event_created_by_organization_without_place.is_approved
@@ -164,7 +172,9 @@ class TestEvents:
         assert address.get('apartments') == event_created_by_organization_with_place.address.apartments
         assert address.get('description') == event_created_by_organization_with_place.address.description
 
-        assert datetime.datetime.strptime(event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.date
+        assert datetime.datetime.strptime(
+                    event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
+               ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.date
         assert event_dict.get('duration') == event_created_by_organization_with_place.duration
         assert event_dict.get('age_rate') == event_created_by_organization_with_place.age_rate
         assert event_dict.get('is_approved') == event_created_by_organization_with_place.is_approved
