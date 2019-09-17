@@ -158,7 +158,9 @@ class TestEvents:
         assert place.get('id') == str(event_created_by_organization_with_place.place.id)
         assert place.get('name') == event_created_by_organization_with_place.place.name
         assert place.get('description') == event_created_by_organization_with_place.place.description
-        assert datetime.datetime.strptime(place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.place.created
+        assert datetime.datetime.strptime(
+                    place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+               ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.place.created
         assert place.get('status') == event_created_by_organization_with_place.place.status
 
         address = event_dict.get('address')
