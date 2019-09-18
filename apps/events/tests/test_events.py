@@ -186,7 +186,7 @@ class TestEvents:
         res = client.get(f'/api/events/{faker.Faker().uuid4()}/')
         assert res.status_code == status.HTTP_404_NOT_FOUND
 
-    @pytest.mark.parametrize('event_qty', [0, 1, 10, 100])
+    @pytest.mark.parametrize('event_qty', [0, 1, 10, 50])
     def test_list_user_without_place(self, client, events_user_without_place, event_qty):
         """Collection of events created by user with place"""
         res = client.get(f'/api/events/')
@@ -194,21 +194,21 @@ class TestEvents:
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
 
-    @pytest.mark.parametrize('event_qty', [0, 1, 10, 100])
+    @pytest.mark.parametrize('event_qty', [0, 1, 10, 50])
     def test_list_user_with_place(self, client, events_user_with_pace, event_qty):
         res = client.get(f'/api/events/')
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
 
-    @pytest.mark.parametrize('event_qty', [0, 1, 10, 100])
+    @pytest.mark.parametrize('event_qty', [0, 1, 10, 50])
     def test_list_org_without_place(self, client, events_org_without_place, event_qty):
         res = client.get(f'/api/events/')
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
 
-    @pytest.mark.parametrize('event_qty', [0, 1, 10, 100])
+    @pytest.mark.parametrize('event_qty', [0, 1, 10, 50])
     def test_list_org_with_place(self, client, events_org_with_place, event_qty):
         res = client.get(f'/api/events/')
         assert res.status_code == status.HTTP_200_OK

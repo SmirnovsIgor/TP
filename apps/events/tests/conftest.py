@@ -7,31 +7,17 @@ from apps.events.factories import (
     EventOrganizerWithoutPlaceFactory,
     EventOrganizerWithPlaceFactory
 )
-from apps.locations.factories import AddressFactory
-from apps.users.factories import UserFactory
+from apps.locations.factories import AddressFactory, PlaceFactory
+from apps.users.factories import UserFactory, OrganizationFactory
 
 register(UserFactory, 'user')
+register(PlaceFactory, 'place')
 register(AddressFactory, 'address')
+register(OrganizationFactory, 'organization')
 register(EventUserWithoutPlaceFactory, 'event_created_by_user_without_place')
-
-
-# TODO:
-#  Add factories
-
-
-@pytest.fixture
-def event_created_by_user_with_place():
-    return EventUserWithPlaceFactory()
-
-
-@pytest.fixture
-def event_created_by_organization_without_place():
-    return EventOrganizerWithoutPlaceFactory()
-
-
-@pytest.fixture
-def event_created_by_organization_with_place():
-    return EventOrganizerWithPlaceFactory()
+register(EventUserWithPlaceFactory, 'event_created_by_user_with_place')
+register(EventOrganizerWithoutPlaceFactory, 'event_created_by_organization_without_place')
+register(EventOrganizerWithPlaceFactory, 'event_created_by_organization_with_place')
 
 
 @pytest.fixture
