@@ -1,6 +1,6 @@
-from apps.users.models import User
-
 from rest_framework import serializers
+
+from apps.users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -9,7 +9,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password', 'id', 'is_staff', 'is_active', 'created',
                   'updated', 'profile_image', 'first_name', 'last_name', 'date_of_birth']
-        extra_kwargs = {'password': {'write_only': True},
+        extra_kwargs = {'id': {'read_only': True},
+                        'created': {'read_only': True},
+                        'updated': {'read_only': True},
+                        'password': {'write_only': True},
                         'is_staff': {'read_only': True},
                         'is_active': {'read_only': True}
                         }
@@ -29,3 +32,10 @@ class UserSerializer(serializers.ModelSerializer):
             user_ser.is_valid()
             self.instance = self.create(user_ser.validated_data)
         return self.instance
+
+
+class ShortUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+        extra_kwargs = {'id': {'read_only': True}}

@@ -4,7 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 
 from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
-
 from tools.image_funcs import get_image_path
 
 
@@ -38,7 +37,6 @@ class Event(BaseAbstractModel):
     def __str__(self):
         return self.name
 
-    # TODO
-    # @property
-    # def rating(self):
-    #     pass
+    @property
+    def registered_users(self):
+        return self.subscribers.all().count()
