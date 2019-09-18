@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 import iso8601
-from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
+from rest_framework import status
 
 
 @pytest.mark.django_db
@@ -17,7 +17,7 @@ class TestStaff:
         request_user.save()
         response = client.get(f'/api/users/{user.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         response_dict = response.json()
-        assert response.status_code == HTTP_200_OK
+        assert response.status_code == status.HTTP_200_OK
         assert response_dict.get('username') == user.username
         assert response_dict.get('email') == user.email
         assert response_dict.get('id') == str(user.id)
@@ -33,4 +33,4 @@ class TestStaff:
 
     def test_user_details_for_staff_false(self, client, request_user, user, token):
         response = client.get(f'/api/users/{user.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
-        assert response.status_code == HTTP_403_FORBIDDEN
+        assert response.status_code == status.HTTP_403_FORBIDDEN
