@@ -13,6 +13,7 @@ class PlaceSerializer(serializers.ModelSerializer):
         extra_kwargs = {'id': {'read_only': True},
                         'created': {'read_only': True},
                         'updated': {'read_only': True},
+                        'status': {'read_only': True},
                         }
 
 
@@ -22,4 +23,5 @@ class ShortPlaceSerializer(serializers.ModelSerializer):
         exclude = ['address', 'updated']
         extra_kwargs = {'id': {'read_only': True},
                         'created': {'read_only': True},
+                        'status': {'read_only': True},
                         }
