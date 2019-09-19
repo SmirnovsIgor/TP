@@ -6,6 +6,8 @@ from rest_framework.status import HTTP_200_OK
 
 from apps.users.models import User, Organization
 from apps.users.serializers import UserSerializer, ShortOrganizationSerializer
+from apps.users.serializers.organization_serializer import DetailsWithAllEventsOrganizationSerializer, \
+    DetailedOrganizationSerializer
 
 
 class UserDataForStaffView(APIView):
@@ -24,6 +26,28 @@ class OrganizationsView(APIView):
     def get(self, request):
         organizations = self.get_queryset()
         serializer = ShortOrganizationSerializer(organizations, many=True)
+        return Response(serializer.data, status=HTTP_200_OK)
+
+    def get_queryset(self):
+        return Organization.objects.all()
+
+
+class DetailsWithAllEventsOrganizationView(APIView):
+    def get(self, request, uuid):
+        organization = self.get_queryset().get(id=uuid)
+        serializer = DetailsWithAllEventsOrganizationSerializer(organization)
+        return Response(serializer.data, status=HTTP_200_OK)
+
+    def get_queryset(self):
+        return Organization.objects.all()
+
+
+class DetailedOrganizationView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self,request, uuid):
+        organization = self.get_queryset().get(id=uuid)
+        serializer = DetailedOrganizationSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 
     def get_queryset(self):
