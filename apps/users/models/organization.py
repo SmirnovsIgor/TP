@@ -22,7 +22,7 @@ class Organization(BaseAbstractModel):
 
     @property
     def all_members(self):
-        return User.objects.filter(membership__organization__id=self.id)
+        return [i.member for i in self.membership.all()]
 
     def __str__(self):
         return self.name

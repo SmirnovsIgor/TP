@@ -9,7 +9,7 @@ userpatterns = [
     path('<str:uuid>/', UserDataForStaffView.as_view())
 ]
 
-organization_patterns = [
+organizationpatterns = [
     path('', OrganizationsView.as_view()),
     path('<str:uuid>/', DetailsWithAllEventsOrganizationView.as_view()),
     path('<str:uuid>/detailed/', DetailedOrganizationView.as_view()),
