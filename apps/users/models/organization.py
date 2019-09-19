@@ -1,5 +1,6 @@
 from django.db import models
 
+from apps.events.models import Event
 from tools.image_funcs import get_image_path
 from apps.base.models import BaseAbstractModel
 
@@ -13,6 +14,10 @@ class Organization(BaseAbstractModel):
 
     class Meta:
         ordering = ['name']
+
+    @property
+    def all_events(self):
+        return Event.objects.filter(organizer_id=self.id)
 
     def __str__(self):
         return self.name

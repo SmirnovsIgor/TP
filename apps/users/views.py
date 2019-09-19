@@ -6,14 +6,17 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+
 from django.shortcuts import get_object_or_404
+from rest_framework.status import HTTP_200_OK
+from rest_framework.views import APIView
 
 from apps.events.models import Event
 from apps.events.serializers import EventSerializer
-from apps.users.models import User
-from apps.users.serializers import UserSerializer
 from apps.subscriptions.serializers import SubscriptionSerializer
 from tools.action_based_permission import ActionBasedPermission
+from apps.users.models import User, Organization
+from apps.users.serializers import UserSerializer, ShortOrganizationSerializer
 
 
 class UserDataForStaffViewSet(RetrieveModelMixin,
@@ -52,3 +55,13 @@ class UserEventsViewSet(viewsets.ReadOnlyModelViewSet):
         event = get_object_or_404(Event, id=kwargs.get('event_id'))
         serializer = EventSerializer(event)
         return Response(serializer.data, status=HTTP_200_OK)
+
+
+class OrganizationsView(APIView):
+    def get(self, request):
+        organizations = self.get_queryset()
+        serializer = ShortOrganizationSerializer(organizations, many=True)
+        return Response(serializer.data, status=HTTP_200_OK)
+
+    def get_queryset(self):
+        return Organization.objects.all()
