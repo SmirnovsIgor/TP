@@ -9,7 +9,6 @@ from apps.users import views
 router = DefaultRouter()
 router.register(r'', views.UserDataForStaffViewSet, basename='user')
 
-
 userpatterns = [
     path('me/', UserDetailsView.as_view()),
     path('me/events/', views.UserEventsViewSet.as_view({'get': 'list'})),
@@ -20,5 +19,6 @@ userpatterns += router.urls
 
 organization_patterns = [
     path('', views.OrganizationsView.as_view()),
+    path('<str:uuid>/', views.DetailsWithAllEventsOrganizationView.as_view()),
+    path('<str:uuid>/detailed/', views.DetailedOrganizationView.as_view()),
 ]
-

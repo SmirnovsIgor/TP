@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from apps.events.serializers import EventSerializer
 from apps.users.models import Organization
+from apps.users.serializers import UserSerializer
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -25,3 +26,15 @@ class ShortOrganizationSerializer(serializers.ModelSerializer):
 
 class DetailsWithAllEventsOrganizationSerializer(ShortOrganizationSerializer):
     events = EventSerializer(many=True, source='all_events')
+
+    class Meta:
+        model = Organization
+        fields = ['id', 'name', 'email', 'events']
+
+
+class DetailedOrganizationSerializer(OrganizationSerializer):
+    members = UserSerializer(many=True, source='all_members')
+
+    class Meta:
+        model = Organization
+        fields = '__all__'
