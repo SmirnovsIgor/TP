@@ -17,8 +17,8 @@ from apps.subscriptions.serializers import SubscriptionSerializer
 from tools.action_based_permission import ActionBasedPermission
 from apps.users.models import User, Organization
 from apps.users.serializers import UserSerializer, ShortOrganizationSerializer
-from apps.users.serializers.organization_serializer import DetailsWithAllEventsOrganizationSerializer, \
-    DetailedOrganizationSerializer
+from apps.users.serializers.organization_serializer import OrganizationWithEventsSerializer, \
+    DetailedOrganizationWithMembersSerializer
 
 
 class UserDataForStaffViewSet(RetrieveModelMixin,
@@ -72,7 +72,7 @@ class OrganizationsView(APIView):
 class DetailsWithAllEventsOrganizationView(APIView):
     def get(self, request, uuid):
         organization = self.get_queryset().get(id=uuid)
-        serializer = DetailsWithAllEventsOrganizationSerializer(organization)
+        serializer = OrganizationWithEventsSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 
     def get_queryset(self):
@@ -84,7 +84,7 @@ class DetailedOrganizationView(APIView):
 
     def get(self,request, uuid):
         organization = self.get_queryset().get(id=uuid)
-        serializer = DetailedOrganizationSerializer(organization)
+        serializer = DetailedOrganizationWithMembersSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 
     def get_queryset(self):
