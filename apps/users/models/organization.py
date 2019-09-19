@@ -1,7 +1,6 @@
 from django.db import models
 
 from apps.events.models import Event
-from apps.users.models import User
 from tools.image_funcs import get_image_path
 from apps.base.models import BaseAbstractModel
 
