@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import NotFound
 from rest_framework.mixins import RetrieveModelMixin
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -30,11 +30,8 @@ class UserDataForStaffViewSet(RetrieveModelMixin,
         IsAdminUser: ['retrieve', 'subscriptions']
     }
 
-    def get(self, request, user_id):
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            raise NotFound("User does not exist")
+    def get(self, request, uuid):
+        user = get_object_or_404(User, id=uuid)
         serializer = UserSerializer(user)
         return Response(serializer.data, status=HTTP_200_OK)
 
@@ -71,7 +68,7 @@ class OrganizationsView(APIView):
 
 class DetailsWithAllEventsOrganizationView(APIView):
     def get(self, request, uuid):
-        organization = self.get_queryset().get(id=uuid)
+        organization = get_object_or_404(self.get_queryset(), id=uuid)
         serializer = OrganizationWithEventsSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 
@@ -82,8 +79,8 @@ class DetailsWithAllEventsOrganizationView(APIView):
 class DetailedOrganizationView(APIView):
     permission_classes = [IsAdminUser]
 
-    def get(self,request, uuid):
-        organization = self.get_queryset().get(id=uuid)
+    def get(self, request, uuid):
+        organization = get_object_or_404(self.get_queryset(), id=uuid)
         serializer = DetailedOrganizationWithMembersSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 
