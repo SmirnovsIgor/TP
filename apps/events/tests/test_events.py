@@ -1,10 +1,13 @@
 import datetime
+import json
 
 import faker
 import pytz
 import pytest
 from rest_framework import status
 
+from apps.locations.models import Address, Place
+from apps.events.models import Event
 
 @pytest.mark.django_db
 class TestEvents:
@@ -214,3 +217,20 @@ class TestEvents:
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
+
+
+@pytest.mark.django_db
+class TestEventsCreate:
+    """
+    Tests which imitates create() for events
+    """
+    def test_create_event_with_not_allowed_to_specify_fields(self, client, user, token, event_create_with_not_allowed_to_specify_fields):
+        user.save()
+        res = client.post('/api/events/', data=json.dumps(event_create_with_not_allowed_to_specify_fields), content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_event = res.json()
+        assert res_event['id']
+        db_event = Event.objects.get(id=res_event['id'])
+        assert db_event.name == res_event.get('name')
+        assert str(db_event.address.id) == res_event.get('address').get('id')

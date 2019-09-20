@@ -6,9 +6,9 @@ from rest_framework import viewsets, mixins, status, exceptions, filters as rest
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from apps.users.models import User, Organization, MembersList
+from apps.users.models import User
 from apps.locations.models import Place, Address
-from apps.locations.serializers import ShortPlaceSerializer, AddressSerializer
+from apps.locations.serializers import AddressSerializer
 
 from apps.events.models import Event
 from apps.events.serializers import EventSerializer
@@ -49,78 +49,80 @@ class EventViewSet(mixins.CreateModelMixin,
         user = request.user
         data_dict = request.data
         place = None
+        address = None
+
         if 'place' in data_dict:
             place = data_dict.pop('place')
-            if place is None:
-                pass
-            elif place.get('id'):
-                place = self.get_created_object(place.get('id'), Place)
-                address = self.get_created_object(place.address__id, Address)
-                place_serializer = ShortPlaceSerializer(data=place)
-                place_serializer.is_valid(raise_exception=True)
-                address_serializer = AddressSerializer(data=address)
-                address_serializer.is_valid(raise_exception=True)
-                # data_dict['place'] = place_serializer
-                # data_dict['address'] = address_serializer
-            else:
-                raise exceptions.ParseError('Wrong place data: send place id or nothing')
-        if 'address' in data_dict and place is None:
+        if 'address' in data_dict:
             address = data_dict.pop('address')
-            if address.get('id'):
-                address = self.get_created_object(address.get('id'), Address)
-                # data_dict['address'] = address
-            elif address:
-                # address creation
-                address_serializer = AddressSerializer(data=address)
-                if address_serializer.is_valid():
-                    address = Address.objects.create(**address_serializer.validated_data)
+
+        if place is None:
+            if address is None:
+                raise exceptions.ParseError('Please, transmit address or place data')
+            elif isinstance(address, dict):
+                if address.get('id'):
+                    address = self.get_created_object(address.get('id'), Address)
                 else:
-                    raise exceptions.ParseError('Address invalid')
+                    address_serializer = AddressSerializer(data=address)
+                    if address_serializer.is_valid():
+                        address = Address.objects.create(**address_serializer.validated_data)
+                    else:
+                        raise exceptions.ParseError('Address invalid')
+            elif isinstance(address, str):
+                address = self.get_created_object(address, Address)
             else:
                 raise exceptions.ParseError('Address field is filled out improperly')
+        elif isinstance(place, dict):
+            place = self.get_created_object(place.get('id'), Place)
+            address = self.get_created_object(place.address_id, Address)
+        elif isinstance(place, str):
+            place = self.get_created_object(place, Place)
+            address = self.get_created_object(place.address_id, Address)
         else:
             raise exceptions.ParseError('Please, transmit address or place data')
-        # -----------check if user has a membership in organization --------------
-        try:
-            organizer = user.membership
-            organizer_id = organizer.id
-            organizer_type = ContentType.objects.get_for_model(Organization)
-        except User.membership.RelatedObjectDoesNotExist:
-            organizer = user
-            organizer_id = user.id
-            organizer_type = ContentType.objects.get_for_model(User)
-        finally:
-            data_dict['organizer_id'] = organizer_id
-            data_dict['organizer_type'] = organizer_type
-            data_dict['organizer_type_id'] = organizer_type.id
-        # ------------------------------------------------------------------------
+
+        organizer, data_dict = self.choose_event_organizer(user=user, **data_dict)
+        data_dict = self.set_defaults(**data_dict)
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(data=data_dict)
         serializer.is_valid(raise_exception=True)
-        data_dict['address'] = address
-        data_dict['place'] = place
-        data_dict['organizer'] = organizer
-        data_dict
-        Event.objects.create(**data_dict)
-        return Response(status=status.HTTP_201_CREATED)
-        # event = self.perform_create(serializer, address=address, place=place)
-        # event_data = serializer_class(event).data
-        # headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        event = self.perform_create(serializer, address=address, place=place, organizer=organizer)
+        event_data = serializer_class(event).data
+        headers = self.get_success_headers(event_data)
+        return Response(event_data, status=status.HTTP_201_CREATED, headers=headers)
 
     def get_created_object(self, obj_id, cls):
+        """Validates ID"""
         try:
-            return cls.objects.get(id=uuid.UUID(obj_id))
+            return cls.objects.get(id=uuid.UUID(str(obj_id)))
         except ValueError:
-            raise exceptions.ParseError('')
+            raise exceptions.ParseError(f'{cls.__name__}\'s ID is not valid')
         except cls.DoesNotExist:
-            raise exceptions.NotFound('')
+            raise exceptions.NotFound('No such ID in database')
+
+    def choose_event_organizer(self, user, **data_dict):
+        """Checks if a user is a member of any organization"""
+        try:
+            organizer = user.membership.organization
+        except User.membership.RelatedObjectDoesNotExist:
+            organizer = user
+        organizer_id, organizer_type = (
+            organizer.id,
+            ContentType.objects.get_for_model(organizer.__class__)
+        )
+        data_dict.update(dict(organizer_id=organizer_id, organizer_type=organizer_type))
+        return organizer, data_dict
+
+    def set_defaults(self, **data_dict):
+        """Set defaults to important fields"""
+        defaults = {
+            'is_top': False,
+            'is_hot': False,
+            'is_approved': False,
+            'status': Event.SOON,
+        }
+        data_dict.update(defaults)
+        return data_dict
 
     def perform_create(self, serializer, **kwargs):
-        serializer.save(**kwargs)
-
-
-"""
-from apps.events.views import User, Event
-User.objects.filter(membership__isnull=True)
-"""
+        return Event.objects.create(**kwargs, **serializer.validated_data)
