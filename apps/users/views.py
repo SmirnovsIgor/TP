@@ -1,4 +1,4 @@
-from rest_framework.exceptions import NotFound
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,10 +14,7 @@ class UserDataForStaffView(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request, uuid):
-        try:
-            user = User.objects.get(id=uuid)
-        except User.DoesNotExist:
-            raise NotFound("User does not exist")
+        user = get_object_or_404(User, id=uuid)
         serializer = UserSerializer(user)
         return Response(serializer.data, status=HTTP_200_OK)
 
@@ -34,7 +31,7 @@ class OrganizationsView(APIView):
 
 class DetailsWithAllEventsOrganizationView(APIView):
     def get(self, request, uuid):
-        organization = self.get_queryset().get(id=uuid)
+        organization = get_object_or_404(self.get_queryset(), id=uuid)
         serializer = OrganizationWithEventsSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 
@@ -45,8 +42,8 @@ class DetailsWithAllEventsOrganizationView(APIView):
 class DetailedOrganizationView(APIView):
     permission_classes = [IsAdminUser]
 
-    def get(self,request, uuid):
-        organization = self.get_queryset().get(id=uuid)
+    def get(self, request, uuid):
+        organization = get_object_or_404(self.get_queryset(), id=uuid)
         serializer = DetailedOrganizationWithMembersSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 
