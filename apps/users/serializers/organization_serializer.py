@@ -30,11 +30,11 @@ class OrganizationWithEventsSerializer(ShortOrganizationSerializer):
     class Meta:
         model = Organization
         fields = ['id', 'name', 'email', 'events']
+        extra_kwargs = {'id': {'read_only': True}}
 
 
 class DetailedOrganizationWithMembersSerializer(OrganizationSerializer):
     members = UserSerializer(many=True, source='all_members')
 
-    class Meta:
-        model = Organization
-        fields = '__all__'
+    class Meta(OrganizationSerializer.Meta):
+        pass
