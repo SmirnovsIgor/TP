@@ -6,8 +6,8 @@ from rest_framework.status import HTTP_200_OK
 
 from apps.users.models import User, Organization
 from apps.users.serializers import UserSerializer, ShortOrganizationSerializer
-from apps.users.serializers.organization_serializer import OrganizationWithEventsSerializer, \
-    DetailedOrganizationWithMembersSerializer
+from apps.users.serializers.organization_serializer import (OrganizationWithEventsSerializer,
+                                                            DetailedOrganizationWithMembersSerializer)
 
 
 class UserDataForStaffView(APIView):
