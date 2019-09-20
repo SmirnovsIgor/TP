@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from rest_framework.filters import BaseFilterBackend
 
 
 class PlaceFilter(filters.FilterSet):
@@ -12,3 +13,8 @@ class AddressFilter(filters.FilterSet):
 class DateFilter(filters.FilterSet):
     date__gte = filters.DateTimeFilter(field_name="date", lookup_expr="gte")
     date__lte = filters.DateTimeFilter(field_name="date", lookup_expr="lte")
+
+
+class SubscriptionDateFilter(BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        pass
