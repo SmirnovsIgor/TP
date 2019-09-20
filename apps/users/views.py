@@ -17,8 +17,8 @@ from apps.subscriptions.serializers import SubscriptionSerializer
 from tools.action_based_permission import ActionBasedPermission
 from apps.users.models import User, Organization
 from apps.users.serializers import UserSerializer, ShortOrganizationSerializer
-from apps.users.serializers.organization_serializer import OrganizationWithEventsSerializer, \
-    DetailedOrganizationWithMembersSerializer
+from apps.users.serializers.organization_serializer import (OrganizationWithEventsSerializer,
+                                                            DetailedOrganizationWithMembersSerializer)
 
 
 class UserDataForStaffViewSet(RetrieveModelMixin,
