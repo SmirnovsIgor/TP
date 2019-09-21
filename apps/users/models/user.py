@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from apps.base.models import BaseAbstractModel
@@ -14,3 +15,13 @@ class User(AbstractUser, BaseAbstractModel):
     first_name = models.CharField('first name', max_length=30, blank=True, null=True)
     last_name = models.CharField('last name', max_length=150, blank=True, null=True)
     date_of_birth = models.DateField('date of birth', blank=True, null=True)
+    events = GenericRelation(
+        'events.Event',
+        content_type_field='organizer_type',
+        object_id_field='organizer_id',
+        related_name='events'
+    )
+
+    @property
+    def user_events(self):
+        return self.events.all()

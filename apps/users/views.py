@@ -1,9 +1,11 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
+from apps.events.serializers import EventSerializer
 from apps.users.models import User
 from apps.users.serializers import UserSerializer
 
@@ -17,4 +19,13 @@ class UserDataForStaffView(APIView):
         except User.DoesNotExist:
             raise NotFound("User does not exist")
         serializer = UserSerializer(user)
+        return Response(serializer.data, status=HTTP_200_OK)
+
+
+class UserEventsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        response = request.user.events
+        serializer = EventSerializer(response)
         return Response(serializer.data, status=HTTP_200_OK)
