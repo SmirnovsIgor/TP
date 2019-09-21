@@ -9,12 +9,14 @@ from rest_framework import status
 from apps.locations.models import Address, Place
 from apps.events.models import Event
 
+
 @pytest.mark.django_db
 class TestEvents:
     """
     poster in Event is always None,
     because we do not generate it
     """
+
     def test_detail_event_by_user_without_place(self, client, event_created_by_user_without_place):
         res = client.get(f'/api/events/{event_created_by_user_without_place.id}/')
         assert res.status_code == status.HTTP_200_OK
@@ -42,8 +44,8 @@ class TestEvents:
         assert address.get('description') == event_created_by_user_without_place.address.description
 
         assert datetime.datetime.strptime(
-                    event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
-               ).replace(tzinfo=pytz.UTC) == event_created_by_user_without_place.date
+            event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_without_place.date
         assert event_dict.get('duration') == event_created_by_user_without_place.duration
         assert event_dict.get('age_rate') == event_created_by_user_without_place.age_rate
         assert event_dict.get('is_approved') == event_created_by_user_without_place.is_approved
@@ -73,8 +75,8 @@ class TestEvents:
         assert place.get('name') == event_created_by_user_with_place.place.name
         assert place.get('description') == event_created_by_user_with_place.place.description
         assert datetime.datetime.strptime(
-                    place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
-               ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.place.created
+            place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.place.created
         assert place.get('status') == event_created_by_user_with_place.place.status
 
         address = event_dict.get('address')
@@ -89,8 +91,8 @@ class TestEvents:
         assert address.get('description') == event_created_by_user_with_place.address.description
 
         assert datetime.datetime.strptime(
-                    event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
-               ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.date
+            event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.date
         assert event_dict.get('duration') == event_created_by_user_with_place.duration
         assert event_dict.get('age_rate') == event_created_by_user_with_place.age_rate
         assert event_dict.get('is_approved') == event_created_by_user_with_place.is_approved
@@ -108,7 +110,8 @@ class TestEvents:
         assert event_dict.get('description') == event_created_by_organization_without_place.description
         assert event_dict.get('poster') == event_created_by_organization_without_place.poster
         assert event_dict.get('organizer_id') == str(event_created_by_organization_without_place.organizer_id)
-        assert event_dict.get('organizer_type') == str(event_created_by_organization_without_place.organizer_type).title()
+        assert event_dict.get('organizer_type') == str(
+            event_created_by_organization_without_place.organizer_type).title()
 
         organizer = event_dict.get('organizer')
         assert organizer
@@ -127,8 +130,8 @@ class TestEvents:
         assert address.get('description') == event_created_by_organization_without_place.address.description
 
         assert datetime.datetime.strptime(
-                    event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
-               ).replace(tzinfo=pytz.UTC) == event_created_by_organization_without_place.date
+            event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_without_place.date
         assert event_dict.get('duration') == event_created_by_organization_without_place.duration
         assert event_dict.get('age_rate') == event_created_by_organization_without_place.age_rate
         assert event_dict.get('is_approved') == event_created_by_organization_without_place.is_approved
@@ -158,8 +161,8 @@ class TestEvents:
         assert place.get('name') == event_created_by_organization_with_place.place.name
         assert place.get('description') == event_created_by_organization_with_place.place.description
         assert datetime.datetime.strptime(
-                    place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
-               ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.place.created
+            place.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.place.created
         assert place.get('status') == event_created_by_organization_with_place.place.status
 
         address = event_dict.get('address')
@@ -174,8 +177,8 @@ class TestEvents:
         assert address.get('description') == event_created_by_organization_with_place.address.description
 
         assert datetime.datetime.strptime(
-                    event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
-               ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.date
+            event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.date
         assert event_dict.get('duration') == event_created_by_organization_with_place.duration
         assert event_dict.get('age_rate') == event_created_by_organization_with_place.age_rate
         assert event_dict.get('is_approved') == event_created_by_organization_with_place.is_approved
@@ -218,19 +221,372 @@ class TestEvents:
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
 
+    @pytest.mark.parametrize('ordering', ['created', '-created'])
+    @pytest.mark.parametrize('event_qty', [16, 20, 40])
+    def test_list_ordering(self, client, events_batch_for_filtering_and_ordering, event_qty, ordering):
+        res = client.get(f'/api/events/?ordering={ordering}')
+        assert res.status_code == status.HTTP_200_OK
+        assert isinstance(res.json(), list)
+        assert len(res.json()) == event_qty
+        event_list = list(Event.objects.all().values('id').order_by(ordering))
+        for i in range(event_qty):
+            assert res.json()[i].get('id') == str(event_list[i].get('id'))
+
+    @pytest.mark.parametrize('filtering', ['place', 'address', 'organizer', 'date__lte', 'date__gte'])
+    @pytest.mark.parametrize('event_qty', [8, 16])
+    def test_list_filtering_non_bool_vals(self, client, events_batch_for_filtering_and_ordering, event_qty, filtering):
+        data = None
+        event_list = []
+        if filtering == 'place':
+            data = Place.objects.all()[0].id
+            event_list = list(Event.objects.filter(place_id=data).order_by('created').values('id'))
+        elif filtering == 'address':
+            data = Event.objects.all()[0].address_id
+            event_list = list(Event.objects.filter(address_id=data).order_by('created').values('id'))
+        elif filtering == 'organizer':
+            data = Event.objects.all()[event_qty//2].organizer_id
+            event_list = list(Event.objects.filter(organizer_id=data).order_by('created').values('id'))
+        elif filtering.endswith('lte'):
+            data = '2019-09-10 12:00'
+            event_list = list(Event.objects.filter(date__lte=data).order_by('created').values('id'))
+        elif filtering.endswith('gte'):
+            data = '2019-09-10 12:00'
+            event_list = list(Event.objects.filter(date__gte=data).order_by('created').values('id'))
+        res = client.get(f'/api/events/?{filtering}={data}&ordering=created')
+        assert res.status_code == status.HTTP_200_OK
+        assert isinstance(res.json(), list)
+        for i in range(len(res.json())):
+            assert res.json()[i].get('id') == str(event_list[i].get('id'))
+
+    @pytest.mark.parametrize('data', [True, False])
+    @pytest.mark.parametrize('filtering', ['is_top', 'is_hot'])
+    @pytest.mark.parametrize('event_qty', [8, 16])
+    def test_list_filtering_bool_vals(self, client, events_batch_for_filtering_and_ordering, event_qty, filtering, data):
+        event_list = []
+        if filtering.endswith('top'):
+            event_list = list(Event.objects.filter(is_top=data).order_by('created').values('id'))
+        elif filtering.endswith('hot'):
+            event_list = list(Event.objects.filter(is_hot=data).order_by('created').values('id'))
+        res = client.get(f'/api/events/?{filtering}={data}&ordering=created')
+        assert res.status_code == status.HTTP_200_OK
+        assert isinstance(res.json(), list)
+        for i in range(len(res.json())):
+            assert res.json()[0].get('id') == str(event_list[0].get('id'))
+
 
 @pytest.mark.django_db
 class TestEventsCreate:
     """
     Tests which imitates create() for events
     """
-    def test_create_event_with_not_allowed_to_specify_fields(self, client, user, token, event_create_with_not_allowed_to_specify_fields):
+
+    def test_create_event_not_authenticated_user(self, client, user, event_dict, address_dict):
         user.save()
-        res = client.post('/api/events/', data=json.dumps(event_create_with_not_allowed_to_specify_fields), content_type='application/json',
+        event_dict.update(address=address_dict)
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json')
+        assert res.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_create_event_with_not_allowed_to_specify_fields(self, client, user, token, event_dict, address_dict):
+        user.save()
+        event_dict.update(address=address_dict)
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json',
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         assert res.status_code == status.HTTP_201_CREATED
         res_event = res.json()
-        assert res_event['id']
-        db_event = Event.objects.get(id=res_event['id'])
+        assert res_event.get('id')
+        db_event = Event.objects.get(id=res_event.get('id'))
         assert db_event.name == res_event.get('name')
+        assert db_event.description == res_event.get('description')
+        assert bool(db_event.poster) == bool(res_event.get('poster'))
+        assert db_event.date == datetime.datetime.strptime(res_event.get('date'),
+                                                           '%Y-%m-%dT%H:%M:%SZ'
+                                                           ).replace(tzinfo=pytz.UTC)
+        assert str(db_event.duration) == res_event.get('duration')
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.updated == datetime.datetime.strptime(res_event.get('updated'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.age_rate == res_event.get('age_rate')
+        assert db_event.max_members == res_event.get('max_members')
+        assert db_event.status == Event.SOON
+        assert db_event.is_approved == False
+        assert db_event.is_hot == False
+        assert db_event.is_top == False
         assert str(db_event.address.id) == res_event.get('address').get('id')
+
+    def test_create_event_with_empty_place_and_address_id_in_dict(self, client, user, address, token, event_dict):
+        user.save()
+        address.save()
+        address = Address.objects.all()[0]
+        address_id = {
+            'id': str(address.id)
+        }
+        event_dict.pop('place')
+        event_dict.update(address=address_id)
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_event = res.json()
+        assert res_event.get('id')
+        db_event = Event.objects.get(id=res_event.get('id'))
+        assert db_event.name == res_event.get('name')
+        assert db_event.description == res_event.get('description')
+        assert bool(db_event.poster) == bool(res_event.get('poster'))
+        assert db_event.date == datetime.datetime.strptime(res_event.get('date'),
+                                                           '%Y-%m-%dT%H:%M:%SZ'
+                                                           ).replace(tzinfo=pytz.UTC)
+        assert str(db_event.duration) == res_event.get('duration')
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.updated == datetime.datetime.strptime(res_event.get('updated'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.age_rate == res_event.get('age_rate')
+        assert db_event.max_members == res_event.get('max_members')
+        assert str(db_event.address.id) == res_event.get('address').get('id')
+
+    def test_create_event_with_empty_place_and_address_id_in_str(self, client, user, address, token, event_dict):
+        user.save()
+        address.save()
+        address = Address.objects.all()[0]
+        event_dict.pop('place')
+        event_dict.update(address=str(address.id))
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_event = res.json()
+        assert res_event.get('id')
+        db_event = Event.objects.get(id=res_event.get('id'))
+        assert db_event.name == res_event.get('name')
+        assert db_event.description == res_event.get('description')
+        assert bool(db_event.poster) == bool(res_event.get('poster'))
+        assert db_event.date == datetime.datetime.strptime(res_event.get('date'),
+                                                           '%Y-%m-%dT%H:%M:%SZ'
+                                                           ).replace(tzinfo=pytz.UTC)
+        assert str(db_event.duration) == res_event.get('duration')
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.updated == datetime.datetime.strptime(res_event.get('updated'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.age_rate == res_event.get('age_rate')
+        assert db_event.max_members == res_event.get('max_members')
+        assert str(db_event.address.id) == res_event.get('address').get('id')
+
+    def test_create_event_with_place_none_and_address_id_in_dict(self, client, user, address, token, event_dict):
+        user.save()
+        address.save()
+        address = Address.objects.all()[0]
+        address_id = {
+            'id': str(address.id)
+        }
+        event_dict.update(address=address_id)
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_event = res.json()
+        assert res_event.get('id')
+        db_event = Event.objects.get(id=res_event.get('id'))
+        assert db_event.name == res_event.get('name')
+        assert db_event.description == res_event.get('description')
+        assert bool(db_event.poster) == bool(res_event.get('poster'))
+        assert db_event.date == datetime.datetime.strptime(res_event.get('date'),
+                                                           '%Y-%m-%dT%H:%M:%SZ'
+                                                           ).replace(tzinfo=pytz.UTC)
+        assert str(db_event.duration) == res_event.get('duration')
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.updated == datetime.datetime.strptime(res_event.get('updated'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.age_rate == res_event.get('age_rate')
+        assert db_event.max_members == res_event.get('max_members')
+        assert str(db_event.address.id) == res_event.get('address').get('id')
+
+    def test_create_event_with_place_none_and_address_id_in_str(self, client, user, address, token, event_dict):
+        user.save()
+        address.save()
+        address = Address.objects.all()[0]
+        event_dict.update(address=str(address.id))
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_event = res.json()
+        assert res_event.get('id')
+        db_event = Event.objects.get(id=res_event.get('id'))
+        assert db_event.name == res_event.get('name')
+        assert db_event.description == res_event.get('description')
+        assert bool(db_event.poster) == bool(res_event.get('poster'))
+        assert db_event.date == datetime.datetime.strptime(res_event.get('date'),
+                                                           '%Y-%m-%dT%H:%M:%SZ'
+                                                           ).replace(tzinfo=pytz.UTC)
+        assert str(db_event.duration) == res_event.get('duration')
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.updated == datetime.datetime.strptime(res_event.get('updated'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.age_rate == res_event.get('age_rate')
+        assert db_event.max_members == res_event.get('max_members')
+        assert str(db_event.address.id) == res_event.get('address').get('id')
+
+    def test_create_event_with_empty_place_and_new_address(self, client, user, token, event_dict, address_dict):
+        user.save()
+        event_dict.update(address=address_dict)
+        event_dict.pop('place')
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_event = res.json()
+        assert res_event.get('id')
+        db_event = Event.objects.get(id=res_event.get('id'))
+        assert db_event.name == res_event.get('name')
+        assert db_event.description == res_event.get('description')
+        assert bool(db_event.poster) == bool(res_event.get('poster'))
+        assert db_event.date == datetime.datetime.strptime(res_event.get('date'),
+                                                           '%Y-%m-%dT%H:%M:%SZ'
+                                                           ).replace(tzinfo=pytz.UTC)
+        assert str(db_event.duration) == res_event.get('duration')
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.updated == datetime.datetime.strptime(res_event.get('updated'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.age_rate == res_event.get('age_rate')
+        assert db_event.max_members == res_event.get('max_members')
+        assert str(db_event.address.id) == res_event.get('address').get('id')
+
+    def test_create_event_with_place_none_and_new_address(self, client, user, token, event_dict, address_dict):
+        user.save()
+        event_dict.update(address=address_dict)
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_event = res.json()
+        assert res_event.get('id')
+        db_event = Event.objects.get(id=res_event.get('id'))
+        assert db_event.name == res_event.get('name')
+        assert db_event.description == res_event.get('description')
+        assert bool(db_event.poster) == bool(res_event.get('poster'))
+        assert db_event.date == datetime.datetime.strptime(res_event.get('date'),
+                                                           '%Y-%m-%dT%H:%M:%SZ'
+                                                           ).replace(tzinfo=pytz.UTC)
+        assert str(db_event.duration) == res_event.get('duration')
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.updated == datetime.datetime.strptime(res_event.get('updated'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.age_rate == res_event.get('age_rate')
+        assert db_event.max_members == res_event.get('max_members')
+        assert str(db_event.address.id) == res_event.get('address').get('id')
+
+    def test_create_event_with_place_id_in_str_and_any_address_data(self, client, user, token, place, event_dict,
+                                                                    address_dict):
+        user.save()
+        place.save()
+        place = Place.objects.all()[0]
+        event_dict.update(place=str(place.id))
+        event_dict.update(address=address_dict)
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_event = res.json()
+        assert res_event.get('id')
+        db_event = Event.objects.get(id=res_event.get('id'))
+        assert db_event.name == res_event.get('name')
+        assert db_event.description == res_event.get('description')
+        assert bool(db_event.poster) == bool(res_event.get('poster'))
+        assert db_event.date == datetime.datetime.strptime(res_event.get('date'),
+                                                           '%Y-%m-%dT%H:%M:%SZ'
+                                                           ).replace(tzinfo=pytz.UTC)
+        assert str(db_event.duration) == res_event.get('duration')
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.updated == datetime.datetime.strptime(res_event.get('updated'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.age_rate == res_event.get('age_rate')
+        assert db_event.max_members == res_event.get('max_members')
+        assert str(db_event.address.id) == res_event.get('address').get('id')
+        assert str(db_event.place.id) == res_event.get('place').get('id')
+
+    def test_create_event_with_place_id_in_dict_and_any_address_data(self, client, user, token, place, event_dict,
+                                                                     address_dict):
+        user.save()
+        place.save()
+        place = Place.objects.all()[0]
+        place_id = {
+            'id': str(place.id)
+        }
+        event_dict.update(place=place_id)
+        event_dict.update(address=address_dict)
+        res = client.post('/api/events/', data=json.dumps(event_dict),
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_event = res.json()
+        assert res_event.get('id')
+        db_event = Event.objects.get(id=res_event.get('id'))
+        assert db_event.name == res_event.get('name')
+        assert db_event.description == res_event.get('description')
+        assert bool(db_event.poster) == bool(res_event.get('poster'))
+        assert db_event.date == datetime.datetime.strptime(res_event.get('date'),
+                                                           '%Y-%m-%dT%H:%M:%SZ'
+                                                           ).replace(tzinfo=pytz.UTC)
+        assert str(db_event.duration) == res_event.get('duration')
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.created == datetime.datetime.strptime(res_event.get('created'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.updated == datetime.datetime.strptime(res_event.get('updated'),
+                                                              '%Y-%m-%dT%H:%M:%S.%fZ'
+                                                              ).replace(tzinfo=pytz.UTC)
+        assert db_event.age_rate == res_event.get('age_rate')
+        assert db_event.max_members == res_event.get('max_members')
+        assert str(db_event.address.id) == res_event.get('address').get('id')
+        assert str(db_event.place.id) == res_event.get('place').get('id')

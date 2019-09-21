@@ -58,33 +58,28 @@ def events_batch_for_filtering_and_ordering(event_qty):
 
 
 @pytest.fixture
-def place_dict():
-    return {
-        "name": "Vargas-Simpson",
-        "photo": None,
-        "description": "Wall fall yard maintain writer reveal thousand. Different during television history quite. Shake mouth his speech.",
-        "status": "WORKING"
-    }
-
-
-@pytest.fixture
 def token(user):
     return create_token(TokenModel, user, TokenSerializer)
 
 
 @pytest.fixture
-def event_create_with_not_allowed_to_specify_fields():
+def address_dict():
+    return {
+        "country": "Bosnia and Herzegovina",
+        "city": "Henrytown",
+        "street": "Manning Land",
+        "house": "238",
+        "floor": 16,
+        "apartments": "264",
+        "description": None
+    }
+
+
+@pytest.fixture
+def event_dict():
     return {
         "place": None,
-        "address": {
-            "country": "Bosnia and Herzegovina",
-            "city": "Henrytown",
-            "street": "Manning Land",
-            "house": "238",
-            "floor": 16,
-            "apartments": "264",
-            "description": None
-        },
+        "address": None,
         "name": "Secured holistic flexibility",
         "description": "Test represent keep. Population this right break. Hundred lose concern wife represent operation bank year.\nMust example news too. Chance amount any individual. Whose cup tend with card visit.",
         "poster": None,
@@ -97,63 +92,3 @@ def event_create_with_not_allowed_to_specify_fields():
         "max_members": 1504,
         "status": "SOON"
     }
-
-
-@pytest.fixture
-def event_create_without_place_and_with_address_id_in_one_field():
-    return None
-
-
-@pytest.fixture
-def event_create_without_place_and_with_address_id_in_dict():
-    pass
-
-
-@pytest.fixture
-def event_create_without_place_and_with_creating_address():
-    pass
-
-
-@pytest.fixture
-def event_create_with_place_null_and_with_address_id_in_one_field():
-    pass
-
-
-@pytest.fixture
-def event_create_with_place_null_and_with_address_id_in_dict():
-    pass
-
-
-@pytest.fixture
-def event_create_with_place_null_and_with_creating_address():
-    pass
-
-
-@pytest.fixture
-def event_create_with_place_id_in_one_field_and_no_address():
-    pass
-
-
-@pytest.fixture
-def event_create_with_place_id_in_one_field_and_address_id():
-    pass
-
-
-@pytest.fixture
-def event_create_with_place_id_in_one_field_and_any_address_data():
-    pass
-
-
-@pytest.fixture
-def event_create_with_place_id_in_dict_and_no_address():
-    pass
-
-
-@pytest.fixture
-def event_create_with_place_id_in_dict_and_address_id():
-    pass
-
-
-@pytest.fixture
-def event_create_with_place_id_in_dict_and_any_address_data():
-    pass
