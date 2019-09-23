@@ -1,16 +1,15 @@
 from django.urls import path
 from rest_auth.views import UserDetailsView
 
-from apps.users.views import UserDataForStaffView, OrganizationsView, DetailsWithAllEventsOrganizationView, \
-    DetailedOrganizationView
+from apps.users import views
 
 userpatterns = [
     path('me/', UserDetailsView.as_view()),
-    path('<str:uuid>/', UserDataForStaffView.as_view())
+    path('<str:user_id>/', views.UserDataForStaffView.as_view())
 ]
 
 organizationpatterns = [
-    path('', OrganizationsView.as_view()),
-    path('<str:uuid>/', DetailsWithAllEventsOrganizationView.as_view()),
-    path('<str:uuid>/detailed/', DetailedOrganizationView.as_view()),
+    path('', views.OrganizationsView.as_view()),
+    path('<str:organization_id>/', views.DetailsWithAllEventsOrganizationView.as_view()),
+    path('<str:organization_id>/detailed/', views.DetailedOrganizationView.as_view()),
 ]
