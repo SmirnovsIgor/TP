@@ -30,8 +30,8 @@ class UserDataForStaffViewSet(RetrieveModelMixin,
         IsAdminUser: ['retrieve', 'subscriptions']
     }
 
-    def get(self, request, uuid):
-        user = get_object_or_404(User, id=uuid)
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
         serializer = UserSerializer(user)
         return Response(serializer.data, status=HTTP_200_OK)
 
@@ -67,8 +67,8 @@ class OrganizationsView(APIView):
 
 
 class DetailsWithAllEventsOrganizationView(APIView):
-    def get(self, request, uuid):
-        organization = get_object_or_404(self.get_queryset(), id=uuid)
+    def get(self, request, organization_id):
+        organization = get_object_or_404(self.get_queryset(), id=organization_id)
         serializer = OrganizationWithEventsSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 
@@ -79,8 +79,8 @@ class DetailsWithAllEventsOrganizationView(APIView):
 class DetailedOrganizationView(APIView):
     permission_classes = [IsAdminUser]
 
-    def get(self, request, uuid):
-        organization = get_object_or_404(self.get_queryset(), id=uuid)
+    def get(self, request, organization_id):
+        organization = get_object_or_404(self.get_queryset(), id=organization_id)
         serializer = DetailedOrganizationWithMembersSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 

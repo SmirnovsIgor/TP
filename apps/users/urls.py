@@ -19,6 +19,6 @@ userpatterns += router.urls
 
 organizationpatterns = [
     path('', views.OrganizationsView.as_view()),
-    path('<str:uuid>/', views.DetailsWithAllEventsOrganizationView.as_view()),
-    path('<str:uuid>/detailed/', views.DetailedOrganizationView.as_view()),
+    path('<str:organization_id>/', views.DetailsWithAllEventsOrganizationView.as_view()),
+    path('<str:organization_id>/detailed/', views.DetailedOrganizationView.as_view()),
 ]
