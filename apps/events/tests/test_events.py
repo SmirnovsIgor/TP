@@ -316,9 +316,9 @@ class TestEventsCreate:
         assert db_event.age_rate == res_event.get('age_rate')
         assert db_event.max_members == res_event.get('max_members')
         assert db_event.status == Event.SOON
-        assert db_event.is_approved == False
-        assert db_event.is_hot == False
-        assert db_event.is_top == False
+        assert db_event.is_approved == res_event.get('is_approved')
+        assert db_event.is_hot == res_event.get('is_hot')
+        assert db_event.is_top == res_event.get('is_top')
         assert str(db_event.address.id) == res_event.get('address').get('id')
 
     def test_create_event_with_empty_place_and_address_id_in_dict(self, client, user, address, token, event_dict):
