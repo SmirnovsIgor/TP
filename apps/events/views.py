@@ -50,6 +50,10 @@ class EventViewSet(mixins.CreateModelMixin,
         data_dict = request.data
         place = None
         address = None
+        receive_place_mapping = {
+            dict: lambda: self.get_created_object(place.get('id'), Place),
+            str: lambda: self.get_created_object(place, Place),
+        }
 
         if 'place' in data_dict:
             place = data_dict.pop('place')
@@ -58,49 +62,20 @@ class EventViewSet(mixins.CreateModelMixin,
 
         # ------------------------refactoring-------------------------------------------
         if isinstance(place, (dict, str)):
-            mapping = {
-                dict: lambda: self.get_created_object(place.get('id'), Place),
-                str: lambda: self.get_created_object(place, Place),
-            }
-            place = mapping.get(type(place))()
+            place = receive_place_mapping.get(type(place))()
             address = self.get_created_object(place.address_id, Address)
-        elif isinstance(address, dict):
-            if address.get('id'):
-                address = self.get_created_object(address.get('id'), Address)
+        elif not isinstance(address, (dict, str)):
+            raise exceptions.ParseError('Please, transmit address or place as dict or str')
+        else:
+            created_address_id = address if isinstance(address, str) else address.get('id')
+            if created_address_id:
+                address = self.get_created_object(created_address_id, Address)
             else:
                 address_serializer = AddressSerializer(data=address)
                 if address_serializer.is_valid():
                     address = Address.objects.create(**address_serializer.validated_data)
                 else:
                     raise exceptions.ParseError('Address data is invalid')
-        elif isinstance(address, str):
-            address = self.get_created_object(address, Address)
-        else:
-            raise exceptions.ParseError('Please, transmit address or place as dict or str')
-        # if place is None:
-        #     if address is None:
-        #         raise exceptions.ParseError('Please, transmit address or place data')
-        #     elif isinstance(address, dict):
-        #         if address.get('id'):
-        #             address = self.get_created_object(address.get('id'), Address)
-        #         else:
-        #             address_serializer = AddressSerializer(data=address)
-        #             if address_serializer.is_valid():
-        #                 address = Address.objects.create(**address_serializer.validated_data)
-        #             else:
-        #                 raise exceptions.ParseError('Address invalid')
-        #     elif isinstance(address, str):
-        #         address = self.get_created_object(address, Address)
-        #     else:
-        #         raise exceptions.ParseError('Address field is filled out improperly')
-        # elif isinstance(place, dict):
-        #     place = self.get_created_object(place.get('id'), Place)
-        #     address = self.get_created_object(place.address_id, Address)
-        # elif isinstance(place, str):
-        #     place = self.get_created_object(place, Place)
-        #     address = self.get_created_object(place.address_id, Address)
-        # else:
-        #     raise exceptions.ParseError('Please, transmit address or place data')
         # ------------------------refactoring-------------------------------------------
 
         organizer, data_dict = self.choose_event_organizer(user=user, **data_dict)
