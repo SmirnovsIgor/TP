@@ -22,5 +22,5 @@ class UserDataForStaffViewSet(RetrieveModelMixin,
     @action(detail=True, methods=['get'])
     def subscriptions(self, request, pk=None):
         user = self.get_object()
-        serializer = SubscriptionSerializer(user.events, many=True)
+        serializer = SubscriptionSerializer(user.subscriptions, many=True)
         return Response(serializer.data)
