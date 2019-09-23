@@ -16,7 +16,7 @@ class Subscription(BaseAbstractModel):
         (STATUS_UNPAID, 'Unpaid'),
         (STATUS_UNTRACKED, 'Untracked')
     ]
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='subscribers')
     status = models.CharField(max_length=9, choices=STATUS_CHOICES, blank=False, null=False, default=STATUS_UNTRACKED)
 

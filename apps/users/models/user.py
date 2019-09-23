@@ -21,7 +21,3 @@ class User(AbstractUser, BaseAbstractModel):
         object_id_field='organizer_id',
         related_name='events'
     )
-
-    @property
-    def user_events(self):
-        return self.events.all()

@@ -27,5 +27,5 @@ class UserEventsView(APIView):
 
     def get(self, request):
         response = request.user.events
-        serializer = EventSerializer(response)
+        serializer = EventSerializer(response, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
