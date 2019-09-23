@@ -6,7 +6,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
+from django.shortcuts import get_object_or_404
 
+from apps.events.models import Event
 from apps.events.serializers import EventSerializer
 from apps.users.models import User
 from apps.users.serializers import UserSerializer
@@ -15,9 +17,9 @@ from apps.users.serializers import UserSerializer
 class UserDataForStaffView(APIView):
     permission_classes = [IsAdminUser]
 
-    def get(self, request, uuid):
+    def get(self, request, user_id):
         try:
-            user = User.objects.get(id=uuid)
+            user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             raise NotFound("User does not exist")
         serializer = UserSerializer(user)
@@ -33,6 +35,6 @@ class UserEventsViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data, status=HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
-        response = request.user.events.get(id=kwargs.get('event_id'))
-        serializer = EventSerializer(response)
+        event = get_object_or_404(Event, id=kwargs.get('event_id'))
+        serializer = EventSerializer(event)
         return Response(serializer.data, status=HTTP_200_OK)

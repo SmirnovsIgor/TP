@@ -5,7 +5,7 @@ from apps.users.views import UserDataForStaffView, UserEventsViewSet
 
 userpatterns = [
     path('me/', UserDetailsView.as_view()),
-    path('<str:uuid>/', UserDataForStaffView.as_view()),
+    path('<str:user_id>/', UserDataForStaffView.as_view()),
     path('me/events/', UserEventsViewSet.as_view({'get': 'list'})),
-    path('me/events/<event_id>/', UserEventsViewSet.as_view({'get': 'retrieve'})),
+    path('me/events/<str:event_id>/detailed/', UserEventsViewSet.as_view({'get': 'retrieve'})),
 ]
