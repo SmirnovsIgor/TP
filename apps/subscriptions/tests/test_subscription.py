@@ -8,13 +8,12 @@ class TestStaff:
     def test_user_subscriptions_for_staff_true(self, client, request_user, user, token, subscriptions, subscription_qty):
         request_user.is_staff = True
         request_user.save()
-        duplicates = 0
         for subscription in subscriptions:
             subscription.user = user
             subscription.save()
         res = client.get(f'/api/users/{user.id}/subscriptions/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert res.status_code == status.HTTP_200_OK
-        assert len(res.json()) == subscription_qty - duplicates
+        assert len(res.json()) == subscription_qty
 
     def test_user_subscriptions_for_staff_false(self, client, request_user, user, token):
         response = client.get(f'/api/users/{user.id}/subscriptions/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
