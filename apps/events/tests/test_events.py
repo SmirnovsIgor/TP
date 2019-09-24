@@ -29,6 +29,7 @@ class TestEvents:
 
         organizer = event_dict.get('organizer')
         assert organizer
+        assert organizer.get('id') == str(event_created_by_user_without_place.organizer.id)
         assert organizer.get('username') == event_created_by_user_without_place.organizer.username
         assert organizer.get('email') == event_created_by_user_without_place.organizer.email
 
@@ -42,6 +43,12 @@ class TestEvents:
         assert address.get('floor') == event_created_by_user_without_place.address.floor
         assert address.get('apartments') == event_created_by_user_without_place.address.apartments
         assert address.get('description') == event_created_by_user_without_place.address.description
+        assert datetime.datetime.strptime(
+            address.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_without_place.address.created
+        assert datetime.datetime.strptime(
+            address.get('updated'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_without_place.address.updated
 
         assert datetime.datetime.strptime(
             event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
@@ -53,6 +60,12 @@ class TestEvents:
         assert event_dict.get('is_top') == event_created_by_user_without_place.is_top
         assert event_dict.get('max_members') == event_created_by_user_without_place.max_members
         assert event_dict.get('status') == event_created_by_user_without_place.status
+        assert datetime.datetime.strptime(
+            event_dict.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_without_place.created
+        assert datetime.datetime.strptime(
+            event_dict.get('updated'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_without_place.updated
 
     def test_detail_event_by_user_with_place(self, client, event_created_by_user_with_place):
         res = client.get(f'/api/events/{event_created_by_user_with_place.id}/')
@@ -66,6 +79,7 @@ class TestEvents:
 
         organizer = event_dict.get('organizer')
         assert organizer
+        assert organizer.get('id') == str(event_created_by_user_with_place.organizer.id)
         assert organizer.get('username') == event_created_by_user_with_place.organizer.username
         assert organizer.get('email') == event_created_by_user_with_place.organizer.email
 
@@ -89,6 +103,12 @@ class TestEvents:
         assert address.get('floor') == event_created_by_user_with_place.address.floor
         assert address.get('apartments') == event_created_by_user_with_place.address.apartments
         assert address.get('description') == event_created_by_user_with_place.address.description
+        assert datetime.datetime.strptime(
+            address.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.address.created
+        assert datetime.datetime.strptime(
+            address.get('updated'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.address.updated
 
         assert datetime.datetime.strptime(
             event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
@@ -100,6 +120,12 @@ class TestEvents:
         assert event_dict.get('is_top') == event_created_by_user_with_place.is_top
         assert event_dict.get('max_members') == event_created_by_user_with_place.max_members
         assert event_dict.get('status') == event_created_by_user_with_place.status
+        assert datetime.datetime.strptime(
+            event_dict.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.created
+        assert datetime.datetime.strptime(
+            event_dict.get('updated'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_user_with_place.updated
 
     def test_detail_event_by_organization_without_place(self, client, event_created_by_organization_without_place):
         """Test event created by user without place"""
@@ -115,6 +141,7 @@ class TestEvents:
 
         organizer = event_dict.get('organizer')
         assert organizer
+        assert organizer.get('id') == str(event_created_by_organization_without_place.organizer.id)
         assert organizer.get('name') == event_created_by_organization_without_place.organizer.name
         assert organizer.get('email') == event_created_by_organization_without_place.organizer.email
 
@@ -128,6 +155,12 @@ class TestEvents:
         assert address.get('floor') == event_created_by_organization_without_place.address.floor
         assert address.get('apartments') == event_created_by_organization_without_place.address.apartments
         assert address.get('description') == event_created_by_organization_without_place.address.description
+        assert datetime.datetime.strptime(
+            address.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_without_place.address.created
+        assert datetime.datetime.strptime(
+            address.get('updated'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_without_place.address.updated
 
         assert datetime.datetime.strptime(
             event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
@@ -139,6 +172,12 @@ class TestEvents:
         assert event_dict.get('is_top') == event_created_by_organization_without_place.is_top
         assert event_dict.get('max_members') == event_created_by_organization_without_place.max_members
         assert event_dict.get('status') == event_created_by_organization_without_place.status
+        assert datetime.datetime.strptime(
+            event_dict.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_without_place.created
+        assert datetime.datetime.strptime(
+            event_dict.get('updated'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_without_place.updated
 
     def test_detail_event_by_organization_with_place(self, client, event_created_by_organization_with_place):
         res = client.get(f'/api/events/{event_created_by_organization_with_place.id}/')
@@ -152,6 +191,7 @@ class TestEvents:
 
         organizer = event_dict.get('organizer')
         assert organizer
+        assert organizer.get('id') == str(event_created_by_organization_with_place.organizer.id)
         assert organizer.get('name') == event_created_by_organization_with_place.organizer.name
         assert organizer.get('email') == event_created_by_organization_with_place.organizer.email
 
@@ -175,6 +215,12 @@ class TestEvents:
         assert address.get('floor') == event_created_by_organization_with_place.address.floor
         assert address.get('apartments') == event_created_by_organization_with_place.address.apartments
         assert address.get('description') == event_created_by_organization_with_place.address.description
+        assert datetime.datetime.strptime(
+            address.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.address.created
+        assert datetime.datetime.strptime(
+            address.get('updated'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.address.updated
 
         assert datetime.datetime.strptime(
             event_dict.get('date'), '%Y-%m-%dT%H:%M:%SZ'
@@ -186,6 +232,12 @@ class TestEvents:
         assert event_dict.get('is_top') == event_created_by_organization_with_place.is_top
         assert event_dict.get('max_members') == event_created_by_organization_with_place.max_members
         assert event_dict.get('status') == event_created_by_organization_with_place.status
+        assert datetime.datetime.strptime(
+            event_dict.get('created'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.created
+        assert datetime.datetime.strptime(
+            event_dict.get('updated'), '%Y-%m-%dT%H:%M:%S.%fZ'
+        ).replace(tzinfo=pytz.UTC) == event_created_by_organization_with_place.updated
 
     def test_detail_negative(self, client):
         """Negative test checks access to uncreated event by random uuid"""
