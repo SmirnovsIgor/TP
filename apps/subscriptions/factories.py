@@ -21,7 +21,7 @@ class SubscriptionFactory(factory.django.DjangoModelFactory):
         model = Subscription
 
 
-class SubscriptionFactoryForTests(factory.django.DjangoModelFactory):
+class ForTestsSubscriptionFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     event = factory.SubFactory(EventUserWithoutPlaceFactory)
     status = factory.fuzzy.FuzzyChoice(Subscription.STATUS_CHOICES, getter=lambda c: c[0])

@@ -10,7 +10,7 @@ from apps.events.factories import (
 )
 from apps.locations.factories import AddressFactory, PlaceFactory
 from apps.users.factories import UserFactory, OrganizationFactory
-from apps.subscriptions.factories import SubscriptionFactory, SubscriptionFactoryForTests
+from apps.subscriptions.factories import SubscriptionFactory, ForTestsSubscriptionFactory
 
 
 token_model = TokenModel
@@ -39,4 +39,4 @@ def subscription_qty():
 
 @pytest.fixture
 def subscriptions(subscription_qty):
-    return SubscriptionFactoryForTests.create_batch(size=subscription_qty)
+    return ForTestsSubscriptionFactory.create_batch(size=subscription_qty)
