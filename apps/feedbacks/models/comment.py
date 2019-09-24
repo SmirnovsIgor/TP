@@ -15,12 +15,12 @@ class Comment(BaseAbstractModel):
         (SUSPICIOUS, 'suspicious'),
         (DELETED, 'deleted')
     }
-    topic_object_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    topic_object_id = models.UUIDField(editable=False)
-    topic = GenericForeignKey('topic_object_type', 'topic_object_id')
-    parent_object_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    parent_object_id = models.UUIDField(editable=False)
-    parent = GenericForeignKey('parent_object_type', 'parent_object_id')
+    topic_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='topic_type')
+    topic_id = models.UUIDField(editable=False)
+    topic = GenericForeignKey('topic_type', 'topic_id')
+    parent_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='parent_type')
+    parent_id = models.UUIDField(editable=False)
+    parent = GenericForeignKey('parent_type', 'parent_id')
     author = models.ForeignKey(User, null=False, blank=False, editable=False,
                                on_delete=models.CASCADE, related_name='comments')
     text = models.TextField(null=False, blank=False)
@@ -28,8 +28,8 @@ class Comment(BaseAbstractModel):
     comments = GenericRelation(
         'feedbacks.Comment',
         content_type_field='parent_type',
-        object_id_field='parent_object_id',
-        related_name='comment'
+        object_id_field='parent_id',
+        related_name='comments'
     )
 
     def __str__(self):
