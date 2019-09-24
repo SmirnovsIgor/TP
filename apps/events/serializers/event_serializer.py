@@ -13,8 +13,8 @@ class EventSerializer(serializers.ModelSerializer):
     """
     organizer = serializers.SerializerMethodField(read_only=True)
     organizer_type = serializers.SerializerMethodField(read_only=True)
-    place = ShortPlaceSerializer()
-    address = AddressSerializer()
+    place = ShortPlaceSerializer(required=False)
+    address = AddressSerializer(required=False)
 
     class Meta:
         model = Event
