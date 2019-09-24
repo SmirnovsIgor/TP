@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LogoutView, LoginView
 
-from apps.locations.urls import placepatterns
+from apps.locations.urls import placepatterns, addresspatterns
 from apps.events.urls import eventpatterns
 from apps.users.urls import userpatterns
 
@@ -21,4 +21,5 @@ urlpatterns = [
     path('users/', include(userpatterns)),
     path('places/', include(placepatterns)),
     path('events/', include(eventpatterns)),
+    path('addresses/', include(addresspatterns)),
 ]

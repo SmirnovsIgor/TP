@@ -11,7 +11,7 @@ from tools.action_based_permission import ActionBasedPermission
 from tools.custom_permissions import IsOwnerOrAdmin
 
 
-class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+class PlaceViewSet(viewsets.ModelViewSet):
     """
     A ViewSet for listing and retrieving Places
     """
