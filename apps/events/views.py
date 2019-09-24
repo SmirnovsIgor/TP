@@ -51,8 +51,8 @@ class EventViewSet(mixins.CreateModelMixin,
         place = None
         address = None
         receive_place_mapping = {
-            dict: lambda: self.get_created_object(place.get('id'), Place),
-            str: lambda: self.get_created_object(place, Place),
+            dict: lambda obj: self.get_created_object(obj.get('id'), Place),
+            str: lambda obj: self.get_created_object(obj, Place),
         }
 
         if 'place' in data_dict:
@@ -62,7 +62,7 @@ class EventViewSet(mixins.CreateModelMixin,
 
         # ------------------------refactoring-------------------------------------------
         if isinstance(place, (dict, str)):
-            place = receive_place_mapping.get(type(place))()
+            place = receive_place_mapping.get(type(place))(place)
             address = self.get_created_object(place.address_id, Address)
         elif not isinstance(address, (dict, str)):
             raise exceptions.ParseError('Please, transmit address or place as dict or str')
@@ -72,10 +72,9 @@ class EventViewSet(mixins.CreateModelMixin,
                 address = self.get_created_object(created_address_id, Address)
             else:
                 address_serializer = AddressSerializer(data=address)
-                if address_serializer.is_valid():
-                    address = Address.objects.create(**address_serializer.validated_data)
-                else:
+                if not address_serializer.is_valid():
                     raise exceptions.ParseError('Address data is invalid')
+                address = Address.objects.create(**address_serializer.validated_data)
         # ------------------------refactoring-------------------------------------------
 
         organizer, data_dict = self.choose_event_organizer(user=user, **data_dict)
