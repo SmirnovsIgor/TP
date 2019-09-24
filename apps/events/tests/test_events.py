@@ -280,9 +280,9 @@ class TestEvents:
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         assert len(res.json()) == event_qty
-        event_list = list(Event.objects.all().values('id').order_by(ordering))
+        event_list = Event.objects.all().order_by(ordering).values_list('id', flat=True)
         for i in range(event_qty):
-            assert res.json()[i].get('id') == str(event_list[i].get('id'))
+            assert res.json()[i].get('id') == str(event_list[i])
 
     @pytest.mark.parametrize('filtering', ['place', 'address', 'organizer', 'date__lte', 'date__gte'])
     @pytest.mark.parametrize('event_qty', [8, 16])
@@ -291,24 +291,24 @@ class TestEvents:
         event_list = []
         if filtering == 'place':
             data = Place.objects.all()[0].id
-            event_list = list(Event.objects.filter(place_id=data).order_by('created').values('id'))
+            event_list = Event.objects.filter(place_id=data).values_list('id', flat=True).order_by('created')
         elif filtering == 'address':
             data = Event.objects.all()[0].address_id
-            event_list = list(Event.objects.filter(address_id=data).order_by('created').values('id'))
+            event_list = Event.objects.filter(address_id=data).values_list('id', flat=True).order_by('created')
         elif filtering == 'organizer':
             data = Event.objects.all()[event_qty//2].organizer_id
-            event_list = list(Event.objects.filter(organizer_id=data).order_by('created').values('id'))
+            event_list = Event.objects.filter(organizer_id=data).values_list('id', flat=True).order_by('created')
         elif filtering.endswith('lte'):
             data = '2019-09-10 12:00'
-            event_list = list(Event.objects.filter(date__lte=data).order_by('created').values('id'))
+            event_list = Event.objects.filter(date__lte=data).values_list('id', flat=True).order_by('created')
         elif filtering.endswith('gte'):
             data = '2019-09-10 12:00'
-            event_list = list(Event.objects.filter(date__gte=data).order_by('created').values('id'))
+            event_list = Event.objects.filter(date__gte=data).values_list('id', flat=True).order_by('created')
         res = client.get(f'/api/events/?{filtering}={data}&ordering=created')
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         for i in range(len(res.json())):
-            assert res.json()[i].get('id') == str(event_list[i].get('id'))
+            assert res.json()[i].get('id') == str(event_list[i])
 
     @pytest.mark.parametrize('data', [True, False])
     @pytest.mark.parametrize('filtering', ['is_top', 'is_hot'])
@@ -316,14 +316,14 @@ class TestEvents:
     def test_list_filtering_bool_vals(self, client, events_batch_for_filtering_and_ordering, event_qty, filtering, data):
         event_list = []
         if filtering.endswith('top'):
-            event_list = list(Event.objects.filter(is_top=data).order_by('created').values('id'))
+            event_list = Event.objects.filter(is_top=data).values_list('id', flat=True).order_by('created')
         elif filtering.endswith('hot'):
-            event_list = list(Event.objects.filter(is_hot=data).order_by('created').values('id'))
+            event_list = Event.objects.filter(is_hot=data).values_list('id', flat=True).order_by('created')
         res = client.get(f'/api/events/?{filtering}={data}&ordering=created')
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)
         for i in range(len(res.json())):
-            assert res.json()[0].get('id') == str(event_list[0].get('id'))
+            assert res.json()[0].get('id') == str(event_list[0])
 
 
 @pytest.mark.django_db
