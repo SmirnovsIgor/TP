@@ -2,12 +2,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 
-from apps.base.models import BaseAbstractModel
+from apps.base.models import BaseAbstractModel, ParentRelationModel
 from apps.users.models import User
-from apps.feedbacks.models import base_relation
 
 
-class Comment(BaseAbstractModel, base_relation.ParentRelationModel):
+class Comment(BaseAbstractModel, ParentRelationModel):
     OK = 'OK'
     SUSPICIOUS = 'SUSPICIOUS'
     DELETED = 'DELETED'
