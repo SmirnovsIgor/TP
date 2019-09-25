@@ -37,16 +37,24 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         return response
 
     def list(self, request, *args, **kwargs):
-        return Subscription.objects.all().filter(status__in=[Subscription.STATUS_REJECTED,
+        subs = Subscription.objects.all().filter(status__in=[Subscription.STATUS_REJECTED,
                                                              Subscription.STATUS_ACTIVE,
                                                              Subscription.STATUS_UNTRACKED])
+        serializer_data = SubscriptionSerializer(subs, many=True).data
+        return Response(serializer_data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
-        if self.get_object().status == Subscription.STATUS_CANCELLED:
+        subscription = self.get_object()
+        if subscription.status == Subscription.STATUS_CANCELLED:
             exceptions.NotFound('No subscription found.')
+        else:
+            serializer_data = SubscriptionSerializer(subscription).data
+            return Response(serializer_data, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
-
+        subscription = self.get_object()
+        subscription.set_status(Subscription.STATUS_CANCELLED)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'])
     def approve(self, request, pk=None):
