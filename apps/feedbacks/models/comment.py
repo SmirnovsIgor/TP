@@ -10,11 +10,11 @@ class Comment(BaseAbstractModel, ParentRelationModel):
     OK = 'OK'
     SUSPICIOUS = 'SUSPICIOUS'
     DELETED = 'DELETED'
-    STATUS_TYPES = {
+    STATUS_TYPES = [
         (OK, 'ok'),
         (SUSPICIOUS, 'suspicious'),
         (DELETED, 'deleted')
-    }
+    ]
     topic_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='topic_type')
     topic_id = models.UUIDField(editable=False)
     topic = GenericForeignKey('topic_type', 'topic_id')
