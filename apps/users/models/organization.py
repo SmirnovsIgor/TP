@@ -2,10 +2,11 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from tools.image_funcs import get_image_path
-from apps.base.models import BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel
+from apps.base.models import BaseAbstractModel
+from apps.feedbacks.models import ParentTopicRelationModel
 
 
-class Organization(BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel):
+class Organization(BaseAbstractModel, ParentTopicRelationModel):
     name = models.CharField(max_length=150, blank=False, null=False)
     email = models.EmailField(blank=False, null=False)
     profile_image = models.ImageField(upload_to=get_image_path, blank=True, null=True)

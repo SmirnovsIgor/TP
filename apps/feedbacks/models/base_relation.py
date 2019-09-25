@@ -2,7 +2,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 
-class CommentAbstractRelationModel(models.Model):
+class ParentRelationModel(models.Model):
     comments = GenericRelation(
         'feedbacks.Comment',
         content_type_field='parent_type',
@@ -14,7 +14,7 @@ class CommentAbstractRelationModel(models.Model):
         abstract = True
 
 
-class TopicAbstractRelationModel(models.Model):
+class TopicRelationModel(models.Model):
     topic_comments = GenericRelation(
         'feedbacks.Comment',
         content_type_field='topic_type',
@@ -22,5 +22,10 @@ class TopicAbstractRelationModel(models.Model):
         related_name='topic_comments'
     )
 
+    class Meta:
+        abstract = True
+
+
+class ParentTopicRelationModel(ParentRelationModel, TopicRelationModel):
     class Meta:
         abstract = True
