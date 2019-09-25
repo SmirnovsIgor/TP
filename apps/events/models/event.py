@@ -7,11 +7,11 @@ from django.contrib.contenttypes.models import ContentType
 
 from apps.base.models import BaseAbstractModel
 from apps.locations.models import Place, Address
-from apps.feedbacks.models import ParentTopicRelationModel
+from apps.feedbacks.models import base_relation
 from tools.image_funcs import get_image_path
 
 
-class Event(BaseAbstractModel, ParentTopicRelationModel):
+class Event(BaseAbstractModel, base_relation.ParentTopicRelationModel):
     SOON = "SOON"
     SUCCEED = "SUCCEED"
     REJECTED = "REJECTED"

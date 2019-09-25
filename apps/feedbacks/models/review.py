@@ -5,10 +5,10 @@ from django.db import models
 
 from apps.base.models import BaseAbstractModel
 from apps.users.models import User
-from apps.feedbacks.models import ParentTopicRelationModel
+from apps.feedbacks.models import base_relation
 
 
-class Review(BaseAbstractModel, ParentTopicRelationModel):
+class Review(BaseAbstractModel, base_relation.ParentTopicRelationModel):
     OK = 'OK'
     SUSPICIOUS = 'SUSPICIOUS'
     DELETED = 'DELETED'
