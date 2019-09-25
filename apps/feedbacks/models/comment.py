@@ -1,12 +1,12 @@
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 
-from apps.base.models import BaseAbstractModel
+from apps.base.models import BaseAbstractModel, CommentAbstractRelationModel
 from apps.users.models import User
 
 
-class Comment(BaseAbstractModel):
+class Comment(BaseAbstractModel, CommentAbstractRelationModel):
     OK = 'OK'
     SUSPICIOUS = 'SUSPICIOUS'
     DELETED = 'DELETED'
@@ -25,12 +25,6 @@ class Comment(BaseAbstractModel):
                                on_delete=models.CASCADE, related_name='comments')
     text = models.TextField(null=False, blank=False)
     status = models.CharField(max_length=16, choices=STATUS_TYPES, default=OK)
-    comments = GenericRelation(
-        'feedbacks.Comment',
-        content_type_field='parent_type',
-        object_id_field='parent_id',
-        related_name='comments'
-    )
 
     def __str__(self):
         return f'{self.author.username}: {self.text[:10]+"..." if len(self.text)>10 else self.text}'

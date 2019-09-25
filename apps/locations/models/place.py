@@ -1,12 +1,11 @@
 from django.db import models
-from django.contrib.contenttypes.fields import GenericRelation
 
 from tools.image_funcs import get_image_path
-from apps.base.models.base import BaseAbstractModel
+from apps.base.models import BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel
 from apps.locations.models import Address
 
 
-class Place(BaseAbstractModel):
+class Place(BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel):
     STATUS_WORKING = 'WORKING'
     STATUS_TEMPORARILY_CLOSED = 'TEMPORARILY_CLOSED'
     STATUS_CLOSED = 'CLOSED'
@@ -20,18 +19,6 @@ class Place(BaseAbstractModel):
     photo = models.ImageField(upload_to=get_image_path, blank=False, null=False, default='static/Place/base_image.png')
     description = models.CharField(max_length=200, blank=True, null=True)
     status = models.CharField(max_length=18, choices=STATUS_CHOICES, blank=False, null=False, default=STATUS_WORKING)
-    comments = GenericRelation(
-        'feedbacks.Comment',
-        content_type_field='parent_type',
-        object_id_field='parent_id',
-        related_name='comments'
-    )
-    topic_comments = GenericRelation(
-        'feedbacks.Comment',
-        content_type_field='topic_type',
-        object_id_field='topic_id',
-        related_name='topic_comments'
-    )
 
     def __str__(self):
         return self.name

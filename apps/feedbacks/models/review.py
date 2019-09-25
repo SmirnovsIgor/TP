@@ -1,13 +1,13 @@
 from django.contrib.contenttypes.models import ContentType
 from django.core import validators
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 
-from apps.base.models import BaseAbstractModel
+from apps.base.models import BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel
 from apps.users.models import User
 
 
-class Review(BaseAbstractModel):
+class Review(BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel):
     OK = 'OK'
     SUSPICIOUS = 'SUSPICIOUS'
     DELETED = 'DELETED'
@@ -28,18 +28,6 @@ class Review(BaseAbstractModel):
     parent_object = GenericForeignKey('parent_object_type', 'parent_object_id')
     parent_object_id = models.UUIDField(editable=False)
     status = models.CharField(max_length=16, choices=STATUS_TYPES, default=OK)
-    comments = GenericRelation(
-        'feedbacks.Comment',
-        content_type_field='parent_type',
-        object_id_field='parent_id',
-        related_name='comments'
-    )
-    topic_comments = GenericRelation(
-        'feedbacks.Comment',
-        content_type_field='topic_type',
-        object_id_field='topic_id',
-        related_name='topic_comments'
-    )
 
     class Meta:
         unique_together = ['parent_object_id', 'created_by']

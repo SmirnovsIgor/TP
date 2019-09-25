@@ -2,10 +2,10 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from tools.image_funcs import get_image_path
-from apps.base.models import BaseAbstractModel
+from apps.base.models import BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel
 
 
-class Organization(BaseAbstractModel):
+class Organization(BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel):
     name = models.CharField(max_length=150, blank=False, null=False)
     email = models.EmailField(blank=False, null=False)
     profile_image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
@@ -16,18 +16,6 @@ class Organization(BaseAbstractModel):
         content_type_field='organizer_type',
         object_id_field='organizer_id',
         related_name='events'
-    )
-    comments = GenericRelation(
-        'feedbacks.Comment',
-        content_type_field='parent_type',
-        object_id_field='parent_id',
-        related_name='comments'
-    )
-    topic_comments = GenericRelation(
-        'feedbacks.Comment',
-        content_type_field='topic_type',
-        object_id_field='topic_id',
-        related_name='topic_comments'
     )
 
     class Meta:

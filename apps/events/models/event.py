@@ -2,15 +2,15 @@ from datetime import datetime, timedelta
 
 import pytz
 from django.db import models
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-from apps.base.models import BaseAbstractModel
+from apps.base.models import BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel
 from apps.locations.models import Place, Address
 from tools.image_funcs import get_image_path
 
 
-class Event(BaseAbstractModel):
+class Event(BaseAbstractModel, CommentAbstractRelationModel, TopicAbstractRelationModel):
     SOON = "SOON"
     SUCCEED = "SUCCEED"
     REJECTED = "REJECTED"
@@ -36,18 +36,6 @@ class Event(BaseAbstractModel):
     is_top = models.BooleanField(default=False)
     max_members = models.PositiveIntegerField(blank=False, null=False)
     status = models.CharField(max_length=16, choices=STATUS_TYPES, default=SOON)
-    comments = GenericRelation(
-        'feedbacks.Comment',
-        content_type_field='parent_type',
-        object_id_field='parent_id',
-        related_name='comments'
-    )
-    topic_comments = GenericRelation(
-        'feedbacks.Comment',
-        content_type_field='topic_type',
-        object_id_field='topic_id',
-        related_name='topic_comments'
-    )
 
     def __str__(self):
         return self.name
