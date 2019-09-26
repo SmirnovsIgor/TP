@@ -13,9 +13,22 @@ from tools.action_based_permission import ActionBasedPermission
 from tools.custom_permissions import IsSubscriberOrAdmin
 
 
+class SubscriptionFilter(filters.FilterSet):
+    event__date__gte = filters.DateTimeFilter(field_name='event__date', lookup_expr="gte")
+    event__date__lte = filters.DateTimeFilter(field_name='event__date', lookup_expr="lte")
+
+    class Meta:
+        model = Subscription
+        fields = ['user', 'event', 'status', 'event__date__lte', 'event__date__gte']
+
+
 class SubscriptionViewSet(viewsets.ModelViewSet):
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
+    filter_backends = [filters.DjangoFilterBackend, rest_filters.OrderingFilter]
+    filterset_class = SubscriptionFilter
+    ordering_fields = ('event__date',)
+    ordering = ('event__date',)
     permission_classes = (ActionBasedPermission,)
     action_permissions = {
         IsAdminUser: ['list', 'update', 'partial_update'],
@@ -114,14 +127,6 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
         elif subscription.status == Subscription.STATUS_CANCELLED:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-class SubscriptionFilter(filters.FilterSet):
-    event__date__gte = filters.DateTimeFilter(field_name='event__date', lookup_expr="gte")
-    event__date__lte = filters.DateTimeFilter(field_name='event__date', lookup_expr="lte")
-
-    class Meta:
-        model = Subscription
-        fields = ['user', 'event', 'status', 'event__date__lte', 'event__date__gte']
 
 
 class SubscriptionMeViewSet(viewsets.ReadOnlyModelViewSet):
