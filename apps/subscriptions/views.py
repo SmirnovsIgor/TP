@@ -18,7 +18,7 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
     permission_classes = (ActionBasedPermission,)
     action_permissions = {
         IsAdminUser: ['list', 'update', 'partial_update'],
-        IsAuthenticated: ['create', 'destroy'],
+        IsAuthenticated: ['create', 'destroy', 'approve'],
         IsSubscriberOrAdmin: ['retrieve'],
     }
 
@@ -29,31 +29,27 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         if subscribed_event_id:
             subscribed_event = self.get_obj_by_id(subscribed_event_id, Event)
         else:
-            exceptions.ParseError('Please, transmit event as dict or str.')
+            raise exceptions.ParseError('Please, transmit event as dict or str.')
         if subscribed_event.is_available_for_subscription:
             response = self.create_subscription(user, subscribed_event)
         else:
-            exceptions.PermissionDenied('Too late to subscribe.')
+            raise exceptions.PermissionDenied('Too late to subscribe.')
         return response
-
-    def list(self, request, *args, **kwargs):
-        subs = Subscription.objects.all().filter(status__in=[Subscription.STATUS_REJECTED,
-                                                             Subscription.STATUS_ACTIVE,
-                                                             Subscription.STATUS_UNTRACKED])
-        serializer_data = SubscriptionSerializer(subs, many=True).data
-        return Response(serializer_data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
         subscription = self.get_object()
         if subscription.status == Subscription.STATUS_CANCELLED:
-            exceptions.NotFound('No subscription found.')
+            raise exceptions.NotFound('No subscription found.')
         else:
             serializer_data = SubscriptionSerializer(subscription).data
             return Response(serializer_data, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
         subscription = self.get_object()
-        subscription.set_status(Subscription.STATUS_CANCELLED)
+        if request.user == subscription.user:
+            subscription.set_status(Subscription.STATUS_CANCELLED)
+        else:
+            raise exceptions.PermissionDenied('You could delete only your own subscriptions.')
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'])
@@ -63,9 +59,9 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             if approved_subscription.event.is_available_for_subscription:
                 response = self.approve_subscription(approved_subscription)
             else:
-                exceptions.PermissionDenied('Too late to subscribe.')
+                raise exceptions.PermissionDenied('Too late to subscribe.')
         else:
-            exceptions.PermissionDenied('You could approve only your own subscriptions.')
+            raise exceptions.PermissionDenied('You could approve only your own subscriptions.')
         return response
 
     def get_event_id(self, data):
@@ -73,12 +69,12 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         if 'event' in data:
             event = data.pop('event')
         else:
-            exceptions.ParseError('You must transmit event id.')
+            raise exceptions.ParseError('You must transmit event id.')
 
         if isinstance(event, (str, dict)):
             return event if isinstance(event, str) else event.get('id')
         else:
-            exceptions.ParseError('Please, transmit event as dict or str.')
+            raise exceptions.ParseError('Please, transmit event as dict or str.')
 
     def get_obj_by_id(self, obj_id, cls):
         try:
@@ -89,7 +85,7 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             raise exceptions.NotFound('No such ID in database.')
 
     def create_subscription(self, user, event):
-        duplicate = Subscription.objects.all().filter(user=user, event=event)
+        duplicate = Subscription.objects.all().filter(user=user, event=event).first()
         if not duplicate:
             subscription = Subscription.objects.create(user=user, event=event)
             subscription_data = SubscriptionSerializer(subscription).data
