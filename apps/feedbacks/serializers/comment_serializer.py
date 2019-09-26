@@ -1,10 +1,20 @@
 from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
 
+from apps.events.serializers import EventSerializer
+from apps.locations.serializers import ShortPlaceSerializer
 from apps.users.models import Organization
 from apps.locations.models import Place
 from apps.events.models import Event
 from apps.feedbacks.models import Comment, Review
+from apps.users.serializers import ShortOrganizationSerializer
+
+
+class ShortCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id']
+        extra_kwargs = {'id': {'read_only': True}}
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -15,6 +25,13 @@ class CommentSerializer(serializers.ModelSerializer):
     topic = serializers.SerializerMethodField(read_only=True)
     parent_type = serializers.SerializerMethodField(read_only=True)
     parent = serializers.SerializerMethodField(read_only=True)
+
+    object_type_mapping = {
+        ContentType.objects.get_for_model(Organization): ShortOrganizationSerializer,
+        ContentType.objects.get_for_model(Place): ShortPlaceSerializer,
+        ContentType.objects.get_for_model(Event): EventSerializer,
+        ContentType.objects.get_for_model(Comment): ShortCommentSerializer,
+    }
 
     class Meta:
         model = Comment
@@ -28,21 +45,24 @@ class CommentSerializer(serializers.ModelSerializer):
         """
         Method to fill out the topic field in serializer
         """
-        return obj.topic_type
+        serializer_class = self.object_type_mapping.get(obj.topic_type)
+        data = serializer_class(obj.topic).data
+        return {"id": str(data.id)}
 
     def get_topic_type(self, obj=None):
         """
         Method to fill out the topic type in serializer
         It converts model's number into models name
         """
-        a = 1
         return obj.topic.__class__.__name__
 
     def get_parent(self, obj=None):
         """
         Method to fill out the parent field in serializer
         """
-        return obj.parent_type
+        serializer_class = self.object_type_mapping.get(obj.parent_type)
+        data = serializer_class(obj.parent).data
+        return {"id": str(data.id)}
 
     def get_parent_type(self, obj=None):
         """
