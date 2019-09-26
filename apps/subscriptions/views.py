@@ -1,15 +1,16 @@
 import uuid
 
-from rest_framework import viewsets, exceptions, status
+from rest_framework import viewsets, exceptions, status, filters as rest_filters
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from tools.custom_permissions import IsSubscriberOrAdmin
+from django_filters import rest_framework as filters
 
 from apps.events.models import Event
 from apps.subscriptions.models import Subscription
 from apps.subscriptions.serializers import SubscriptionSerializer
 from tools.action_based_permission import ActionBasedPermission
+from tools.custom_permissions import IsSubscriberOrAdmin
 
 
 class SubscriptionViewSet(viewsets.ModelViewSet):
@@ -113,3 +114,27 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
         elif subscription.status == Subscription.STATUS_CANCELLED:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class SubscriptionFilter(filters.FilterSet):
+    event__date__gte = filters.DateTimeFilter(field_name='event__date', lookup_expr="gte")
+    event__date__lte = filters.DateTimeFilter(field_name='event__date', lookup_expr="lte")
+
+    class Meta:
+        model = Subscription
+        fields = ['user', 'event', 'status', 'event__date__lte', 'event__date__gte']
+
+
+class SubscriptionMeViewSet(viewsets.ReadOnlyModelViewSet):
+
+    model = Subscription
+    serializer_class = SubscriptionSerializer
+    filter_backends = [filters.DjangoFilterBackend, rest_filters.OrderingFilter]
+    filterset_class = SubscriptionFilter
+
+    ordering_fields = ('event__date',)
+    ordering = ('event__date',)
+
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.all_active_subscriptions

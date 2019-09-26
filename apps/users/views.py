@@ -7,7 +7,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.status import HTTP_200_OK
-from rest_framework.views import APIView
 
 
 from apps.events.models import Event
@@ -55,30 +54,17 @@ class UserEventsViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
-class OrganizationsView(APIView):
-    def get(self, request):
-        organizations = self.get_queryset()
-        serializer = ShortOrganizationSerializer(organizations, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
+class OrganizationsViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ShortOrganizationSerializer
 
-    def get_queryset(self):
-        return Organization.objects.all()
-
-
-class DetailsWithAllEventsOrganizationView(APIView):
-    def get(self, request, organization_id):
-        organization = get_object_or_404(self.get_queryset(), id=organization_id)
+    def retrieve(self, request, *args, **kwargs):
+        organization = get_object_or_404(self.get_queryset(), id=kwargs.get('organization_id'))
         serializer = OrganizationWithEventsSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
 
-    def get_queryset(self):
-        return Organization.objects.all()
-
-
-class DetailedOrganizationView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, organization_id):
+    @action(detail=True, methods=['get'])
+    def detailed(self, request, organization_id):
         organization = get_object_or_404(self.get_queryset(), id=organization_id)
         serializer = DetailedOrganizationWithMembersSerializer(organization)
         return Response(serializer.data, status=HTTP_200_OK)
