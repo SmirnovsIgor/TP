@@ -34,7 +34,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         if request.user.is_staff:
             queryset = self.filter_queryset(self.get_queryset())
         else:
-            queryset = self.filter_queryset(self.get_queryset().filter(status=Comment.DELETED))
+            queryset = self.filter_queryset(self.get_queryset().exclude(status=Comment.DELETED))
 
         page = self.paginate_queryset(queryset)
         if page is not None:
