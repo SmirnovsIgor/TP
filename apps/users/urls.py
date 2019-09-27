@@ -11,7 +11,7 @@ router.register(r'', views.UserDataForStaffViewSet, basename='user')
 userpatterns = [
     path('me/', UserDetailsView.as_view()),
     path('me/events/', views.UserEventsViewSet.as_view({'get': 'list'})),
-    path('me/events/<str:event_id>/detailed/', views.UserEventsViewSet.as_view({'get': 'retrieve'})),
+    path('me/events/<str:event_id>/', views.UserEventsViewSet.as_view({'get': 'retrieve'})),
     path('me/subscriptions/', SubscriptionMeViewSet.as_view({'get': 'list'})),
 ]
 
