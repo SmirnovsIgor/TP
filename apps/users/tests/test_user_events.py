@@ -24,11 +24,11 @@ class TestUserEventByID:
     def test_user_event_by_id_authorized_true(self, client, request_user, token, event):
         event.organizer = request_user
         event.save()
-        response = client.get(f'/api/users/me/events/{event.id}/detailed/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        response = client.get(f'/api/users/me/events/{event.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         response_dict = response.json()
         assert response.status_code == status.HTTP_200_OK
         assert response_dict.get('organizer_id') == str(event.organizer_id)
 
     def test_user_event_by_id_authorized_false(self, client, event):
-        response = client.get(f'/api/users/me/events/{event.id}/detailed/')
+        response = client.get(f'/api/users/me/events/{event.id}/')
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
