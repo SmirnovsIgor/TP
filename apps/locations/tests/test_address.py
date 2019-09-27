@@ -1,8 +1,8 @@
 import datetime
 import json
-import pytest
 import random
 
+import pytest
 import pytz
 from rest_framework import status
 

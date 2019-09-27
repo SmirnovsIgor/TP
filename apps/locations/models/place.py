@@ -1,11 +1,10 @@
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
-from apps.base.models.base import BaseAbstractModel
-from apps.feedbacks.models import Review
-from tools.image_funcs import get_image_path
 from apps.base.models import BaseAbstractModel, ParentTopicRelationModel
+from apps.feedbacks.models import Review
 from apps.locations.models import Address
+from tools.image_funcs import get_image_path
 
 
 class Place(BaseAbstractModel, ParentTopicRelationModel):

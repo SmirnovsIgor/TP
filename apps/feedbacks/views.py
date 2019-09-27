@@ -1,8 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
-from django.db import IntegrityError
 from django_filters import rest_framework as filters
 from rest_framework import viewsets, status, exceptions, filters as rest_filters
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from apps.events.models import Event

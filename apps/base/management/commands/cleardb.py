@@ -1,10 +1,10 @@
 from django.core.management.base import BaseCommand
 
-from apps.feedbacks.models import Review
-from apps.users.models import User, Organization
-from apps.locations.models import Address, Place
 from apps.events.models import Event
+from apps.feedbacks.models import Review
+from apps.locations.models import Address, Place
 from apps.subscriptions.models import Subscription
+from apps.users.models import User, Organization
 
 
 class Command(BaseCommand):

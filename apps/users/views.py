@@ -3,8 +3,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import RetrieveModelMixin
-from rest_framework.permissions import IsAdminUser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
@@ -13,9 +12,10 @@ from apps.events.models import Event
 from apps.events.serializers import EventSerializer
 from apps.subscriptions.serializers import SubscriptionSerializer
 from apps.users.models import User, Organization
-from apps.users.serializers import UserSerializer, ShortOrganizationSerializer
-from apps.users.serializers.organization_serializer import (OrganizationWithEventsSerializer,
-                                                            DetailedOrganizationWithMembersSerializer)
+from apps.users.serializers import (UserSerializer,
+                                    ShortOrganizationSerializer,
+                                    OrganizationWithEventsSerializer,
+                                    DetailedOrganizationWithMembersSerializer)
 from tools.action_based_permission import ActionBasedPermission
 
 

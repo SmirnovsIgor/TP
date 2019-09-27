@@ -55,13 +55,14 @@ class TestReview:
         assert res_dict.get('text') == random_review.text
         assert res_dict.get('rating') == random_review.rating
 
-    def test_destroy(self, client, reviews, user, token):
+    @pytest.mark.parametrize('review_qty', [20])
+    def test_destroy(self, client, reviews, user, review_qty, token):
         user.is_staff = True
         user.save()
         random_review = random.choice(reviews)
         res = client.delete(f'/api/reviews/{random_review.id}/', **{'HTTP_AUTHORIZATION': f'Token {user.auth_token}'})
         assert res.status_code == status.HTTP_204_NO_CONTENT
-        assert random_review not in list(Review.objects.filter(status__in=[Review.OK, Review.SUSPICIOUS]))
+        assert not Review.objects.filter(status__in=[Review.OK, Review.SUSPICIOUS], id=random_review.id).exists()
 
     @pytest.mark.parametrize('review_qty', [10])
     def test_list(self, client, reviews, review_qty):
