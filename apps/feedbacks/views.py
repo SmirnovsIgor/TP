@@ -82,7 +82,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         return obj_id, obj_type
 
     def check_parent_status(self, obj):
-        if isinstance(obj.status, str) and obj.status.lower() == 'deleted':
+        if hasattr(obj, 'status') and isinstance(obj.status, str) and obj.status.lower() == 'deleted':
             raise exceptions.ParseError('Parent object does not exist')
 
     def get_created_object(self, obj_id, cls):
