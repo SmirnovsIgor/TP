@@ -80,3 +80,42 @@ class TestSubscriptions:
         subscription.save()
         res = client.get(f'/api/subscriptions/ghjklasfg/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert res.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_destroy_for_staff(self, client, request_user, owner, token, subscription):
+        request_user.is_staff = True
+        request_user.save()
+        subscription.user = owner
+        subscription.status = Subscription.STATUS_ACTIVE
+        subscription.save()
+        res = client.delete(f'/api/subscriptions/{subscription.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_destroy_for_regular_user(self, client, request_user, owner, token, subscription):
+        subscription.user = owner
+        subscription.status = Subscription.STATUS_ACTIVE
+        subscription.save()
+        res = client.delete(f'/api/subscriptions/{subscription.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_destroy_for_owner(self, client, request_user, token, subscription, subscription_qty):
+        subscription.user = request_user
+        subscription.status = Subscription.STATUS_ACTIVE
+        subscription.save()
+        res = client.delete(f'/api/subscriptions/{subscription.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        subscription.refresh_from_db()
+        assert res.status_code == status.HTTP_204_NO_CONTENT
+        assert subscription.status == Subscription.STATUS_CANCELLED
+
+    def test_destroy_for_deleted_subscription(self, client, request_user, token, subscription):
+        subscription.user = request_user
+        subscription.status = Subscription.STATUS_CANCELLED
+        subscription.save()
+        res = client.delete(f'/api/subscriptions/{subscription.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        assert res.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_delete_detail_for_random_id(self, client, request_user, token, subscription):
+        subscription.user = request_user
+        subscription.status = Subscription.STATUS_CANCELLED
+        subscription.save()
+        res = client.delete(f'/api/subscriptions/ghjklasfg/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        assert res.status_code == status.HTTP_404_NOT_FOUND

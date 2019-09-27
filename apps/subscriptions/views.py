@@ -63,10 +63,11 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         subscription = self.get_object()
-        if request.user == subscription.user:
-            subscription.set_status(Subscription.STATUS_CANCELLED)
-        else:
+        if not request.user == subscription.user:
             raise exceptions.PermissionDenied('You could delete only your own subscriptions.')
+        if subscription.status == Subscription.STATUS_CANCELLED:
+            raise exceptions.NotFound('No subscription found.')
+        subscription.set_status(Subscription.STATUS_CANCELLED)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'])
