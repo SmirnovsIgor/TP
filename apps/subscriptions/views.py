@@ -54,9 +54,8 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         subscription = self.get_object()
         if subscription.status == Subscription.STATUS_CANCELLED:
             raise exceptions.NotFound('No subscription found.')
-        else:
-            serializer_data = SubscriptionSerializer(subscription).data
-            return Response(serializer_data, status=status.HTTP_200_OK)
+        serializer_data = SubscriptionSerializer(subscription).data
+        return Response(serializer_data, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
         subscription = self.get_object()

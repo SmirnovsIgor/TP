@@ -25,7 +25,7 @@ class TestUserSubscriptions:
 @pytest.mark.django_db
 class TestSubscriptions:
     @pytest.mark.parametrize('subscription_qty', [0, 1, 10, 50])
-    def test_get_subscriptions_for_staff(self, client, request_user, token, subscriptions, subscription_qty):
+    def test_list_for_staff(self, client, request_user, token, subscriptions, subscription_qty):
         request_user.is_staff = True
         request_user.save()
         res = client.get(f'/api/subscriptions/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
@@ -33,11 +33,11 @@ class TestSubscriptions:
         assert len(res.json()) == subscription_qty
 
     @pytest.mark.parametrize('subscription_qty', [0, 1, 10, 50])
-    def test_get_subscriptions_for_regular_user(self, client, request_user, token, subscriptions, subscription_qty):
+    def test_list_for_regular_user(self, client, request_user, token, subscriptions, subscription_qty):
         res = client.get(f'/api/subscriptions/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert res.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_get_subscriptions_detail_for_staff(self, client, request_user, owner, token, subscription):
+    def test_retrieve_for_staff(self, client, request_user, owner, token, subscription):
         request_user.is_staff = True
         request_user.save()
         subscription.user = owner
@@ -49,14 +49,14 @@ class TestSubscriptions:
         assert sub.get('event') == str(subscription.event.id)
         assert sub.get('status') == subscription.status
 
-    def test_get_subscriptions_detail_for_regular_user(self, client, request_user, owner, token, subscription):
+    def test_retrieve_for_regular_user(self, client, request_user, owner, token, subscription):
         subscription.user = owner
         subscription.status = Subscription.STATUS_ACTIVE
         subscription.save()
         res = client.get(f'/api/subscriptions/{subscription.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert res.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_get_subscriptions_detail_for_owner(self, client, request_user, token, subscription, subscription_qty):
+    def test_retrieve_for_owner(self, client, request_user, token, subscription, subscription_qty):
         subscription.user = request_user
         subscription.status = Subscription.STATUS_ACTIVE
         subscription.save()
@@ -67,14 +67,14 @@ class TestSubscriptions:
         assert sub.get('event') == str(subscription.event.id)
         assert sub.get('status') == subscription.status
 
-    def test_get_subscriptions_detail_for_deleted_subscription(self, client, request_user, token, subscription):
+    def test_retrieve_for_deleted_subscription(self, client, request_user, token, subscription):
         subscription.user = request_user
         subscription.status = Subscription.STATUS_CANCELLED
         subscription.save()
         res = client.get(f'/api/subscriptions/{subscription.id}/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert res.status_code == status.HTTP_404_NOT_FOUND
 
-    def test_get_subscriptions_detail_for_random_id(self, client, request_user, token, subscription):
+    def test_retrieve_detail_for_random_id(self, client, request_user, token, subscription):
         subscription.user = request_user
         subscription.status = Subscription.STATUS_CANCELLED
         subscription.save()
