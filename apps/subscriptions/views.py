@@ -44,14 +44,12 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         user = request.user
         data = request.data
         subscribed_event_id = self.get_event_id(data)
-        if subscribed_event_id:
-            subscribed_event = self.get_obj_by_id(subscribed_event_id, Event)
-        else:
+        if not subscribed_event_id:
             raise exceptions.ParseError('Please, transmit event as dict or str.')
-        if subscribed_event.is_available_for_subscription:
-            response = self.create_subscription(user, subscribed_event)
-        else:
+        subscribed_event = self.get_obj_by_id(subscribed_event_id, Event)
+        if not subscribed_event.is_available_for_subscription:
             raise exceptions.PermissionDenied('Too late to subscribe.')
+        response = self.create_subscription(user, subscribed_event)
         return response
 
     def retrieve(self, request, *args, **kwargs):
@@ -73,24 +71,20 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def approve(self, request, pk=None):
         approved_subscription = self.get_obj_by_id(pk, Subscription)
-        if request.user == approved_subscription.user:
-            if approved_subscription.event.is_available_for_subscription:
-                response = self.approve_subscription(approved_subscription)
-            else:
-                raise exceptions.PermissionDenied('Too late to subscribe.')
-        else:
+        if not request.user == approved_subscription.user:
             raise exceptions.PermissionDenied('You could approve only your own subscriptions.')
+        if not approved_subscription.event.is_available_for_subscription:
+            raise exceptions.PermissionDenied('Too late to subscribe.')
+        response = self.approve_subscription(approved_subscription)
         return response
 
     def get_event_id(self, data):
         event = data.pop('event', None)
         if event is None:
             raise exceptions.ParseError('You must transmit event id.')
-
-        if isinstance(event, (str, dict)):
-            return event if isinstance(event, str) else event.get('id')
-        else:
+        if not isinstance(event, (str, dict)):
             raise exceptions.ParseError('Please, transmit event as dict or str.')
+        return event if isinstance(event, str) else event.get('id')
 
     def get_obj_by_id(self, obj_id, cls):
         try:
@@ -106,28 +100,27 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             subscription = Subscription.objects.create(user=user, event=event)
             subscription_data = SubscriptionSerializer(subscription).data
             return Response(subscription_data, status=status.HTTP_201_CREATED)
-        else:
-            if duplicate.status in (
-                    Subscription.STATUS_ACTIVE,
-                    Subscription.STATUS_UNTRACKED,
-                    Subscription.STATUS_REJECTED,
-                    ):
-                return Response(status=status.HTTP_409_CONFLICT)
-            elif duplicate.status == Subscription.STATUS_CANCELLED:
-                duplicate.set_status(Subscription.STATUS_UNTRACKED)
-                duplicate_data = SubscriptionSerializer(duplicate).data
-                return Response(duplicate_data, status=status.HTTP_201_CREATED)
+        if duplicate.status in (
+                Subscription.STATUS_ACTIVE,
+                Subscription.STATUS_UNTRACKED,
+                Subscription.STATUS_REJECTED,
+                ):
+            return Response(status=status.HTTP_409_CONFLICT)
+        if duplicate.status == Subscription.STATUS_CANCELLED:
+            duplicate.set_status(Subscription.STATUS_UNTRACKED)
+            duplicate_data = SubscriptionSerializer(duplicate).data
+            return Response(duplicate_data, status=status.HTTP_201_CREATED)
 
     def approve_subscription(self, subscription):
         if subscription.status == Subscription.STATUS_UNTRACKED:
             subscription.set_status(Subscription.STATUS_ACTIVE)
             subscription_data = SubscriptionSerializer(subscription).data
             return Response(subscription_data, status=status.HTTP_200_OK)
-        elif subscription.status == Subscription.STATUS_ACTIVE:
+        if subscription.status == Subscription.STATUS_ACTIVE:
             return Response(status=status.HTTP_409_CONFLICT)
-        elif subscription.status == Subscription.STATUS_REJECTED:
+        if subscription.status == Subscription.STATUS_REJECTED:
             return Response(status=status.HTTP_403_FORBIDDEN)
-        elif subscription.status == Subscription.STATUS_CANCELLED:
+        if subscription.status == Subscription.STATUS_CANCELLED:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
