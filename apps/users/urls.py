@@ -22,4 +22,5 @@ organizationpatterns = [
     path('', views.OrganizationsViewSet.as_view({'get': 'list'})),
     path('<str:organization_id>/', views.OrganizationsViewSet.as_view({'get': 'retrieve'})),
     path('<str:organization_id>/detailed/', views.OrganizationsViewSet.as_view({'get': 'detailed'})),
+    path('<str:pk>/reviews/', views.OrganizationsViewSet.as_view({'get': 'reviews'})),
 ]

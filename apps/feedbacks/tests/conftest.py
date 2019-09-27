@@ -1,23 +1,27 @@
 import pytest
 from pytest_factoryboy import register
-from rest_auth.models import TokenModel
-from rest_auth.app_settings import create_token, TokenSerializer
 
-from apps.events.factories import EventUserWithPlaceFactory
-from apps.feedbacks.models import Comment
-from apps.locations.factories import AddressFactory, PlaceFactory
+from rest_auth.app_settings import create_token, TokenSerializer
+from rest_auth.models import TokenModel
+
+from apps.events.factories import EventOrganizerWithPlaceFactory, EventUserWithPlaceFactory
+from apps.feedbacks.factories import ReviewFactory
+from apps.locations.factories import PlaceFactory, AddressFactory
 from apps.users.factories import UserFactory, OrganizationFactory
+from apps.feedbacks.models import Comment
 from apps.feedbacks.factories import (
     CommentToOrganizationFactory,
     CommentToEventFactory,
     CommentToPlaceFactory,
 )
 
+
 register(UserFactory, 'user')
 register(PlaceFactory, 'place')
-register(AddressFactory, 'address')
 register(OrganizationFactory, 'organization')
-register(EventUserWithPlaceFactory, 'event')
+register(AddressFactory, 'address')
+register(EventOrganizerWithPlaceFactory, 'event')
+# register(EventUserWithPlaceFactory, 'event')
 register(CommentToOrganizationFactory, 'comment_to_organization')
 register(CommentToEventFactory, 'comment_to_event')
 register(CommentToPlaceFactory, 'comment_to_place')
@@ -26,6 +30,19 @@ register(CommentToPlaceFactory, 'comment_to_place')
 @pytest.fixture
 def token(user):
     return create_token(TokenModel, user, TokenSerializer)
+
+
+@pytest.fixture
+def review_dict():
+    return {
+        'rating': 5,
+        'text': 'Hello world'
+    }
+
+
+@pytest.fixture
+def review_qty():
+    return 1
 
 
 @pytest.fixture
@@ -49,3 +66,29 @@ def comments_batch(comment_qty):
     query += CommentToPlaceFactory.create_batch(size=number, status=Comment.OK)
     query += CommentToEventFactory.create_batch(size=number, status=Comment.OK)
     return query
+
+
+@pytest.fixture
+def reviews(review_qty, users, events, places, organizations):
+    return ReviewFactory.create_batch(size=review_qty)
+
+
+@pytest.fixture
+def places():
+    return PlaceFactory.create_batch(size=100)
+
+
+@pytest.fixture
+def events():
+    return EventOrganizerWithPlaceFactory.create_batch(size=10)
+
+
+@pytest.fixture
+def organizations():
+    return OrganizationFactory.create_batch(size=10)
+
+
+@pytest.fixture
+def users():
+    return UserFactory.create_batch(size=10)
+
