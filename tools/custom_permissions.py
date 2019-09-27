@@ -14,6 +14,11 @@ class IsOwner(BasePermission):
         return bool(request.user.is_staff or request.user.id == obj.created_by.id)
 
 
+class IsSubscriberOrAdmin(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return bool(request.user.is_staff or request.user.id == obj.user.id)
+
+
 class IsVisited(BasePermission):
     """Access have only who visited event"""
     def has_object_permission(self, request, view, obj):
