@@ -13,6 +13,7 @@ from apps.feedbacks.factories import (
     CommentToOrganizationFactory,
     CommentToEventFactory,
     CommentToPlaceFactory,
+    CommentToReviewFactory,
 )
 
 
@@ -25,6 +26,7 @@ register(EventUserWithPlaceFactory, 'event2')
 register(CommentToOrganizationFactory, 'comment_to_organization')
 register(CommentToEventFactory, 'comment_to_event')
 register(CommentToPlaceFactory, 'comment_to_place')
+register(CommentToReviewFactory, 'comment_to_review')
 
 
 @pytest.fixture
@@ -66,6 +68,11 @@ def comments_batch(comment_qty):
     query += CommentToPlaceFactory.create_batch(size=number, status=Comment.OK)
     query += CommentToEventFactory.create_batch(size=number, status=Comment.OK)
     return query
+
+
+@pytest.fixture
+def review(users, events, places, organizations):
+    return ReviewFactory.create_batch(size=1)
 
 
 @pytest.fixture

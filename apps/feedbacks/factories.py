@@ -79,9 +79,9 @@ class CommentToEventFactory(CommentAbstractFactory):
         model = Comment
 
 
-# class CommentToReviewFactory(CommentAbstractFactory):
-#     topic = factory.SubFactory(Organization)
-#     parent = factory.LazyAttribute(lambda o: o.topic)
-#
-#     class Meta:
-#         model = Comment
+class CommentToReviewFactory(CommentAbstractFactory):
+    topic = factory.SubFactory(ReviewFactory)
+    parent = factory.LazyAttribute(lambda o: o.topic)
+
+    class Meta:
+        model = Comment

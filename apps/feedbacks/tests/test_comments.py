@@ -5,7 +5,7 @@ import pytest
 from rest_framework import status
 
 from apps.events.models import Event
-from apps.feedbacks.models import Comment
+from apps.feedbacks.models import Comment, Review
 from apps.locations.models import Place
 from apps.users.models import Organization
 
@@ -32,7 +32,6 @@ class TestComment:
         comment_dict.update(parent_type=myobj.__class__.__name__)
         comment_dict.update(topic={'id': str(myobj.id)})
         comment_dict.update(topic_type=myobj.__class__.__name__)
-        print(comment_dict)
         res = client.post('/api/comments/', data=json.dumps(comment_dict),
                           content_type='application/json',
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
@@ -63,6 +62,22 @@ class TestComment:
         user.save()
         place.save()
         myobj = Place.objects.all()[0]
+        comment_dict.update(parent={'id': str(myobj.id)})
+        comment_dict.update(parent_type=myobj.__class__.__name__)
+        comment_dict.update(topic={'id': str(myobj.id)})
+        comment_dict.update(topic_type=myobj.__class__.__name__)
+        res = client.post('/api/comments/', data=json.dumps(comment_dict),
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        assert res.status_code == status.HTTP_201_CREATED
+        res_obj = res.json()
+        assert res_obj.get('id')
+        db_comment = Comment.objects.get(id=res_obj.get('id'))
+        assert db_comment.text == res_obj.get('text')
+
+    def test_create_comment_to_review(self, client, comment_dict, user, token, review):
+        user.save()
+        myobj = Review.objects.all()[0]
         comment_dict.update(parent={'id': str(myobj.id)})
         comment_dict.update(parent_type=myobj.__class__.__name__)
         comment_dict.update(topic={'id': str(myobj.id)})

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
 
 from apps.events.serializers import EventSerializer
+from apps.feedbacks.serializers import ReviewSerializer
 from apps.locations.serializers import ShortPlaceSerializer
 from apps.users.models import Organization
 from apps.locations.models import Place
@@ -31,6 +32,7 @@ class CommentSerializer(serializers.ModelSerializer):
         ContentType.objects.get_for_model(Place): ShortPlaceSerializer,
         ContentType.objects.get_for_model(Event): EventSerializer,
         ContentType.objects.get_for_model(Comment): ShortCommentSerializer,
+        ContentType.objects.get_for_model(Review): ReviewSerializer,
     }
 
     class Meta:
