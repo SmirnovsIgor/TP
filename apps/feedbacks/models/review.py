@@ -11,10 +11,12 @@ class Review(BaseAbstractModel, ParentTopicRelationModel):
     OK = 'OK'
     SUSPICIOUS = 'SUSPICIOUS'
     DELETED = 'DELETED'
+    CANCELED = 'CANCELED'
     STATUS_TYPES = (
         (OK, 'ok'),
         (SUSPICIOUS, 'suspicious'),
         (DELETED, 'deleted'),
+        (CANCELED, 'canceled'),
     )
 
     rating = models.PositiveSmallIntegerField(blank=False, null=False, validators=[
@@ -31,3 +33,6 @@ class Review(BaseAbstractModel, ParentTopicRelationModel):
 
     class Meta:
         unique_together = ['parent_object_id', 'created_by']
+
+    def __str__(self):
+        return f'Review from {self.created_by.username} on {self.parent_object.name}'
