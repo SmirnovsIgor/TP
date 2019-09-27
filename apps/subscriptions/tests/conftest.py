@@ -9,9 +9,8 @@ from apps.events.factories import (
     EventOrganizerWithPlaceFactory
 )
 from apps.locations.factories import AddressFactory, PlaceFactory
-from apps.users.factories import UserFactory, OrganizationFactory
 from apps.subscriptions.factories import SubscriptionFactory, ForTestsSubscriptionFactory
-
+from apps.users.factories import UserFactory, OrganizationFactory
 
 token_model = TokenModel
 register(UserFactory, 'user')

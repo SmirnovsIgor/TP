@@ -4,15 +4,14 @@ import factory.fuzzy
 from django.contrib.contenttypes.models import ContentType
 from faker import Factory as FakeFactory
 
-from apps.events.models import Event
 from apps.events.factories import EventUserWithPlaceFactory
+from apps.events.models import Event
+from apps.feedbacks.models import Comment
 from apps.feedbacks.models import Review
-from apps.locations.models import Place
 from apps.locations.factories import PlaceFactory
+from apps.locations.models import Place
 from apps.users.factories import UserFactory, OrganizationFactory
 from apps.users.models import Organization
-from apps.feedbacks.models import Comment
-
 
 faker = FakeFactory.create()
 

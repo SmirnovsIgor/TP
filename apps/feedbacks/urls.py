@@ -2,7 +2,6 @@ from rest_framework.routers import DefaultRouter
 
 from apps.feedbacks import views
 
-
 review_router, comment_router = DefaultRouter(), DefaultRouter()
 
 review_router.register(r'', views.ReviewViewSet, basename='review')

@@ -1,13 +1,13 @@
-from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
+from rest_framework import serializers
 
+from apps.events.models import Event
 from apps.events.serializers import EventSerializer
+from apps.feedbacks.models import Comment, Review
 from apps.feedbacks.serializers import ReviewSerializer
+from apps.locations.models import Place
 from apps.locations.serializers import ShortPlaceSerializer
 from apps.users.models import Organization
-from apps.locations.models import Place
-from apps.events.models import Event
-from apps.feedbacks.models import Comment, Review
 from apps.users.serializers import ShortOrganizationSerializer
 
 

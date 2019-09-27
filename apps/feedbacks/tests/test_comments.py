@@ -1,5 +1,4 @@
 import json
-import random
 
 import pytest
 from rest_framework import status

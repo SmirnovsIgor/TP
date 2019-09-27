@@ -1,21 +1,19 @@
 import pytest
 from pytest_factoryboy import register
-
 from rest_auth.app_settings import create_token, TokenSerializer
 from rest_auth.models import TokenModel
 
 from apps.events.factories import EventOrganizerWithPlaceFactory, EventUserWithPlaceFactory
-from apps.feedbacks.factories import ReviewFactory
-from apps.locations.factories import PlaceFactory, AddressFactory
-from apps.users.factories import UserFactory, OrganizationFactory
-from apps.feedbacks.models import Comment
 from apps.feedbacks.factories import (
     CommentToOrganizationFactory,
     CommentToEventFactory,
     CommentToPlaceFactory,
     CommentToReviewFactory,
 )
-
+from apps.feedbacks.factories import ReviewFactory
+from apps.feedbacks.models import Comment
+from apps.locations.factories import PlaceFactory, AddressFactory
+from apps.users.factories import UserFactory, OrganizationFactory
 
 register(UserFactory, 'user')
 register(PlaceFactory, 'place')
