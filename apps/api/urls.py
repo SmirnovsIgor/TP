@@ -3,10 +3,9 @@ from rest_auth.registration.views import RegisterView
 from rest_auth.views import LogoutView, LoginView
 
 from apps.events.urls import eventpatterns
-from apps.feedbacks.urls import reviewpatterns
+from apps.feedbacks.urls import reviewpatterns, commentpatterns
 from apps.locations.urls import placepatterns, addresspatterns
 from apps.users.urls import userpatterns, organizationpatterns
-from apps.feedbacks.urls import commentpatterns
 
 app_name = 'api'
 

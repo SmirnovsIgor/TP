@@ -1,4 +1,3 @@
-from django_filters import rest_framework as filters
 import uuid
 
 from django.contrib.contenttypes.models import ContentType
@@ -72,6 +71,17 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
         data = dict(request.data)
         parent_object = self._get_parent(data)
         if type(parent_object) is Event and not parent_object.is_available_for_feedback:

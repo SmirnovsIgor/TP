@@ -12,9 +12,9 @@ from apps.users.models import Organization
 
 @pytest.mark.django_db
 class TestComment:
-    def test_negative_create_comment_unauthenticated_user(self, client, comment_dict, user, event):
+    def test_negative_create_comment_unauthenticated_user(self, client, comment_dict, user, event2):
         user.save()
-        event.save()
+        event2.save()
         myevent = Event.objects.all()[0]
         comment_dict.update(parent={'id': str(myevent.id)})
         comment_dict.update(parent_type=myevent.__class__.__name__)
@@ -24,14 +24,15 @@ class TestComment:
                           content_type='application/json')
         assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_create_comment_to_event(self, client, comment_dict, user, token, event):
+    def test_create_comment_to_event(self, client, comment_dict, user, token, event2):
         user.save()
-        event.save()
+        event2.save()
         myobj = Event.objects.all()[0]
         comment_dict.update(parent={'id': str(myobj.id)})
         comment_dict.update(parent_type=myobj.__class__.__name__)
         comment_dict.update(topic={'id': str(myobj.id)})
         comment_dict.update(topic_type=myobj.__class__.__name__)
+        print(comment_dict)
         res = client.post('/api/comments/', data=json.dumps(comment_dict),
                           content_type='application/json',
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
@@ -102,7 +103,6 @@ class TestComment:
 
     @pytest.mark.parametrize('comment_qty', [0, 6, 12, 24])
     def test_list_comment(self, client, comments_batch, comment_qty):
-        """Collection of events created by user with place"""
         res = client.get(f'/api/comments/')
         assert res.status_code == status.HTTP_200_OK
         assert isinstance(res.json(), list)

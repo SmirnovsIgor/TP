@@ -14,7 +14,7 @@ from apps.users.factories import UserFactory, MemberListFactory
 from apps.users.models import User
 
 DEFAULT_BIG_NUMBER = 100
-DEFAULT_SMALL_NUMBER = 80
+DEFAULT_SMALL_NUMBER = 50
 
 
 class Command(BaseCommand):

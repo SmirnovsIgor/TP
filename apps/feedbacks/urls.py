@@ -3,10 +3,10 @@ from rest_framework.routers import DefaultRouter
 from apps.feedbacks import views
 
 
-router = DefaultRouter()
+review_router, comment_router = DefaultRouter(), DefaultRouter()
 
-router.register(r'', views.ReviewViewSet, basename='review')
-router.register(r'', views.CommentViewSet, basename='comments')
+review_router.register(r'', views.ReviewViewSet, basename='review')
+comment_router.register(r'', views.CommentViewSet, basename='comments')
 
-reviewpatterns = router.urls
-commentpatterns = router.urls
+reviewpatterns = review_router.urls
+commentpatterns = comment_router.urls
