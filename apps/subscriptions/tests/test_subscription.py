@@ -245,3 +245,14 @@ class TestSubscriptions:
         assert data.get('event') == str(event.id)
         assert data.get('status') == Subscription.STATUS_UNTRACKED
 
+    def test_approve_ok(self, client, request_user, token, subscription, event):
+        event.status = Event.SOON
+        event.date += datetime.timedelta(50)
+        event.save()
+        subscription.user = request_user
+        subscription.event = event
+        subscription.STATUS_UNTRACKED
+        subscription.save()
+        res = client.post(f'/api/subscriptions/{subscription.id}/approve/',
+                          **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        assert res.status_code == status.HTTP_200_OK
