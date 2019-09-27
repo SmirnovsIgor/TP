@@ -79,10 +79,8 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         return response
 
     def get_event_id(self, data):
-        event = None
-        if 'event' in data:
-            event = data.pop('event')
-        else:
+        event = data.pop('event', None)
+        if event is None:
             raise exceptions.ParseError('You must transmit event id.')
 
         if isinstance(event, (str, dict)):
