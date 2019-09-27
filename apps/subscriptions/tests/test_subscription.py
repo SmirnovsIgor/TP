@@ -1,4 +1,5 @@
 import pytest
+import json
 from rest_framework import status
 
 from apps.subscriptions.models import Subscription
@@ -119,3 +120,23 @@ class TestSubscriptions:
         subscription.save()
         res = client.delete(f'/api/subscriptions/ghjklasfg/', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
         assert res.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_patch_for_staff(self, client, request_user, token, subscription):
+        request_user.is_staff = True
+        request_user.save()
+        subscription.status = Subscription.STATUS_ACTIVE
+        subscription.save()
+        new_data = {'status': 'REJECTED'}
+        res = client.patch(f'/api/subscriptions/{subscription.id}/', data=json.dumps(new_data),
+                           content_type='application/json', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        assert res.status_code == status.HTTP_200_OK
+        data = res.json()
+        assert data.get('status') == new_data.get('status')
+
+    def test_patch_for_regular_user(self, client, request_user, token, subscription):
+        subscription.status = Subscription.STATUS_ACTIVE
+        subscription.save()
+        new_data = {'status': 'REJECTED'}
+        res = client.patch(f'/api/subscriptions/{subscription.id}/', data=json.dumps(new_data),
+                           content_type='application/json', **{'HTTP_AUTHORIZATION': f'Token {str(token)}'})
+        assert res.status_code == status.HTTP_403_FORBIDDEN
