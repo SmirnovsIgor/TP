@@ -46,4 +46,4 @@ class Command(BaseCommand):
         PlaceFactory.create_batch(size=instances_without_event)
         SubscriptionFactory.create_batch(size=small)
         ReviewFactory.create_batch(size=small)
-        self.stdout.write(self.style.SUCCESS("DB was successfully populated"))
+        self.stdout.write(self.style.SUCCESS('DB was successfully populated'))

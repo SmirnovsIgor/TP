@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
+from apps.base.views import ReviewsMixin
 from apps.events.models import Event
 from apps.events.serializers import EventSerializer
 from apps.subscriptions.serializers import SubscriptionSerializer
@@ -53,7 +54,7 @@ class UserEventsViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
-class OrganizationsViewSet(viewsets.ReadOnlyModelViewSet):
+class OrganizationsViewSet(viewsets.ReadOnlyModelViewSet, ReviewsMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = ShortOrganizationSerializer
 

@@ -11,13 +11,13 @@ from tools.image_funcs import get_image_path
 
 
 class Event(BaseAbstractModel, ParentTopicRelationModel):
-    SOON = "SOON"
-    SUCCEED = "SUCCEED"
-    REJECTED = "REJECTED"
+    SOON = 'SOON'
+    SUCCEED = 'SUCCEED'
+    REJECTED = 'REJECTED'
     STATUS_TYPES = (
-        (SOON, "soon"),
-        (SUCCEED, "succeed"),
-        (REJECTED, "rejected"),
+        (SOON, 'soon'),
+        (SUCCEED, 'succeed'),
+        (REJECTED, 'rejected'),
     )
 
     name = models.CharField(max_length=64, blank=False, null=False)
