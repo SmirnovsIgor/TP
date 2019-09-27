@@ -1,13 +1,11 @@
-import factory
 import factory.fuzzy
 from faker import Factory as FakeFactory
 
-from apps.users.models import User
+from apps.events.factories import EventUserWithoutPlaceFactory
 from apps.events.models import Event
 from apps.subscriptions.models import Subscription
-from apps.events.factories import EventUserWithoutPlaceFactory
 from apps.users.factories import UserFactory
-
+from apps.users.models import User
 
 faker = FakeFactory.create()
 

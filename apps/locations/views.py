@@ -1,9 +1,7 @@
-import json
-
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, exceptions
-from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
 
 from apps.base.views import ReviewsMixin
 from apps.locations.models import Place, Address

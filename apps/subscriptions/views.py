@@ -1,7 +1,6 @@
-from rest_framework import filters as rest_filters, viewsets
 from django_filters import rest_framework as filters
+from rest_framework import filters as rest_filters, viewsets
 from rest_framework.permissions import IsAuthenticated
-
 
 from apps.subscriptions.models import Subscription
 from apps.subscriptions.serializers import SubscriptionSerializer

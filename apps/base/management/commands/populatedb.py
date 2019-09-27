@@ -1,19 +1,17 @@
 from django.core.management.base import BaseCommand
 
-from apps.events.models import Event
-from apps.feedbacks.factories import ReviewFactory
-from apps.locations.models import Place
-from apps.users.factories import UserFactory, MemberListFactory
-from apps.locations.factories import AddressFactory, PlaceFactory
-from apps.subscriptions.factories import SubscriptionFactory
+from apps.base.management.commands.cleardb import Command as ClearDb
 from apps.events.factories import (
     EventUserWithoutPlaceFactory,
     EventUserWithPlaceFactory,
     EventOrganizerWithoutPlaceFactory,
     EventOrganizerWithPlaceFactory
 )
+from apps.feedbacks.factories import ReviewFactory
+from apps.locations.factories import AddressFactory, PlaceFactory
+from apps.subscriptions.factories import SubscriptionFactory
+from apps.users.factories import UserFactory, MemberListFactory
 from apps.users.models import User
-from apps.base.management.commands.cleardb import Command as ClearDb
 
 DEFAULT_BIG_NUMBER = 100
 DEFAULT_SMALL_NUMBER = 80

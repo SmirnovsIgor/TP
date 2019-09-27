@@ -8,7 +8,7 @@ from apps.events.models import Event
 from apps.feedbacks.models import Review
 from apps.locations.models import Place
 from apps.users.factories import UserFactory
-from apps.users.models import User, Organization
+from apps.users.models import Organization
 
 faker = FakeFactory.create()
 
