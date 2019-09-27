@@ -1,10 +1,10 @@
 import uuid
 
+from django_filters import rest_framework as filters
 from rest_framework import viewsets, exceptions, status, filters as rest_filters
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from django_filters import rest_framework as filters
 
 from apps.events.models import Event
 from apps.subscriptions.models import Subscription
