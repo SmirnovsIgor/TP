@@ -47,7 +47,7 @@ class CommentSerializer(serializers.ModelSerializer):
         """
         serializer_class = self.object_type_mapping.get(obj.topic_type)
         data = serializer_class(obj.topic).data
-        return {"id": str(data.id)}
+        return {"id": str(data.get('id'))}
 
     def get_topic_type(self, obj=None):
         """
@@ -62,7 +62,7 @@ class CommentSerializer(serializers.ModelSerializer):
         """
         serializer_class = self.object_type_mapping.get(obj.parent_type)
         data = serializer_class(obj.parent).data
-        return {"id": str(data.id)}
+        return {"id": str(data.get('id'))}
 
     def get_parent_type(self, obj=None):
         """

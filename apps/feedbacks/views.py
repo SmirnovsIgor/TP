@@ -76,8 +76,14 @@ class CommentViewSet(viewsets.ModelViewSet):
         obj_type_from_user = data_dict.pop(f'{obj_class}_type').title()
         obj_model, obj_type = models_mapping.get(obj_type_from_user)
         obj = self.get_created_object(obj_from_user.get('id'), obj_model)
+        if obj_class == 'parent':
+            self.check_parent_status(obj)
         obj_id = obj.id
         return obj_id, obj_type
+
+    def check_parent_status(self, obj):
+        if isinstance(obj.status, str) and obj.status.lower() == 'deleted':
+            raise exceptions.ParseError('Parent object does not exist')
 
     def get_created_object(self, obj_id, cls):
         """Validates ID"""
