@@ -14,12 +14,16 @@ from tools.custom_permissions import IsSubscriberOrAdmin
 
 
 class SubscriptionFilter(filters.FilterSet):
-    event__date__gte = filters.DateTimeFilter(field_name='event__date', lookup_expr="gte")
-    event__date__lte = filters.DateTimeFilter(field_name='event__date', lookup_expr="lte")
-
     class Meta:
         model = Subscription
-        fields = ['user', 'event', 'status', 'event__date__lte', 'event__date__gte']
+        fields = {
+            'event': ['exact'],
+            'user': ['exact'],
+            'status': ['exact'],
+            'event__date': ['lte', 'gte'],
+            'event__organizer_type': ['exact'],
+            'event__organizer_id': ['exact']
+        }
 
 
 class SubscriptionViewSet(viewsets.ModelViewSet):
