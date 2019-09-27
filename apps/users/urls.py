@@ -5,7 +5,6 @@ from rest_framework.routers import DefaultRouter
 from apps.subscriptions.views import SubscriptionMeViewSet
 from apps.users import views
 
-
 router = DefaultRouter()
 router.register(r'', views.UserDataForStaffViewSet, basename='user')
 
