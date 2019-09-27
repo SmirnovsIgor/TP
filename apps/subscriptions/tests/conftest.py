@@ -16,6 +16,7 @@ from apps.subscriptions.factories import SubscriptionFactory, ForTestsSubscripti
 token_model = TokenModel
 register(UserFactory, 'user')
 register(UserFactory, 'request_user')
+register(UserFactory, 'owner')
 register(PlaceFactory, 'place')
 register(AddressFactory, 'address')
 register(OrganizationFactory, 'organization')
@@ -30,6 +31,11 @@ register(SubscriptionFactory, 'subscription')
 def token(request_user):
     token, _ = token_model.objects.get_or_create(user=request_user)
     return token
+
+
+@pytest.fixture
+def subscription():
+    return ForTestsSubscriptionFactory()
 
 
 @pytest.fixture
