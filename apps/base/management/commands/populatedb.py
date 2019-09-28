@@ -13,8 +13,8 @@ from apps.subscriptions.factories import SubscriptionFactory
 from apps.users.factories import UserFactory, MemberListFactory
 from apps.users.models import User
 
-DEFAULT_BIG_NUMBER = 100
-DEFAULT_SMALL_NUMBER = 50
+DEFAULT_BIG_NUMBER = 60
+DEFAULT_SMALL_NUMBER = 40
 
 
 class Command(BaseCommand):
