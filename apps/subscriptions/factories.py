@@ -1,4 +1,5 @@
 import factory.fuzzy
+from django.db.models.signals import pre_save
 from faker import Factory as FakeFactory
 
 from apps.events.factories import EventUserWithoutPlaceFactory
@@ -10,6 +11,7 @@ from apps.users.models import User
 faker = FakeFactory.create()
 
 
+@factory.django.mute_signals(pre_save)
 class SubscriptionFactory(factory.django.DjangoModelFactory):
     user = factory.Iterator(User.objects.all())
     event = factory.Iterator(Event.objects.all())
@@ -19,6 +21,7 @@ class SubscriptionFactory(factory.django.DjangoModelFactory):
         model = Subscription
 
 
+@factory.django.mute_signals(pre_save)
 class ForTestsSubscriptionFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     event = factory.SubFactory(EventUserWithoutPlaceFactory)

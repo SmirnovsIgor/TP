@@ -3,6 +3,7 @@ import random
 import factory.fuzzy
 import pytz
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import pre_save
 from faker import Factory as FakeFactory
 
 from apps.events.models import Event
@@ -13,6 +14,7 @@ from apps.users.models import Organization
 faker = FakeFactory.create()
 
 
+@factory.django.mute_signals(pre_save)
 class EventAbstractFactory(factory.django.DjangoModelFactory):
     name = factory.LazyAttribute(lambda x: faker.catch_phrase()[:64])
     description = factory.Faker('text', max_nb_chars=200, ext_word_list=None)
@@ -33,6 +35,7 @@ class EventAbstractFactory(factory.django.DjangoModelFactory):
         abstract = True
 
 
+@factory.django.mute_signals(pre_save)
 class EventUserWithoutPlaceFactory(EventAbstractFactory):
     organizer = factory.SubFactory(UserFactory)
     address = factory.SubFactory(AddressFactory)
@@ -41,6 +44,7 @@ class EventUserWithoutPlaceFactory(EventAbstractFactory):
         model = Event
 
 
+@factory.django.mute_signals(pre_save)
 class EventUserWithPlaceFactory(EventAbstractFactory):
     organizer = factory.SubFactory(UserFactory)
     place = factory.SubFactory(PlaceFactory)
@@ -50,6 +54,7 @@ class EventUserWithPlaceFactory(EventAbstractFactory):
         model = Event
 
 
+@factory.django.mute_signals(pre_save)
 class EventOrganizerWithoutPlaceFactory(EventAbstractFactory):
     organizer = factory.SubFactory(OrganizationFactory)
     organizer_type = factory.LazyAttribute(
@@ -61,6 +66,7 @@ class EventOrganizerWithoutPlaceFactory(EventAbstractFactory):
         model = Event
 
 
+@factory.django.mute_signals(pre_save)
 class EventOrganizerWithPlaceFactory(EventAbstractFactory):
     organizer = factory.SubFactory(OrganizationFactory)
     organizer_type = factory.LazyAttribute(
