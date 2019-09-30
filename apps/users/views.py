@@ -42,15 +42,16 @@ class UserDataForStaffViewSet(RetrieveModelMixin,
 
 class UserEventsViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
+    serializer_class = EventSerializer
 
     def list(self, request, *args, **kwargs):
         response = request.user.events
-        serializer = EventSerializer(response, many=True)
+        serializer = self.get_serializer(response, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
         event = get_object_or_404(Event, id=kwargs.get('event_id'))
-        serializer = EventSerializer(event)
+        serializer = self.get_serializer(event)
         return Response(serializer.data, status=HTTP_200_OK)
 
 
