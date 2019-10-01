@@ -1,0 +1,1 @@
+from apps.events.serializers.event_serializer import EventSerializer
