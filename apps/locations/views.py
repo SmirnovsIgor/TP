@@ -2,6 +2,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, exceptions
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.openapi import Response as SwgResponse
 
 from apps.base.views import ReviewsMixin
 from apps.locations.models import Place, Address
@@ -10,6 +13,23 @@ from tools.action_based_permission import ActionBasedPermission
 from tools.custom_permissions import IsOwnerOrAdmin
 
 
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='List method that lists all places.',
+    operation_description='Lists all created Places. This endpoint is reachable by anyone.',
+    responses={
+        '200': SwgResponse('Ok. List returned.', PlaceSerializer()),
+    }
+    )
+)
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    operation_summary='Retrieve method that gives detailed information about place.',
+    operation_description='Gives detailed information about Place. This endpoint is reachable by anyone.',
+    responses={
+        '200': SwgResponse('Ok. Place returned.', PlaceSerializer()),
+        '404': 'Not found. Bad Place id.',
+    }
+    )
+)
 class PlaceViewSet(viewsets.ModelViewSet, ReviewsMixin):
     """
     A viewset that provides `create()`, `retrieve()`, `update()`,
@@ -68,6 +88,23 @@ class PlaceViewSet(viewsets.ModelViewSet, ReviewsMixin):
         return Place.objects.create(**kwargs, **serializer.validated_data)
 
 
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='List method that lists all addresses.',
+    operation_description='Lists all created Addresses. This endpoint is reachable by anyone.',
+    responses={
+        '200': SwgResponse('Ok. List returned.', AddressSerializer()),
+    }
+    )
+)
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    operation_summary='Retrieve method that gives detailed information about address.',
+    operation_description='Gives detailed information about Address. This endpoint is reachable by anyone.',
+    responses={
+        '200': SwgResponse('Ok. Address returned.', AddressSerializer()),
+        '404': 'Not found. Bad Address id.',
+    }
+    )
+)
 class AddressViewSet(viewsets.ModelViewSet):
     """
     A viewset that provides `create()`, `retrieve()`, `update()`,
