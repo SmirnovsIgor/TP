@@ -1,10 +1,13 @@
 import uuid
 
 from django.contrib.contenttypes.models import ContentType
+from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from rest_framework import viewsets, mixins, status, exceptions, filters as rest_filters
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.openapi import Response as SwgResponse
 
 from apps.base.filters import AddressFilter, PlaceFilter, DateFilter
 from apps.base.views import ReviewsMixin
@@ -26,6 +29,44 @@ class EventFilter(PlaceFilter, AddressFilter, DateFilter):
         fields = ['place', 'address', 'organizer', 'date__lte', 'date__gte', 'is_top', 'is_hot']
 
 
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='List method that returns list of all created Events',
+    operation_description=
+    """
+        This list supports: 
+        1) Ordering on field created date.
+        2) Filtering on fields Place, Address, Organizer, Date, Is top, Is hot
+    """,
+    responses={
+        '200': SwgResponse('`Ok` List returned', EventSerializer()),
+    }
+))
+@method_decorator(name='create', decorator=swagger_auto_schema(
+    operation_summary='Create method that creates new Event',
+    operation_description=
+    """
+        Options how to create Event:
+        1) Receive Event's required data and Address' required data to create new Event with new Address
+        2) Receive Event's required data and Address' id to create new Event with existed Address
+        3) Receive Event's required data and Place's id to create new Event with existed Place
+    """,
+    responses={
+        '201': SwgResponse('`Created` New Event returned', EventSerializer()),
+        '400': 'Bad request',
+        '404': 'Not found',
+    }
+))
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    operation_summary='Retrieve method that represents detailed information of the Event',
+    operation_description=
+    """
+        Collects detailed information about any existed event
+    """,
+    responses={
+        '200': SwgResponse('Ok. Detailed information returned', EventSerializer()),
+        '404': 'Not Found',
+    }
+))
 class EventViewSet(mixins.CreateModelMixin,
                    viewsets.ReadOnlyModelViewSet,
                    ReviewsMixin):

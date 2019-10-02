@@ -1,11 +1,14 @@
 import uuid
 
 from django.contrib.contenttypes.models import ContentType
+from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from rest_framework import filters as rest_filters
 from rest_framework import viewsets, status, exceptions
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.openapi import Response as SwgResponse
 
 from apps.events.models import Event
 from apps.feedbacks.models import Comment, Review
@@ -118,6 +121,76 @@ class ReviewViewSet(viewsets.ModelViewSet):
             return Review.objects.create(**kwargs, **serializer.validated_data)
 
 
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='List method that returns list of all created Comments',
+    operation_description=
+    """
+        This list of comments supports two different ways of displaying information: 
+        1) All comments for user who is stuff
+        2) All comments with non-deleted status for non-stuff users
+    """,
+    responses={
+        '200': SwgResponse('`Ok` List returned', CommentSerializer()),
+    }
+))
+@method_decorator(name='create', decorator=swagger_auto_schema(
+    operation_summary='Create method that creates new Comment',
+    operation_description=
+    """
+        Options how to create Comment:
+        1) Comment's parent can be Place, Event, Organization, Feedback or Comment instance
+        2) Comment's topic can be Place, Event, Organization or Feedback instance
+    """,
+    responses={
+        '201': SwgResponse('`Created` New Event returned', CommentSerializer()),
+        '400': 'Bad request',
+        '404': 'Not found',
+    }
+))
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    operation_summary='Retrieve method that represents detailed information of the Comment',
+    operation_description=
+    """
+        Collects detailed information about any existed comment
+    """,
+    responses={
+        '200': SwgResponse('Ok. Detailed information returned', CommentSerializer()),
+        '404': 'Not Found',
+    }
+))
+@method_decorator(name='update', decorator=swagger_auto_schema(
+    operation_summary='Update method that get ability to update any existed Comment',
+    operation_description=
+    """
+        Comment can be updated only by user who created this comment
+    """,
+    responses={
+        '201': SwgResponse('Ok. Detailed information returned', CommentSerializer()),
+        '404': 'Not Found',
+    }
+))
+@method_decorator(name='partial_update', decorator=swagger_auto_schema(
+    operation_summary='Partial update method that get ability to update text of any existed Comment',
+    operation_description=
+    """
+        Comment can be partially updated only by user who created this comment
+    """,
+    responses={
+        '201': SwgResponse('Ok. Detailed information returned', CommentSerializer()),
+        '404': 'Not Found',
+    }
+))
+@method_decorator(name='destroy', decorator=swagger_auto_schema(
+    operation_summary='Change Comment instance\'s status to Deleted',
+    operation_description=
+    """
+        Only admin and user who created comment can delete this comment
+    """,
+    responses={
+        '200': SwgResponse('Ok', CommentSerializer()),
+        '404': 'Not Found',
+    }
+))
 class CommentViewSet(viewsets.ModelViewSet):
     """
     A viewset for Comment model, which provides
