@@ -67,6 +67,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.status = Review.DELETED
+        instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def perform_destroy(self, instance):
@@ -208,12 +209,14 @@ class CommentViewSet(viewsets.ModelViewSet):
         IsOwnerOrAdmin: ['destroy'],
     }
 
-    def list(self, request, *args, **kwargs):
-        if request.user.is_staff:
-            queryset = self.filter_queryset(self.get_queryset())
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Comment.objects.all()
         else:
-            queryset = self.filter_queryset(self.get_queryset().exclude(status=Comment.DELETED))
+            return Comment.objects.exclude(status=Comment.DELETED)
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
