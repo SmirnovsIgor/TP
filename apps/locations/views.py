@@ -1,4 +1,7 @@
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from drf_yasg.openapi import Response as SwgResponse
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, status, exceptions
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -13,28 +16,64 @@ from tools.action_based_permission import ActionBasedPermission
 from tools.custom_permissions import IsOwnerOrAdmin
 
 
-@method_decorator(name='list', decorator=swagger_auto_schema(
-    operation_summary='Endpoint that lists all places.',
-    operation_description='Lists all created Places. This endpoint is reachable by anyone.',
+
+@method_decorator(name='create', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that creates a Place.',
+    operation_description="""Creates a Place.
+                             This endpoint is reachable by staff.""",
     responses={
-        '200': SwgResponse('Ok. List returned.', PlaceSerializer()),
+        '201': SwgResponse('Ok. Place created.', PlaceSerializer()),
+        '400': 'Bad request.',
     }
     )
 )
 @method_decorator(name='retrieve', decorator=swagger_auto_schema(
-    operation_summary='Endpoint that gives detailed information about place.',
-    operation_description='Gives detailed information about Place. This endpoint is reachable by anyone.',
+    operation_summary='Endpoint that gets detail info about Place.',
+    operation_description="""Gets detail info about Place.
+                             This endpoint is reachable by any.""",
     responses={
         '200': SwgResponse('Ok. Place returned.', PlaceSerializer()),
-        '404': 'Not found. Bad Place id.',
+        '404': 'Place not found.',
+    }
+    )
+)
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that gets info about all Places.',
+    operation_description="""Gets info about all Places.
+                             This endpoint is reachable by any.""",
+    responses={
+        '200': SwgResponse('Ok. Places returned.', PlaceSerializer()),
+    }
+    )
+)
+@method_decorator(name='destroy', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that destroy a Place.',
+    operation_description="""Destroys a Place.
+                             This endpoint is reachable by staff.""",
+    responses={
+        '205': SwgResponse('Ok. Places deleted.', PlaceSerializer()),
+    }
+    )
+)
+@method_decorator(name='update', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that updates a Place.',
+    operation_description="""Updates a Place.
+                             This endpoint is reachable by staff.""",
+    responses={
+        '200': SwgResponse('Ok. Places updated.', PlaceSerializer()),
+    }
+    )
+)
+@method_decorator(name='partial_update', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that updates a Place.',
+    operation_description="""Updates a Place.
+                             This endpoint is reachable by staff.""",
+    responses={
+        '200': SwgResponse('Ok. Places updated.', PlaceSerializer()),
     }
     )
 )
 class PlaceViewSet(viewsets.ModelViewSet, ReviewsMixin):
-    """
-    A viewset that provides `create()`, `retrieve()`, `update()`,
-    `partial_update()`, `destroy()` and `list()` actions.
-    """
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
     permission_classes = (ActionBasedPermission,)
@@ -88,29 +127,62 @@ class PlaceViewSet(viewsets.ModelViewSet, ReviewsMixin):
         return Place.objects.create(**kwargs, **serializer.validated_data)
 
 
-@method_decorator(name='list', decorator=swagger_auto_schema(
-    operation_summary='Endpoint that lists all addresses.',
-    operation_description='Lists all created Addresses. This endpoint is reachable by anyone.',
+@method_decorator(name='partial_update', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that updates a Address.',
+    operation_description="""Updates a Address.
+                             This endpoint is reachable by author or staff.""",
     responses={
-        '200': SwgResponse('Ok. List returned.', AddressSerializer()),
+        '200': SwgResponse('Ok. Address updated.', AddressSerializer()),
+    }
+    )
+)
+@method_decorator(name='update', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that updates a Address.',
+    operation_description="""Updates a Address.
+                             This endpoint is reachable by author or staff.""",
+    responses={
+        '200': SwgResponse('Ok. Address updated.', AddressSerializer()),
     }
     )
 )
 @method_decorator(name='retrieve', decorator=swagger_auto_schema(
-    operation_summary='Endpoint that gives detailed information about address.',
-    operation_description='Gives detailed information about Address. This endpoint is reachable by anyone.',
+    operation_summary='Endpoint that gets detail info about Address.',
+    operation_description="""Gets detail info about Address.
+                             This endpoint is reachable by any.""",
     responses={
-        '200': SwgResponse('Ok. Address returned.', AddressSerializer()),
-        '404': 'Not found. Bad Address id.',
+        '200': SwgResponse('Ok. Place returned.', AddressSerializer()),
+        '404': SwgResponse('Address not found'),
+    }
+    )
+)
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that gets all Addresses.',
+    operation_description="""Gets all Addresses.
+                             This endpoint is reachable by any.""",
+    responses={
+        '200': SwgResponse('Ok. Places returned.', AddressSerializer()),
+    }
+    )
+)
+@method_decorator(name='create', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that creates a Address.',
+    operation_description="""Creates a Address.
+                             This endpoint is reachable by authenticated users.""",
+    responses={
+        '201': SwgResponse('Ok. Address created.', AddressSerializer()),
+    }
+    )
+)
+@method_decorator(name='destroy', decorator=swagger_auto_schema(
+    operation_summary='Endpoint that destroys a Address.',
+    operation_description="""Destroys a Address.
+                             This endpoint is reachable by staff.""",
+    responses={
+        '205': SwgResponse('Ok. Address destroyed.', AddressSerializer()),
     }
     )
 )
 class AddressViewSet(viewsets.ModelViewSet):
-    """
-    A viewset that provides `create()`, `retrieve()`, `update()`,
-    `partial_update()`, `destroy()` and `list()` actions.
-    """
-
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     permission_classes = (ActionBasedPermission,)
