@@ -7,6 +7,7 @@ from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
+from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg.openapi import Response as SwgResponse
 
@@ -29,11 +30,16 @@ from tools.action_based_permission import ActionBasedPermission
         '403': 'Not admin user'
     }))
 @method_decorator(name='subscriptions', decorator=swagger_auto_schema(
-    operation_summary='Calls subscriptions method and returns user\'s subscriptions. Staff only.',
+    operation_summary="Endpoint that lists all user's subscriptions.",
+    operation_description="Lists all user's Subscriptions. This endpoint is reachable by staff only.",
     responses={
-        '200': SwgResponse('OK. User\'s subscriptions were successfully returned.', SubscriptionSerializer()),
-        '403': 'Not admin user'
-    }))
+        '200': SwgResponse('Ok. List of subscriptions returned.', SubscriptionSerializer()),
+        '403': 'Forbidden. Not a staff user.',
+        '404': 'Not found. Bad User id.',
+    }
+    )
+)
+
 class UserDataForStaffViewSet(RetrieveModelMixin,
                               viewsets.GenericViewSet):
     queryset = User.objects.all()
