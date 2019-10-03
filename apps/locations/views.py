@@ -14,7 +14,7 @@ from tools.custom_permissions import IsOwnerOrAdmin
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
-    operation_summary='List method that lists all places.',
+    operation_summary='Endpoint that lists all places.',
     operation_description='Lists all created Places. This endpoint is reachable by anyone.',
     responses={
         '200': SwgResponse('Ok. List returned.', PlaceSerializer()),
@@ -22,7 +22,7 @@ from tools.custom_permissions import IsOwnerOrAdmin
     )
 )
 @method_decorator(name='retrieve', decorator=swagger_auto_schema(
-    operation_summary='Retrieve method that gives detailed information about place.',
+    operation_summary='Endpoint that gives detailed information about place.',
     operation_description='Gives detailed information about Place. This endpoint is reachable by anyone.',
     responses={
         '200': SwgResponse('Ok. Place returned.', PlaceSerializer()),
@@ -89,7 +89,7 @@ class PlaceViewSet(viewsets.ModelViewSet, ReviewsMixin):
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
-    operation_summary='List method that lists all addresses.',
+    operation_summary='Endpoint that lists all addresses.',
     operation_description='Lists all created Addresses. This endpoint is reachable by anyone.',
     responses={
         '200': SwgResponse('Ok. List returned.', AddressSerializer()),
@@ -97,7 +97,7 @@ class PlaceViewSet(viewsets.ModelViewSet, ReviewsMixin):
     )
 )
 @method_decorator(name='retrieve', decorator=swagger_auto_schema(
-    operation_summary='Retrieve method that gives detailed information about address.',
+    operation_summary='Endpoint that gives detailed information about address.',
     operation_description='Gives detailed information about Address. This endpoint is reachable by anyone.',
     responses={
         '200': SwgResponse('Ok. Address returned.', AddressSerializer()),

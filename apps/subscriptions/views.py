@@ -30,7 +30,7 @@ class SubscriptionFilter(filters.FilterSet):
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
-    operation_summary='List method that lists all subscriptions.',
+    operation_summary='Endpoint that lists all subscriptions.',
     operation_description="""Lists all created Subscriptions.
                              This endpoint is reachable by staff only.
                              It is possible to filter list by:
@@ -46,7 +46,7 @@ class SubscriptionFilter(filters.FilterSet):
     )
 )
 @method_decorator(name='retrieve', decorator=swagger_auto_schema(
-    operation_summary='Retrieve method that gives detailed information about subscription.',
+    operation_summary='Endpoint that gives detailed information about subscription.',
     operation_description="""Gives detailed information about Subscription.
                              This endpoint is reachable by staff or User from Subscription.""",
     responses={
@@ -57,7 +57,7 @@ class SubscriptionFilter(filters.FilterSet):
     )
 )
 @method_decorator(name='create', decorator=swagger_auto_schema(
-    operation_summary='Create method that creates a subscription.',
+    operation_summary='Endpoint that creates a subscription.',
     operation_description="""Creates a Subscription for the transmitted Event.
                              This endpoint is reachable by authenticated users.""",
     responses={
@@ -71,7 +71,7 @@ class SubscriptionFilter(filters.FilterSet):
     )
 )
 @method_decorator(name='approve', decorator=swagger_auto_schema(
-    operation_summary='Approve subscription.',
+    operation_summary='Endpoint that approves subscription.',
     operation_description="""Sets Subscription status to ACTIVE.
                              This endpoint is reachable by authenticated users.""",
     responses={
@@ -85,7 +85,7 @@ class SubscriptionFilter(filters.FilterSet):
     )
 )
 @method_decorator(name='update', decorator=swagger_auto_schema(
-    operation_summary='Update method that updates subscription.',
+    operation_summary='Endpoint that updates subscription.',
     operation_description="""Updates Subscription.
                              This endpoint is reachable by staff users only.""",
     responses={
@@ -96,7 +96,7 @@ class SubscriptionFilter(filters.FilterSet):
     )
 )
 @method_decorator(name='partial_update', decorator=swagger_auto_schema(
-    operation_summary='Partial update method that updates subscription.',
+    operation_summary='Endpoint that updates subscription.',
     operation_description="""Updates Subscription.
                              This endpoint is reachable by staff users only.""",
     responses={
@@ -107,7 +107,7 @@ class SubscriptionFilter(filters.FilterSet):
     )
 )
 @method_decorator(name='destroy', decorator=swagger_auto_schema(
-    operation_summary='Delete method that deletes subscription.',
+    operation_summary='Endpoint that deletes subscription.',
     operation_description="""Deletes Subscription.
                              This endpoint is reachable by authenticated users.""",
     responses={

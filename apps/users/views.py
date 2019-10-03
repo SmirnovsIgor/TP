@@ -23,7 +23,7 @@ from tools.action_based_permission import ActionBasedPermission
 
 
 @method_decorator(name='subscriptions', decorator=swagger_auto_schema(
-    operation_summary="List method that lists all user's subscriptions.",
+    operation_summary="Endpoint that lists all user's subscriptions.",
     operation_description="Lists all user's Subscriptions. This endpoint is reachable by staff only.",
     responses={
         '200': SwgResponse('Ok. List returned.', SubscriptionSerializer()),
