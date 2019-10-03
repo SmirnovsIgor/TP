@@ -42,13 +42,13 @@ class EventFilter(PlaceFilter, AddressFilter, DateFilter):
     }
 ))
 @method_decorator(name='create', decorator=swagger_auto_schema(
-    operation_summary='Create method that creates new Event',
+    operation_summary='Create method that creates new Event by any authenticated user',
     operation_description=
     """
         Options how to create Event:
-        1) Receive Event's required data and Address' required data to create new Event with new Address
-        2) Receive Event's required data and Address' id to create new Event with existed Address
-        3) Receive Event's required data and Place's id to create new Event with existed Place
+        1) Supply Event's required data and Address' required data to create new Event with the new Address
+        2) Supply Event's required data and Address' id to create new Event with already existed Address
+        3) Supply Event's required data and Place's id to create new Event with already existed Place
     """,
     responses={
         '201': SwgResponse('`Created` New Event returned', EventSerializer()),

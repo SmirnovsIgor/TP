@@ -137,6 +137,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     operation_summary='Create method that creates new Comment',
     operation_description=
     """
+        Only authenticated users can create Comments
         Options how to create Comment:
         1) Comment's parent can be Place, Event, Organization, Feedback or Comment instance
         2) Comment's topic can be Place, Event, Organization or Feedback instance
@@ -151,7 +152,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     operation_summary='Retrieve method that represents detailed information of the Comment',
     operation_description=
     """
-        Collects detailed information about any existed comment
+        Collects and represents detailed information about any existed comment
     """,
     responses={
         '200': SwgResponse('Ok. Detailed information returned', CommentSerializer()),
@@ -159,7 +160,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     }
 ))
 @method_decorator(name='update', decorator=swagger_auto_schema(
-    operation_summary='Update method that get ability to update any existed Comment',
+    operation_summary='Update method that gets ability to update any existed Comment',
     operation_description=
     """
         Comment can be updated only by user who created this comment
@@ -170,7 +171,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     }
 ))
 @method_decorator(name='partial_update', decorator=swagger_auto_schema(
-    operation_summary='Partial update method that get ability to update text of any existed Comment',
+    operation_summary='Partial update method that gets ability to update text of any existed Comment',
     operation_description=
     """
         Comment can be partially updated only by user who created this comment
@@ -184,10 +185,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     operation_summary='Change Comment instance\'s status to Deleted',
     operation_description=
     """
-        Only admin and user who created comment can delete this comment
+        Only admin and user who created the comment can "delete" this comment
     """,
     responses={
-        '200': SwgResponse('Ok', CommentSerializer()),
+        '204': SwgResponse('No content', CommentSerializer()),
         '404': 'Not Found',
     }
 ))
