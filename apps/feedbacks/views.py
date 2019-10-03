@@ -123,11 +123,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
-    operation_summary='List method that returns list of all created Comments',
+    operation_summary='This endpoint returns list of all created Comments',
     operation_description=
     """
         This list of comments supports two different ways of displaying information: 
-        1) All comments for user who is stuff
+        1) All comments for a user who is a stuff
         2) All comments with non-deleted status for non-stuff users
     """,
     responses={
@@ -135,7 +135,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     }
 ))
 @method_decorator(name='create', decorator=swagger_auto_schema(
-    operation_summary='Create method that creates new Comment',
+    operation_summary='This endpoint creates new Comment',
     operation_description=
     """
         Only authenticated users can create Comments
@@ -150,7 +150,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     }
 ))
 @method_decorator(name='retrieve', decorator=swagger_auto_schema(
-    operation_summary='Retrieve method that represents detailed information of the Comment',
+    operation_summary='This endpoint represents detailed information of the Comment',
     operation_description=
     """
         Collects and represents detailed information about any existed comment
@@ -161,7 +161,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     }
 ))
 @method_decorator(name='update', decorator=swagger_auto_schema(
-    operation_summary='Update method that gets ability to update any existed Comment',
+    operation_summary='This endpoint gets ability to update any existed Comment',
     operation_description=
     """
         Comment can be updated only by user who created this comment
@@ -172,7 +172,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     }
 ))
 @method_decorator(name='partial_update', decorator=swagger_auto_schema(
-    operation_summary='Partial update method that gets ability to update text of any existed Comment',
+    operation_summary='This endpoint gets ability to update text of any existed Comment',
     operation_description=
     """
         Comment can be partially updated only by user who created this comment
@@ -183,10 +183,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     }
 ))
 @method_decorator(name='destroy', decorator=swagger_auto_schema(
-    operation_summary='Change Comment instance\'s status to Deleted',
+    operation_summary='This endpoint changes Comment instance\'s status to Deleted',
     operation_description=
     """
-        Only admin and user who created the comment can "delete" this comment
+        Only admin or user who created the comment can "delete" this comment
     """,
     responses={
         '204': SwgResponse('No content', CommentSerializer()),

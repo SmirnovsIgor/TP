@@ -30,9 +30,10 @@ class EventFilter(PlaceFilter, AddressFilter, DateFilter):
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
-    operation_summary='List method that returns list of all created Events',
+    operation_summary='This endpoint returns list of all created Events',
     operation_description=
     """
+        This endpoint allows any user to access it
         This list supports: 
         1) Ordering on field created date.
         2) Filtering on fields Place, Address, Organizer, Date, Is top, Is hot
@@ -42,9 +43,10 @@ class EventFilter(PlaceFilter, AddressFilter, DateFilter):
     }
 ))
 @method_decorator(name='create', decorator=swagger_auto_schema(
-    operation_summary='Create method that creates new Event by any authenticated user',
+    operation_summary='That endpoint creates new Event by any authenticated user',
     operation_description=
     """
+        This endpoint allows any authenticated user to access it
         Options how to create Event:
         1) Supply Event's required data and Address' required data to create new Event with the new Address
         2) Supply Event's required data and Address' id to create new Event with already existed Address
@@ -57,9 +59,10 @@ class EventFilter(PlaceFilter, AddressFilter, DateFilter):
     }
 ))
 @method_decorator(name='retrieve', decorator=swagger_auto_schema(
-    operation_summary='Retrieve method that represents detailed information of the Event',
+    operation_summary='That endpoint represents detailed information of the Event',
     operation_description=
     """
+        This endpoint allows any user to access it
         Collects detailed information about any existed event
     """,
     responses={
