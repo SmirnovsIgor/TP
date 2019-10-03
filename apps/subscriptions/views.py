@@ -5,6 +5,9 @@ from rest_framework import viewsets, exceptions, status, filters as rest_filters
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.openapi import Response as SwgResponse
 
 from apps.events.models import Event
 from apps.subscriptions.models import Subscription
@@ -124,8 +127,14 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='Calls list method and returns user\'s subscriptions list if user is authorized.'
+                      ' Filtering and ordering by date implemented',
+    responses={
+        '200': SwgResponse('OK. User\'s subscriptions were successfully returned', SubscriptionSerializer()),
+        '401': 'Unauthorized'
+    }))
 class SubscriptionMeViewSet(viewsets.ReadOnlyModelViewSet):
-
     model = Subscription
     serializer_class = SubscriptionSerializer
     filter_backends = [filters.DjangoFilterBackend, rest_filters.OrderingFilter]
