@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -22,16 +23,23 @@ from apps.users.serializers import (UserSerializer,
 from tools.action_based_permission import ActionBasedPermission
 
 
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    operation_summary='Calls get method and returns user\'s details. Staff only.',
+    responses={
+        '200': SwgResponse('OK. User\'s created events were successfully returned', SubscriptionSerializer()),
+        '403': 'Not admin user'
+    }))
 @method_decorator(name='subscriptions', decorator=swagger_auto_schema(
     operation_summary="Endpoint that lists all user's subscriptions.",
     operation_description="Lists all user's Subscriptions. This endpoint is reachable by staff only.",
     responses={
-        '200': SwgResponse('Ok. List returned.', SubscriptionSerializer()),
+        '200': SwgResponse('Ok. List of subscriptions returned.', SubscriptionSerializer()),
         '403': 'Forbidden. Not a staff user.',
         '404': 'Not found. Bad User id.',
     }
     )
 )
+
 class UserDataForStaffViewSet(RetrieveModelMixin,
                               viewsets.GenericViewSet):
     queryset = User.objects.all()
@@ -53,6 +61,18 @@ class UserDataForStaffViewSet(RetrieveModelMixin,
         return Response(serializer.data)
 
 
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='Calls list method and returns user\'s created events list if user is authorized.',
+    responses={
+        '200': SwgResponse('OK. User\'s created events were successfully returned.', SubscriptionSerializer()),
+        '401': 'Unauthorized'
+    }))
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    operation_summary='Calls retrieve method and returns extended info of user\'s event by id if user is authorized.',
+    responses={
+        '200': SwgResponse('OK. User\'s created event info was successfully returned.', SubscriptionSerializer()),
+        '401': 'Unauthorized'
+    }))
 class UserEventsViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = EventSerializer
@@ -68,6 +88,18 @@ class UserEventsViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    operation_summary='Calls retrieve method and returns organization\'s created events list if user is authorized',
+    responses={
+        '200': SwgResponse('OK. User\'s created events were successfully returned', SubscriptionSerializer()),
+        '401': 'Unauthorized'
+    }))
+@method_decorator(name='detailed', decorator=swagger_auto_schema(
+    operation_summary='Calls list method and returns user\'s created events list if user is authorized',
+    responses={
+        '200': SwgResponse('OK. User\'s created events were successfully returned', SubscriptionSerializer()),
+        '401': 'Unauthorized'
+    }))
 class OrganizationsViewSet(viewsets.ReadOnlyModelViewSet, ReviewsMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = ShortOrganizationSerializer

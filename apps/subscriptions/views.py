@@ -215,8 +215,14 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='''Calls list method and returns user's subscriptions list if user is authorized.
+                        Filtering and ordering by date implemented.''',
+    responses={
+        '200': SwgResponse('OK. User\'s subscriptions were successfully returned.', SubscriptionSerializer()),
+        '401': 'Unauthorized'
+    }))
 class SubscriptionMeViewSet(viewsets.ReadOnlyModelViewSet):
-
     model = Subscription
     serializer_class = SubscriptionSerializer
     filter_backends = [filters.DjangoFilterBackend, rest_filters.OrderingFilter]
