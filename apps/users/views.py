@@ -39,7 +39,6 @@ from tools.action_based_permission import ActionBasedPermission
     }
     )
 )
-
 class UserDataForStaffViewSet(RetrieveModelMixin,
                               viewsets.GenericViewSet):
     queryset = User.objects.all()
@@ -95,7 +94,13 @@ class UserEventsViewSet(viewsets.ReadOnlyModelViewSet):
         '401': 'Unauthorized'
     }))
 @method_decorator(name='detailed', decorator=swagger_auto_schema(
-    operation_summary='Calls list method and returns user\'s created events list if user is authorized',
+    operation_summary='Calls detailed method and returns organizations\'s members list if user is authorized',
+    responses={
+        '200': SwgResponse('OK. Member\'s list were successfully returned', SubscriptionSerializer()),
+        '401': 'Unauthorized'
+    }))
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_summary='Calls list method and returns all organizations\'s if user is authorized',
     responses={
         '200': SwgResponse('OK. User\'s created events were successfully returned', SubscriptionSerializer()),
         '401': 'Unauthorized'
